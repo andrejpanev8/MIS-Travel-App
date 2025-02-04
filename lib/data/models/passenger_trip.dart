@@ -1,39 +1,34 @@
-import 'package:travel_app/data/enums/passenger_trip_status.dart';
+import 'package:travel_app/data/enums/trip_status_for_client.dart';
 import 'package:travel_app/data/models/user.dart';
 
 import 'location.dart';
 
 class PassengerTrip {
-    int id;
-    final Location startLocation;
-    final Location endLocation;
-    PassengerTripStatus tripStatus;
-    final User user;
+  final String id;
+  final Location startLocation;
+  final Location endLocation;
+  ClientTripStatus tripStatus;
+  final User user;
 
-    PassengerTrip({
-      required this.id,
+  PassengerTrip(
+      {this.id = "",
       required this.startLocation,
       required this.endLocation,
       required this.tripStatus,
-      required this.user
-    });
+      required this.user});
 
-    PassengerTrip.fromJson(Map<String, dynamic> data)
-        : id = data['id'],
-          startLocation = Location.fromJson(data['startLocation']),
-          endLocation = Location.fromJson(data['endLocation']),
-          tripStatus = PassengerTripStatus.values.firstWhere(
-                (e) => e.toString().split('.').last == data['tripStatus'],
-            orElse: () => PassengerTripStatus.CANCELED,
-          ),
-          user = User.fromJson(data['user']);
+  PassengerTrip.fromJson(Map<String, dynamic> data)
+      : id = data['id'],
+        startLocation = Location.fromJson(data['startLocation']),
+        endLocation = Location.fromJson(data['endLocation']),
+        tripStatus = ClientTripStatus.values[data['tripStatus'] ?? 0],
+        user = User.fromJson(data['user']);
 
-    Map<String, dynamic> toJson() => {
-      'id': id,
-      'startLocation': startLocation.toJson(),
-      'endLocation': endLocation.toJson(),
-      'tripStatus': tripStatus.toString().split('.').last,
-      'user': user.toJson()
-    };
-
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'startLocation': startLocation.toJson(),
+        'endLocation': endLocation.toJson(),
+        'tripStatus': tripStatus.index,
+        'user': user.toJson()
+      };
 }

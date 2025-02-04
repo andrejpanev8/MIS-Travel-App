@@ -6,17 +6,19 @@ import 'package:travel_app/data/models/user.dart';
 import '../enums/trip_status.dart';
 
 class Trip {
-  String startCity;
-  String endCity;
-  DateTime startTime;
-  Location startLocation;
-  int maxCapacity;
-  User driver;
+  final String id;
+  final String startCity;
+  final String endCity;
+  final DateTime startTime;
+  final Location startLocation;
+  final int maxCapacity;
+  final User driver;
   List<PassengerTrip> passengerTrips;
   List<TaskTrip> taskTrips;
   TripStatus tripStatus;
 
   Trip({
+    this.id = "",
     required this.startCity,
     required this.endCity,
     required this.startTime,
@@ -25,12 +27,14 @@ class Trip {
     required this.driver,
     List<PassengerTrip>? passengerTrips,
     List<TaskTrip>? taskTrips,
-    required this.tripStatus,
+    this.tripStatus = TripStatus.IN_PROGRESS
   })  : passengerTrips = passengerTrips ?? [],
         taskTrips = taskTrips ?? [];
 
   Trip.fromJson(Map<String, dynamic> data)
-      : startCity = data['startCity'],
+      :
+        id = data['id'],
+        startCity = data['startCity'],
         endCity = data['endCity'],
         startTime = DateTime.parse(data['startTime']),
         startLocation = Location.fromJson(data['startLocation']),
@@ -42,12 +46,10 @@ class Trip {
         taskTrips = (data['taskTrips'] as List)
             .map((e) => TaskTrip.fromJson(e))
             .toList(),
-        tripStatus = TripStatus.values.firstWhere(
-          (e) => e.toString().split('.').last == data['tripStatus'],
-          orElse: () => TripStatus.CANCELED,
-        );
+        tripStatus = TripStatus.values[data['tripStatus'] ?? 0];
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'startCity': startCity,
         'endCity': endCity,
         'startTime': startTime.toIso8601String(),
@@ -56,10 +58,10 @@ class Trip {
         'driver': driver.toJson(),
         'passengerTrips': passengerTrips.map((e) => e.toJson()).toList(),
         'taskTrips': taskTrips.map((e) => e.toJson()).toList(),
-        'tripStatus': tripStatus.toString().split('.').last,
+        'tripStatus': tripStatus.index
       };
 
-  bool containsUser(int id) {
+  bool containsUser(String id) {
     return passengerTrips.any((trip) => trip.user.id == id);
   }
   int currentCapacity() {

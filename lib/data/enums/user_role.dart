@@ -1,1 +1,1 @@
-enum UserRole { ADMIN, DRIVER, CLIENT }
+enum UserRole { CLIENT, DRIVER, ADMIN }
