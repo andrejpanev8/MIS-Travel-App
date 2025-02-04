@@ -1,0 +1,1 @@
+enum PassengerTripStatus { RESERVED, INPROGRESS, REALISED, CANCELED }
