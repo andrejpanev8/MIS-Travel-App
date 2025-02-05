@@ -12,7 +12,7 @@ class Trip {
   final DateTime startTime;
   final Location startLocation;
   final int maxCapacity;
-  final User driver;
+  final UserModel driver;
   List<PassengerTrip> passengerTrips;
   List<TaskTrip> taskTrips;
   TripStatus tripStatus;
@@ -39,7 +39,7 @@ class Trip {
         startTime = DateTime.parse(data['startTime']),
         startLocation = Location.fromJson(data['startLocation']),
         maxCapacity = data['maxCapacity'],
-        driver = User.fromJson(data['driver']),
+        driver = UserModel.fromJson(data['driver']),
         passengerTrips = (data['passengerTrips'] as List)
             .map((e) => PassengerTrip.fromJson(e))
             .toList(),

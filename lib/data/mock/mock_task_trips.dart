@@ -10,7 +10,7 @@ final List<TaskTrip> mockTaskTrips = [
     startLocation: Location(latitude: 41.9981, longitude: 21.4254),
     endLocation: Location(latitude: 41.6086, longitude: 21.7453),
     description: 'Pick up the package from Skopje and deliver to Ohrid',
-    user: User(
+    user: UserModel(
       id: '1',
       firstName: 'John',
       lastName: 'Doe',
@@ -25,7 +25,7 @@ final List<TaskTrip> mockTaskTrips = [
     startLocation: Location(latitude: 42.0000, longitude: 21.4350),
     endLocation: Location(latitude: 41.9833, longitude: 22.1150),
     description: 'Deliver documents from Tetovo to Bitola',
-    user: User(
+    user: UserModel(
       id: '2',
       firstName: 'Alice',
       lastName: 'Smith',
@@ -40,7 +40,7 @@ final List<TaskTrip> mockTaskTrips = [
     startLocation: Location(latitude: 41.9981, longitude: 21.4254),
     endLocation: Location(latitude: 42.0000, longitude: 21.4350),
     description: 'Transport food supplies from Skopje to Tetovo',
-    user: User(
+    user: UserModel(
       id: '3',
       firstName: 'Bob',
       lastName: 'Johnson',
@@ -55,7 +55,7 @@ final List<TaskTrip> mockTaskTrips = [
     startLocation: Location(latitude: 41.6086, longitude: 21.7453),
     endLocation: Location(latitude: 42.0010, longitude: 21.4480),
     description: 'Package for urgent delivery to Struga',
-    user: User(
+    user: UserModel(
       id: '4',
       firstName: 'Ethan',
       lastName: 'Williams',

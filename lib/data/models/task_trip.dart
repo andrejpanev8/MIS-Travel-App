@@ -7,7 +7,7 @@ class TaskTrip {
   final Location startLocation;
   final Location endLocation;
   final String description;
-  final User user;
+  final UserModel user;
   ClientTripStatus tripStatus;
 
   TaskTrip(
@@ -23,7 +23,7 @@ class TaskTrip {
         startLocation = Location.fromJson(data['startLocation']),
         endLocation = Location.fromJson(data['endLocation']),
         description = data['description'] ?? "",
-        user = User.fromJson(data['user']),
+        user = UserModel.fromJson(data['user']),
         tripStatus = ClientTripStatus.values[data['tripStatus'] ?? 0];
 
   Map<String, dynamic> toJson() => {
