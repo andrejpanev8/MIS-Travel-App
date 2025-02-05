@@ -1,0 +1,1 @@
+enum TripStatus { IN_PROGRESS, FINISHED, CANCELED }

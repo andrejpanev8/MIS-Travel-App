@@ -1,0 +1,1 @@
+enum ClientTripStatus { RESERVED, INPROGRESS, FINISHED, CANCELED }
