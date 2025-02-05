@@ -10,7 +10,7 @@ final List<PassengerTrip> mockPassengerTrips = [
     startLocation: Location(latitude: 41.9981, longitude: 21.4254),
     endLocation: Location(latitude: 41.6086, longitude: 21.7453),
     tripStatus: ClientTripStatus.INPROGRESS,
-    user: User(
+    user: UserModel(
       id: '1',
       firstName: 'John',
       lastName: 'Doe',
@@ -24,7 +24,7 @@ final List<PassengerTrip> mockPassengerTrips = [
     startLocation: Location(latitude: 42.0000, longitude: 21.4350),
     endLocation: Location(latitude: 41.9833, longitude: 22.1150),
     tripStatus: ClientTripStatus.RESERVED,
-    user: User(
+    user: UserModel(
       id: '2',
       firstName: 'Alice',
       lastName: 'Smith',
@@ -38,7 +38,7 @@ final List<PassengerTrip> mockPassengerTrips = [
     startLocation: Location(latitude: 41.7416, longitude: 21.1812),
     endLocation: Location(latitude: 41.6086, longitude: 21.7453),
     tripStatus: ClientTripStatus.FINISHED,
-    user: User(
+    user: UserModel(
       id: '3',
       firstName: 'Bob',
       lastName: 'Johnson',
@@ -52,7 +52,7 @@ final List<PassengerTrip> mockPassengerTrips = [
     startLocation: Location(latitude: 41.9981, longitude: 21.4254),
     endLocation: Location(latitude: 41.7450, longitude: 22.0161),
     tripStatus: ClientTripStatus.CANCELED,
-    user: User(
+    user: UserModel(
       id: '4',
       firstName: 'Ethan',
       lastName: 'Williams',

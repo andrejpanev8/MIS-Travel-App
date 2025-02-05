@@ -8,7 +8,7 @@ class PassengerTrip {
   final Location startLocation;
   final Location endLocation;
   ClientTripStatus tripStatus;
-  final User user;
+  final UserModel user;
 
   PassengerTrip(
       {this.id = "",
@@ -22,7 +22,7 @@ class PassengerTrip {
         startLocation = Location.fromJson(data['startLocation']),
         endLocation = Location.fromJson(data['endLocation']),
         tripStatus = ClientTripStatus.values[data['tripStatus'] ?? 0],
-        user = User.fromJson(data['user']);
+        user = UserModel.fromJson(data['user']);
 
   Map<String, dynamic> toJson() => {
         'id': id,
