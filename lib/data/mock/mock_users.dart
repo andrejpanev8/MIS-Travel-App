@@ -1,8 +1,8 @@
 import '../models/user.dart';
 import '../enums/user_role.dart';
 
-final List<User> mockUsers = [
-  User(
+final List<UserModel> mockUsers = [
+  UserModel(
     id: '1',
     firstName: 'Alice',
     lastName: 'Smith',
@@ -10,7 +10,7 @@ final List<User> mockUsers = [
     email: 'alice.smith@example.com',
     role: UserRole.ADMIN,
   ),
-  User(
+  UserModel(
     id: '2',
     firstName: 'Bob',
     lastName: 'Johnson',
@@ -18,7 +18,7 @@ final List<User> mockUsers = [
     email: 'bob.johnson@example.com',
     role: UserRole.CLIENT,
   ),
-  User(
+  UserModel(
     id: '3',
     firstName: 'Charlie',
     lastName: 'Brown',
@@ -26,7 +26,7 @@ final List<User> mockUsers = [
     email: 'charlie.brown@example.com',
     role: UserRole.DRIVER,
   ),
-  User(
+  UserModel(
     id: '4',
     firstName: 'Diana',
     lastName: 'Williams',
@@ -34,7 +34,7 @@ final List<User> mockUsers = [
     email: 'diana.williams@example.com',
     role: UserRole.CLIENT,
   ),
-  User(
+  UserModel(
     id: '5',
     firstName: 'Ethan',
     lastName: 'Davis',

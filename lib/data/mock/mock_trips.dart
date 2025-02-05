@@ -16,7 +16,7 @@ final List<Trip> mockTrips = [
     startTime: DateTime(2025, 1, 1, 8, 30),
     startLocation: Location(latitude: 41.9981, longitude: 21.4254),
     maxCapacity: 4,
-    driver: User(
+    driver: UserModel(
       id: '1',
       firstName: 'John',
       lastName: 'Doe',
@@ -26,7 +26,7 @@ final List<Trip> mockTrips = [
     ),
     passengerTrips: [
       PassengerTrip(
-        user: User(
+        user: UserModel(
           id: '2',
           firstName: 'Alice',
           lastName: 'Smith',
@@ -39,7 +39,7 @@ final List<Trip> mockTrips = [
         tripStatus: ClientTripStatus.FINISHED,
       ),
       PassengerTrip(
-        user: User(
+        user: UserModel(
           id: '3',
           firstName: 'Bob',
           lastName: 'Johnson',
@@ -62,7 +62,7 @@ final List<Trip> mockTrips = [
     startTime: DateTime(2025, 6, 15, 10, 0),
     startLocation: Location(latitude: 42.0000, longitude: 21.4350),
     maxCapacity: 5,
-    driver: User(
+    driver: UserModel(
       id: '4',
       firstName: 'Ethan',
       lastName: 'Williams',
@@ -73,7 +73,7 @@ final List<Trip> mockTrips = [
     passengerTrips: [],
     taskTrips: [
       TaskTrip(
-        user: User(
+        user: UserModel(
           id: '3',
           firstName: 'Bob',
           lastName: 'Johnson',
