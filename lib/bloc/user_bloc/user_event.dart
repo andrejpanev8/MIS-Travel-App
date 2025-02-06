@@ -12,3 +12,9 @@ class GetDriverUpcomingRides extends UserEvent {
 
   const GetDriverUpcomingRides({this.forceRefresh = false});
 }
+
+class GetDriverUpcomingDeliveries extends UserEvent {
+  final bool forceRefresh;
+
+  const GetDriverUpcomingDeliveries({this.forceRefresh = false});
+}

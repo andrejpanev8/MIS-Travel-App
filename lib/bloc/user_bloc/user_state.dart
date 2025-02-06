@@ -18,3 +18,9 @@ class DriverUpcomingTripsLoaded extends UserState {
 
   const DriverUpcomingTripsLoaded(this.driverTrips);
 }
+
+class DriverUpcomingDeliveriesLoaded extends UserState {
+  final List<TaskTrip> driverDeliveries;
+
+  const DriverUpcomingDeliveriesLoaded(this.driverDeliveries);
+}

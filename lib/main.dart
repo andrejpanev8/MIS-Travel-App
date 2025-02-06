@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_app/bloc/home_screen_bloc/home_screen_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/screens/my_rides_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,9 +13,10 @@ import 'utils/image_constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => UserBloc())],
-      child: const MyApp()));
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(create: (context) => UserBloc()),
+    BlocProvider(create: (context) => HomeScreenBloc()),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
