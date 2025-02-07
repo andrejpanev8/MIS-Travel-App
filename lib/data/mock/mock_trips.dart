@@ -12,7 +12,7 @@ final List<Trip> mockTrips = [
   Trip(
     id: '1',
     startCity: 'Skopje',
-    endCity: 'Ohrid',
+    endCity: 'Ohridovo ezero',
     startTime: DateTime(2025, 1, 1, 8, 30),
     startLocation: Location(latitude: 41.9981, longitude: 21.4254),
     maxCapacity: 4,

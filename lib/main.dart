@@ -74,6 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
 Widget _transportIconWidget() {
   return SvgPicture.asset(
     transportIcon,
-    colorFilter: const ColorFilter.mode(blackColor, BlendMode.srcIn),
+    colorFilter: const ColorFilter.mode(Colors.black87, BlendMode.srcIn),
   );
 }

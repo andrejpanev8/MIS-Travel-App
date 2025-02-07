@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'color_constants.dart';
 
+// Apply relevant fontFamilies
 class StyledText {
   FontWeight boldLv3 = FontWeight.w700;
   FontWeight boldLv2 = FontWeight.w600;
@@ -17,19 +18,18 @@ class StyledText {
     FontStyle fontStyle = FontStyle.normal,
   }) =>
       TextStyle(
-        color: color ?? whiteColor,
-        fontWeight: fontWeight ?? bold,
-        fontSize: fontSize,
-        fontStyle: fontStyle,
-      );
+          color: color ?? whiteColor,
+          fontWeight: fontWeight ?? bold,
+          fontSize: fontSize,
+          fontStyle: fontStyle);
   TextStyle descriptionText({
     Color? color,
     FontWeight? fontWeight,
-    double fontSize = 16,
+    double? fontSize = 16,
     FontStyle fontStyle = FontStyle.normal,
   }) =>
       TextStyle(
-        color: color ?? blackColor,
+        color: color ?? whiteColor,
         fontWeight: fontWeight ?? bold,
         fontSize: fontSize,
         fontStyle: fontStyle,
