@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:travel_app/data/models/task_trip.dart';
+import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/data/repositories/driver_repository.dart';
 
 import '../../data/models/trip.dart';
@@ -35,6 +36,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         driverDeliveries =
             await DriverRepository.instance.getDriverDeliveries();
         emit(DriverUpcomingDeliveriesLoaded(driverDeliveries));
+      }
+
+      if (event is LoadDriverData) {
+        if (!event.forceRefresh &&
+            _cachedDriverDeliveries != null &&
+            _cachedDriverTrips != null) {
+          emit(DriverUpcomingDeliveriesLoaded(_cachedDriverDeliveries!));
+          return;
+        }
+        List<Trip> driverTrips = [];
+        List<TaskTrip> driverDeliveries = [];
+        emit(ProcessStarted());
+        driverTrips = await DriverRepository.instance.getDriverTrips();
+        driverDeliveries =
+            await DriverRepository.instance.getDriverDeliveries();
+        emit(DriverDataLoaded(driverTrips, driverDeliveries));
+      }
+
+      if (event is GetDrivers) {
+        List<UserModel> users = [];
+        emit(ProcessStarted());
+        users = await DriverRepository.instance.getDrivers();
       }
     });
   }

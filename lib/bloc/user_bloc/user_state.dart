@@ -24,3 +24,14 @@ class DriverUpcomingDeliveriesLoaded extends UserState {
 
   const DriverUpcomingDeliveriesLoaded(this.driverDeliveries);
 }
+
+class DriverDataLoaded extends UserState {
+  final List<Trip> driverTrips;
+  final List<TaskTrip> driverDeliveries;
+  const DriverDataLoaded(this.driverTrips, this.driverDeliveries);
+}
+
+class UsersLoaded extends UserState {
+  final List<UserModel> users;
+  const UsersLoaded(this.users);
+}

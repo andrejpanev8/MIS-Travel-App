@@ -13,4 +13,9 @@ class DriverRepository {
     var data = await ApiServices.instance.getDriverDeliveries();
     return data;
   }
+
+  Future<dynamic> getDrivers() async {
+    var data = await ApiServices.instance.getDrivers();
+    return data;
+  }
 }

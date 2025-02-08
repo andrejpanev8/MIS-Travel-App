@@ -18,3 +18,14 @@ class GetDriverUpcomingDeliveries extends UserEvent {
 
   const GetDriverUpcomingDeliveries({this.forceRefresh = false});
 }
+
+class LoadDriverData extends UserEvent {
+  final bool forceRefresh;
+  const LoadDriverData({this.forceRefresh = false});
+}
+
+class GetDrivers extends UserEvent {
+  final List<UserModel>? drivers;
+
+  const GetDrivers({this.drivers});
+}
