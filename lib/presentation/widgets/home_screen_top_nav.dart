@@ -8,6 +8,7 @@ import 'package:travel_app/utils/text_styles.dart';
 import '../../bloc/home_screen_bloc/home_screen_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../utils/functions.dart';
+import 'input_field.dart';
 
 class RidesDeliveriesToggle extends StatelessWidget {
   @override
@@ -15,17 +16,19 @@ class RidesDeliveriesToggle extends StatelessWidget {
     return BlocBuilder<HomeScreenBloc, HomeScreenState>(
       builder: (context, state) {
         bool isRidesActive = state is RidesActive;
-        isRidesActive
-            ? Functions.emitEvent(
-                context: context, event: GetDriverUpcomingRides())
-            : Functions.emitEvent(
-                context: context, event: GetDriverUpcomingDeliveries());
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+        return Column(
           children: [
-            _buildToggleButton(context, "Rides", isRidesActive, true, carIcon),
-            _buildToggleButton(
-                context, "Deliveries", !isRidesActive, false, boxIcon),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildToggleButton(
+                    context, "Rides", isRidesActive, true, carIcon),
+                _buildToggleButton(
+                    context, "Deliveries", !isRidesActive, false, boxIcon),
+              ],
+            ),
+            Row(children: [_buildSearchSection(context, isRidesActive)])
           ],
         );
       },
@@ -61,6 +64,39 @@ class RidesDeliveriesToggle extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildSearchSection(BuildContext context, bool showRides) {
+  return Expanded(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              inputTextFieldCustom(
+                  context: context,
+                  prefixIcon: Icon(Icons.location_on_outlined),
+                  hintText: "From where?"),
+              inputTextFieldCustom(
+                  context: context,
+                  prefixIcon: Icon(Icons.location_on_outlined),
+                  hintText: "To where?"),
+              inputTextFieldCustom(
+                  context: context,
+                  prefixIcon: Icon(Icons.calendar_month_outlined),
+                  hintText: "When?")
+            ]),
+        Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            child: Text(
+              showRides ? "Upcoming rides" : "Upcoming deliveries",
+              style: StyledText().appBarText(color: blackColor),
+            )),
+      ],
+    ),
+  );
 }
 
 Widget _icon(bool showRides, bool isActive, String iconPath) {

@@ -40,7 +40,7 @@ class RidesWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
-        children: [_leftInfo(), _rightInfo()],
+        children: [_leftInfo(), SizedBox(width: 12), _rightInfo()],
       ),
     );
   }
@@ -132,7 +132,7 @@ class RidesWidget extends StatelessWidget {
             ),
           ],
         ),
-        customArrowButton(text: "Reserve", onPressed: () {}),
+        customArrowButton(text: "View details", onPressed: () {}),
       ],
     );
   }

@@ -8,7 +8,7 @@ sealed class HomeScreenEvent extends Equatable {
 }
 
 class ToggleActiveScreen extends HomeScreenEvent {
-  bool ridesActive;
+  final bool ridesActive;
 
   ToggleActiveScreen({this.ridesActive = true});
 }

@@ -140,7 +140,7 @@ class TaskTripWidget extends StatelessWidget {
           ],
         ),
         customArrowButton(
-          text: "Send Package",
+          text: "View details",
           fontSize: 14,
           onPressed: () {},
         ),
