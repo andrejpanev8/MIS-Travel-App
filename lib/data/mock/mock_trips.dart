@@ -16,14 +16,7 @@ final List<Trip> mockTrips = [
     startTime: DateTime(2025, 1, 1, 8, 30),
     startLocation: Location(latitude: 41.9981, longitude: 21.4254),
     maxCapacity: 4,
-    driver: UserModel(
-      id: '1',
-      firstName: 'John',
-      lastName: 'Doe',
-      phoneNumber: '+1234567890',
-      email: 'john.doe@example.com',
-      role: UserRole.DRIVER,
-    ),
+    driverId: '2',
     passengerTrips: [
       PassengerTrip(
         user: UserModel(
@@ -62,14 +55,7 @@ final List<Trip> mockTrips = [
     startTime: DateTime(2025, 6, 15, 10, 0),
     startLocation: Location(latitude: 42.0000, longitude: 21.4350),
     maxCapacity: 5,
-    driver: UserModel(
-      id: '4',
-      firstName: 'Ethan',
-      lastName: 'Williams',
-      phoneNumber: '+1444555666',
-      email: 'ethan.williams@example.com',
-      role: UserRole.CLIENT,
-    ),
+    driverId: '2',
     passengerTrips: [],
     taskTrips: [
       TaskTrip(

@@ -35,7 +35,7 @@ class AuthService {
         throw Exception("Email must contain '@'.");
       }
 
-      bool userExists = await _userService.findUserByEmailOrPhone(
+      bool userExists = await _userService.checkUserExistsByEmailOrPhone(
           email: email, phoneNumber: phoneNumber);
       if (userExists) {
         throw Exception("The email or phone number is already registered.");
