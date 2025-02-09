@@ -1,7 +1,6 @@
 import 'package:travel_app/data/models/location.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
-import 'package:travel_app/data/models/user.dart';
 
 import '../enums/trip_status.dart';
 
@@ -12,7 +11,7 @@ class Trip {
   final DateTime startTime;
   final Location startLocation;
   final int maxCapacity;
-  final UserModel driver;
+  final String driverId;
   List<PassengerTrip> passengerTrips;
   List<TaskTrip> taskTrips;
   TripStatus tripStatus;
@@ -24,7 +23,7 @@ class Trip {
     required this.startTime,
     required this.startLocation,
     required this.maxCapacity,
-    required this.driver,
+    required this.driverId,
     List<PassengerTrip>? passengerTrips,
     List<TaskTrip>? taskTrips,
     this.tripStatus = TripStatus.IN_PROGRESS
@@ -39,7 +38,7 @@ class Trip {
         startTime = DateTime.parse(data['startTime']),
         startLocation = Location.fromJson(data['startLocation']),
         maxCapacity = data['maxCapacity'],
-        driver = UserModel.fromJson(data['driver']),
+        driverId = data['driverId'],
         passengerTrips = (data['passengerTrips'] as List)
             .map((e) => PassengerTrip.fromJson(e))
             .toList(),
@@ -55,7 +54,7 @@ class Trip {
         'startTime': startTime.toIso8601String(),
         'startLocation': startLocation.toJson(),
         'maxCapacity': maxCapacity,
-        'driver': driver.toJson(),
+        'driverId': driverId,
         'passengerTrips': passengerTrips.map((e) => e.toJson()).toList(),
         'taskTrips': taskTrips.map((e) => e.toJson()).toList(),
         'tripStatus': tripStatus.index
