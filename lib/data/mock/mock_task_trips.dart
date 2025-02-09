@@ -19,6 +19,7 @@ final List<TaskTrip> mockTaskTrips = [
       role: UserRole.CLIENT,
     ),
     tripStatus: ClientTripStatus.INPROGRESS,
+    tripId: '1'
   ),
   TaskTrip(
     id: '2',
@@ -34,6 +35,7 @@ final List<TaskTrip> mockTaskTrips = [
       role: UserRole.CLIENT,
     ),
     tripStatus: ClientTripStatus.RESERVED,
+    tripId: '2'
   ),
   TaskTrip(
     id: '3',
@@ -49,6 +51,7 @@ final List<TaskTrip> mockTaskTrips = [
       role: UserRole.CLIENT,
     ),
     tripStatus: ClientTripStatus.FINISHED,
+      tripId: '2'
   ),
   TaskTrip(
     id: '4',
@@ -64,5 +67,6 @@ final List<TaskTrip> mockTaskTrips = [
       role: UserRole.CLIENT,
     ),
     tripStatus: ClientTripStatus.CANCELED,
+    tripId: '1'
   ),
 ];

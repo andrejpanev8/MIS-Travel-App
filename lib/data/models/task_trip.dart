@@ -9,6 +9,8 @@ class TaskTrip {
   final String description;
   final UserModel user;
   ClientTripStatus tripStatus;
+  final String tripId;
+
 
   TaskTrip(
       {this.id = "",
@@ -16,7 +18,8 @@ class TaskTrip {
       required this.endLocation,
       this.description = "",
       required this.user,
-      this.tripStatus = ClientTripStatus.INPROGRESS});
+      this.tripStatus = ClientTripStatus.RESERVED,
+      required this.tripId});
 
   TaskTrip.fromJson(Map<String, dynamic> data)
       : id = data['id'],
@@ -24,7 +27,8 @@ class TaskTrip {
         endLocation = Location.fromJson(data['endLocation']),
         description = data['description'] ?? "",
         user = UserModel.fromJson(data['user']),
-        tripStatus = ClientTripStatus.values[data['tripStatus'] ?? 0];
+        tripStatus = ClientTripStatus.values[data['tripStatus'] ?? 0],
+        tripId = data['tripId'];
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -32,6 +36,7 @@ class TaskTrip {
         'endLocation': endLocation.toJson(),
         'description': description,
         'user': user.toJson(),
-        'tripStatus': tripStatus.index
+        'tripStatus': tripStatus.index,
+        'tripId': tripId
       };
 }

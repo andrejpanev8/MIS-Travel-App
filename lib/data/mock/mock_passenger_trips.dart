@@ -18,6 +18,7 @@ final List<PassengerTrip> mockPassengerTrips = [
       email: 'john.doe@example.com',
       role: UserRole.CLIENT,
     ),
+    tripId: '1'
   ),
   PassengerTrip(
     id: '2',
@@ -32,6 +33,7 @@ final List<PassengerTrip> mockPassengerTrips = [
       email: 'alice.smith@example.com',
       role: UserRole.CLIENT,
     ),
+    tripId: '2'
   ),
   PassengerTrip(
     id: '3',
@@ -46,6 +48,7 @@ final List<PassengerTrip> mockPassengerTrips = [
       email: 'bob.johnson@example.com',
       role: UserRole.CLIENT,
     ),
+    tripId: '2'
   ),
   PassengerTrip(
     id: '4',
@@ -60,5 +63,6 @@ final List<PassengerTrip> mockPassengerTrips = [
       email: 'ethan.williams@example.com',
       role: UserRole.CLIENT,
     ),
+    tripId: '2'
   ),
 ];

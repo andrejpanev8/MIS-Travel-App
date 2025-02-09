@@ -1,9 +1,4 @@
-import 'package:travel_app/data/enums/trip_status_for_client.dart';
-import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/location.dart';
-import 'package:travel_app/data/models/passenger_trip.dart';
-import 'package:travel_app/data/models/task_trip.dart';
-import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/data/enums/trip_status.dart';
 
 import '../models/trip.dart';
@@ -18,32 +13,7 @@ final List<Trip> mockTrips = [
     maxCapacity: 4,
     driverId: '2',
     passengerTrips: [
-      PassengerTrip(
-        user: UserModel(
-          id: '2',
-          firstName: 'Alice',
-          lastName: 'Smith',
-          phoneNumber: '+1987654321',
-          email: 'alice.smith@example.com',
-          role: UserRole.CLIENT,
-        ),
-        startLocation: Location(latitude: 41.9968, longitude: 21.4654),
-        endLocation: Location(latitude: 41.6086, longitude: 21.7453),
-        tripStatus: ClientTripStatus.FINISHED,
-      ),
-      PassengerTrip(
-        user: UserModel(
-          id: '3',
-          firstName: 'Bob',
-          lastName: 'Johnson',
-          phoneNumber: '+1122334455',
-          email: 'bob.johnson@example.com',
-          role: UserRole.CLIENT,
-        ),
-        startLocation: Location(latitude: 41.7416, longitude: 21.1812),
-        endLocation: Location(latitude: 41.6086, longitude: 21.7453),
-        tripStatus: ClientTripStatus.FINISHED,
-      ),
+     '1','2'
     ],
     taskTrips: [],
     tripStatus: TripStatus.FINISHED,
@@ -58,20 +28,7 @@ final List<Trip> mockTrips = [
     driverId: '2',
     passengerTrips: [],
     taskTrips: [
-      TaskTrip(
-        user: UserModel(
-          id: '3',
-          firstName: 'Bob',
-          lastName: 'Johnson',
-          phoneNumber: '+1122334455',
-          email: 'bob.johnson@example.com',
-          role: UserRole.CLIENT,
-        ),
-        startLocation: Location(latitude: 42.0100, longitude: 21.4340),
-        endLocation: Location(latitude: 41.9833, longitude: 22.1150),
-        description: "Letter delivery",
-        tripStatus: ClientTripStatus.INPROGRESS,
-      )
+      '1','2'
     ],
     tripStatus: TripStatus.IN_PROGRESS,
   ),

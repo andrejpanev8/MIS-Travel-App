@@ -9,26 +9,30 @@ class PassengerTrip {
   final Location endLocation;
   ClientTripStatus tripStatus;
   final UserModel user;
+  final String tripId;
 
   PassengerTrip(
       {this.id = "",
       required this.startLocation,
       required this.endLocation,
-      required this.tripStatus,
-      required this.user});
+      this.tripStatus = ClientTripStatus.RESERVED,
+      required this.user,
+      required this.tripId});
 
   PassengerTrip.fromJson(Map<String, dynamic> data)
       : id = data['id'],
         startLocation = Location.fromJson(data['startLocation']),
         endLocation = Location.fromJson(data['endLocation']),
         tripStatus = ClientTripStatus.values[data['tripStatus'] ?? 0],
-        user = UserModel.fromJson(data['user']);
+        user = UserModel.fromJson(data['user']),
+        tripId = data['tripId'];
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'startLocation': startLocation.toJson(),
         'endLocation': endLocation.toJson(),
         'tripStatus': tripStatus.index,
-        'user': user.toJson()
+        'user': user.toJson(),
+        'tripId': tripId
       };
 }

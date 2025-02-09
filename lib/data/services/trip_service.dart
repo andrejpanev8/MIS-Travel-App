@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_app/data/enums/user_role.dart';
+import 'package:travel_app/data/models/passenger_trip.dart';
+import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/data/services/auth_service.dart';
+import 'package:travel_app/data/services/passenger_trip_service.dart';
+import 'package:travel_app/data/services/task_trip_service.dart';
 import 'package:travel_app/data/services/user_service.dart';
 
 import '../enums/trip_status.dart';
@@ -12,6 +16,9 @@ class TripService {
   AuthService authService = AuthService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserService userService = UserService();
+  final PassengerTripService passengerTripService = PassengerTripService();
+  final TaskTripService taskTripService = TaskTripService();
+
   Future<String?> createTrip(
       {required String startCity,
       required String endCity,
@@ -104,6 +111,16 @@ class TripService {
     }
   }
 
+  Future<List<Trip>> getUpcomingTripsByDriver(String driverId) async {
+    List<Trip> trips = await getTripsByDriver(driverId);
+    if (trips.isEmpty) {
+      return [];
+    }
+    return trips
+        .where((trip) => trip.tripStatus == TripStatus.IN_PROGRESS)
+        .toList();
+  }
+
   Future<List<UserModel>> getPassengerUsersByTrip(String id) async {
     Trip? trip = await findTripById(id);
     if (trip == null) {
@@ -114,8 +131,18 @@ class TripService {
       throw Exception("No user is logged in");
     }
     if (currentUser.role == UserRole.ADMIN || currentUser.id == trip.driverId) {
-      return trip.passengerTrips
-          .map((passengerTrip) => passengerTrip.user)
+      List<PassengerTrip?> passengerTrips = await Future.wait(
+        trip.passengerTrips.map((passengerTripId) =>
+            passengerTripService.findPassengerTripById(passengerTripId)),
+      );
+      List<PassengerTrip> validPassengerTrips =
+          passengerTrips.whereType<PassengerTrip>().toList();
+      if (validPassengerTrips.isEmpty) {
+        return [];
+      }
+      return validPassengerTrips
+          .map((trip) => trip.user)
+          .whereType<UserModel>()
           .toList();
     }
     throw Exception(
@@ -132,7 +159,18 @@ class TripService {
       throw Exception("No user is logged in");
     }
     if (currentUser.role == UserRole.ADMIN || currentUser.id == trip.driverId) {
-      return trip.taskTrips.map((passengerTrip) => passengerTrip.user).toList();
+      List<TaskTrip?> taskTrips = await Future.wait(
+        trip.taskTrips
+            .map((taskTripId) => taskTripService.findTaskTripById(taskTripId)),
+      );
+      List<TaskTrip> validTaskTrips = taskTrips.whereType<TaskTrip>().toList();
+      if (validTaskTrips.isEmpty) {
+        return [];
+      }
+      return validTaskTrips
+          .map((trip) => trip.user)
+          .whereType<UserModel>()
+          .toList();
     }
     throw Exception("You do not have permission to view task users by trip.");
   }
@@ -158,7 +196,6 @@ class TripService {
 
       return true;
     } catch (e) {
-      print(e);
       return false;
     }
   }
