@@ -15,7 +15,8 @@ Widget buildDriverDeliveries(BuildContext context, List<TaskTrip> taskTrips) {
           event: GetDriverUpcomingDeliveries(forceRefresh: true),
         ),
         child: taskTrips.isNotEmpty
-            ? ListView.builder(
+            ? ListView.separated(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 physics: AlwaysScrollableScrollPhysics(),
                 itemCount: taskTrips.length,
                 itemBuilder: (context, index) {
@@ -26,6 +27,9 @@ Widget buildDriverDeliveries(BuildContext context, List<TaskTrip> taskTrips) {
                     description: taskTrip.description,
                     price: 200,
                   );
+                },
+                separatorBuilder: (context, index) {
+                  return SizedBox(height: 10);
                 },
               )
             : emptyListIndicator("No upcoming deliveries"),

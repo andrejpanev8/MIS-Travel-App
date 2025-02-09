@@ -4,7 +4,7 @@ import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/models/trip.dart';
 import '../../utils/functions.dart';
 import 'empty_list_indicator.dart';
-import 'rides_wiget.dart';
+import 'rides_widget.dart';
 
 Widget buildDriverTrips(BuildContext context, List<Trip> trips) {
   return Expanded(
@@ -15,7 +15,8 @@ Widget buildDriverTrips(BuildContext context, List<Trip> trips) {
           event: GetDriverUpcomingRides(forceRefresh: true),
         ),
         child: trips.isNotEmpty
-            ? ListView.builder(
+            ? ListView.separated(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 physics: AlwaysScrollableScrollPhysics(),
                 itemCount: trips.length,
                 itemBuilder: (context, index) {
@@ -27,6 +28,9 @@ Widget buildDriverTrips(BuildContext context, List<Trip> trips) {
                     passengers: trip.passengerTrips.length,
                   );
                 },
+                separatorBuilder: (context, index) {
+                  return SizedBox(height: 10);
+                }
               )
             : emptyListIndicator("No upcoming rides available"),
       ),

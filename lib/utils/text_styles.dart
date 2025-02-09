@@ -13,8 +13,8 @@ class StyledText {
 
   TextStyle appBarText({
     Color? color,
-    FontWeight? fontWeight,
-    double fontSize = 18,
+    FontWeight? fontWeight = FontWeight.w700,
+    double fontSize = 24,
     FontStyle fontStyle = FontStyle.normal,
   }) =>
       TextStyle(

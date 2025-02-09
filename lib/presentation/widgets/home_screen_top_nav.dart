@@ -57,7 +57,8 @@ class RidesDeliveriesToggle extends StatelessWidget {
             Text(
               text,
               style: StyledText()
-                  .appBarText(color: isActive ? blueDeepColor : silverColor),
+                  .appBarText(color: isActive ? blueDeepColor : silverColor)
+                  .copyWith(fontSize: 20),
             ),
           ],
         ),
@@ -71,7 +72,8 @@ Widget _buildSearchSection(BuildContext context, bool showRides) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Padding(padding: EdgeInsets.only(left: 16, top: 12, right: 16, bottom: 4),
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -79,20 +81,23 @@ Widget _buildSearchSection(BuildContext context, bool showRides) {
                   context: context,
                   prefixIcon: Icon(Icons.location_on_outlined),
                   hintText: "From where?"),
+              SizedBox(width: 10),
               inputTextFieldCustom(
                   context: context,
                   prefixIcon: Icon(Icons.location_on_outlined),
                   hintText: "To where?"),
+              SizedBox(width: 10),
               inputTextFieldCustom(
                   context: context,
                   prefixIcon: Icon(Icons.calendar_month_outlined),
                   hintText: "When?")
             ]),
+        ),
         Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             child: Text(
               showRides ? "Upcoming rides" : "Upcoming deliveries",
-              style: StyledText().appBarText(color: blackColor),
+              style: StyledText().appBarText(color: blackColor, fontSize: 18),
             )),
       ],
     ),

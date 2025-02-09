@@ -31,7 +31,6 @@ class TaskTripWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: silverColorLight,
@@ -40,7 +39,7 @@ class TaskTripWidget extends StatelessWidget {
       child: Row(
         children: [
           _leftInfo(),
-          const SizedBox(width: 12),
+          const SizedBox(width: 20),
           _rightInfo(),
         ],
       ),
@@ -51,7 +50,7 @@ class TaskTripWidget extends StatelessWidget {
     final text = "$startCity - $endCity";
     final textStyle = StyledText().descriptionText(
       color: blackColor,
-      fontSize: 20,
+      fontSize: 16,
     );
 
     return Expanded(
@@ -93,11 +92,15 @@ class TaskTripWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 15),
           Row(
             children: [
-              const Icon(Icons.description_outlined),
-              const SizedBox(width: 4),
+              const SizedBox(width: 6),
+              const Icon(
+                  Icons.description_outlined,
+                  size: 14
+              ),
+              const SizedBox(width: 5),
               Expanded(
                 child: Text(
                   description,
@@ -133,15 +136,16 @@ class TaskTripWidget extends StatelessWidget {
             Text(
               "${price.toStringAsFixed(0)} ден",
               style: StyledText().descriptionText(
-                fontSize: 14,
+                fontSize: 12,
                 color: blackColor,
               ),
             ),
           ],
         ),
+        const SizedBox(height: 8),
         customArrowButton(
           text: "View details",
-          fontSize: 14,
+          fontSize: 12,
           onPressed: () {},
         ),
       ],

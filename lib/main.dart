@@ -7,6 +7,7 @@ import 'package:travel_app/bloc/home_screen_bloc/home_screen_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/screens/my_rides_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:travel_app/utils/string_constants.dart';
 
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/profile_screen.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'QuickRide',
+      title: AppStrings.appName,
       theme: ThemeData(
         useMaterial3: true,
       ),

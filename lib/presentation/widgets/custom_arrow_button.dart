@@ -14,7 +14,7 @@ Widget customArrowButton(
     onPressed: onPressed,
     label: Text(
       text,
-      style: StyledText().descriptionText(fontSize: fontSize),
+      style: StyledText().descriptionText(fontSize: fontSize)
     ),
     style: ButtonStyle(
       backgroundColor: WidgetStatePropertyAll(backgroundColor),
@@ -28,7 +28,10 @@ Widget customArrowButton(
           return null;
         },
       ),
-      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 20)),
+      padding: WidgetStatePropertyAll(
+        EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      ),
+      minimumSize: WidgetStatePropertyAll(Size(0, 30)),
     ),
     icon: Transform(
       alignment: Alignment.center,
@@ -37,7 +40,7 @@ Widget customArrowButton(
       child: Icon(
         Icons.arrow_back,
         color: iconColor,
-        size: 24,
+        size: 14,
       ),
     ),
     iconAlignment: IconAlignment.end,

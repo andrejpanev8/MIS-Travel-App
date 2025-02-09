@@ -33,14 +33,17 @@ class RidesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: silverColorLight,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
-        children: [_leftInfo(), SizedBox(width: 12), _rightInfo()],
+        children: [
+          _leftInfo(),
+          SizedBox(width: 20),
+          _rightInfo()
+        ],
       ),
     );
   }
@@ -50,7 +53,7 @@ class RidesWidget extends StatelessWidget {
     final text = "$startCity - $endCity";
     final textStyle = StyledText().descriptionText(
       color: blackColor,
-      fontSize: 20,
+      fontSize: 16,
     );
 
     return Expanded(
@@ -92,10 +95,14 @@ class RidesWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 15),
           Row(
             children: [
-              const Icon(Icons.access_time),
+              const SizedBox(width: 5),
+              const Icon(
+                  Icons.access_time,
+                  size: 14,
+              ),
               const SizedBox(width: 4),
               Text(
                 formattedDate,
@@ -126,13 +133,18 @@ class RidesWidget extends StatelessWidget {
             Text(
               "$passengers Passengers",
               style: StyledText().descriptionText(
-                fontSize: 14,
+                fontSize: 12,
                 color: blackColor,
               ),
             ),
           ],
         ),
-        customArrowButton(text: "View details", onPressed: () {}),
+        const SizedBox(height: 8),
+        customArrowButton(
+            text: "View details",
+            fontSize: 12,
+            onPressed: () {}
+        ),
       ],
     );
   }
