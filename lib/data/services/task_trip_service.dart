@@ -30,7 +30,6 @@ class TaskTripService {
       required Location endLocation,
       required String tripId,
       String description = ""}) async {
-    try {
       UserModel? user = await authService.getCurrentUser();
       if (user == null) {
         throw Exception("No authenticated user found.");
@@ -56,9 +55,6 @@ class TaskTripService {
         "taskTrips": FieldValue.arrayUnion([taskTripIdGenerated])
       });
       return taskTripIdGenerated;
-    } catch (e) {
-      throw e;
-    }
   }
 
   Future<List<Map<String, dynamic>>> getUpcomingDeliveriesForUser() async {
