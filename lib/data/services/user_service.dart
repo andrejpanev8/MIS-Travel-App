@@ -32,7 +32,6 @@ class UserService {
   }
 
   Future<Map<String, dynamic>?> getUserByEmail(String email) async {
-    try {
       final userQuerySnapshot = await _firestore
           .collection('users')
           .where('email', isEqualTo: email)
@@ -45,13 +44,9 @@ class UserService {
 
       final userDoc = userQuerySnapshot.docs.first;
       return userDoc.data();
-    } catch (e) {
-      return null;
-    }
   }
 
   Future<Map<String, dynamic>?> getUserById(String userId) async {
-    try {
       DocumentSnapshot userDoc =
           await _firestore.collection('users').doc(userId).get();
 
@@ -60,9 +55,6 @@ class UserService {
       } else {
         return null;
       }
-    } catch (e) {
-      return null;
-    }
   }
 
   Future<List<UserModel>> getAllUsersByRole(

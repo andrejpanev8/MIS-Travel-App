@@ -11,8 +11,8 @@ class InvitationService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   AuthService authService = AuthService();
   UserService userService = UserService();
+
   Future<String?> createInvitation({required String email}) async {
-    try {
       UserModel? user = await authService.getCurrentUser();
       if (user == null) {
         throw Exception("No authenticated user found.");
@@ -25,7 +25,7 @@ class InvitationService {
       DocumentReference invitationRef =
           _firestore.collection('invitations').doc();
 
-      String invitationId = _firestore.collection('invitations').doc().id;
+      String invitationId = invitationRef.id;
 
       String uniqueCode = UniqueCodeGenerator.generateUniqueCode();
       Invitation invitation = Invitation(
@@ -37,9 +37,6 @@ class InvitationService {
       await invitationRef.set(invitation.toJson());
 
       return invitationId;
-    } catch (e) {
-      return null;
-    }
   }
 
   Future<DocumentSnapshot?> findInvitationByUniqueCode(

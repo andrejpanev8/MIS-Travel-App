@@ -16,7 +16,12 @@ class TripService {
   AuthService authService = AuthService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserService userService = UserService();
-  final PassengerTripService passengerTripService = PassengerTripService();
+  late final PassengerTripService passengerTripService;
+
+  void setPassengerTripService(PassengerTripService service) {
+    passengerTripService = service;
+  }
+
   final TaskTripService taskTripService = TaskTripService();
 
   Future<String?> createTrip(
@@ -26,48 +31,40 @@ class TripService {
       required Location startLocation,
       required int maxCapacity,
       required String driverId}) async {
-    try {
-      UserModel? currentUser = await authService.getCurrentUser();
-      if (currentUser == null) {
-        throw Exception("No user is logged in");
-      }
-      if (currentUser.role != UserRole.ADMIN) {
-        throw Exception("You do not have permission to create a trip.");
-      }
-
-      DocumentReference tripRef = _firestore.collection('trips').doc();
-
-      Trip newTrip = Trip(
-        id: tripRef.id,
-        startCity: startCity,
-        endCity: endCity,
-        startTime: startTime,
-        startLocation: startLocation,
-        maxCapacity: maxCapacity,
-        driverId: driverId,
-        passengerTrips: [],
-        taskTrips: [],
-      );
-
-      await tripRef.set(newTrip.toJson());
-
-      return tripRef.id;
-    } catch (e) {
-      return null;
+    UserModel? currentUser = await authService.getCurrentUser();
+    if (currentUser == null) {
+      throw Exception("No user is logged in");
     }
+    if (currentUser.role != UserRole.ADMIN) {
+      throw Exception("You do not have permission to create a trip.");
+    }
+
+    DocumentReference tripRef = _firestore.collection('trips').doc();
+
+    Trip newTrip = Trip(
+      id: tripRef.id,
+      startCity: startCity,
+      endCity: endCity,
+      startTime: startTime,
+      startLocation: startLocation,
+      maxCapacity: maxCapacity,
+      driverId: driverId,
+      passengerTrips: [],
+      taskTrips: [],
+    );
+
+    await tripRef.set(newTrip.toJson());
+
+    return tripRef.id;
   }
 
   Future<Trip?> findTripById(String tripId) async {
-    try {
-      DocumentSnapshot tripDoc =
-          await _firestore.collection('trips').doc(tripId).get();
-      if (!tripDoc.exists) {
-        return null;
-      }
-      return Trip.fromJson(tripDoc.data() as Map<String, dynamic>);
-    } catch (e) {
-      return null;
+    DocumentSnapshot tripDoc =
+        await _firestore.collection('trips').doc(tripId).get();
+    if (!tripDoc.exists) {
+      throw Exception("Trip not found.");
     }
+    return Trip.fromJson(tripDoc.data() as Map<String, dynamic>);
   }
 
   Future<Map<String, dynamic>?> findTripByIdWithDriver(String tripId) async {
@@ -176,27 +173,22 @@ class TripService {
   }
 
   Future<bool> setTripStatus(String tripId, TripStatus newStatus) async {
-    try {
-      UserModel? currentUser = await authService.getCurrentUser();
-      if (currentUser == null) {
-        throw Exception("No user is logged in");
-      }
-      if (currentUser.role != UserRole.ADMIN) {
-        print(currentUser.role);
-        throw Exception(
-            "You do not have permission to change the status of the trip.");
-      }
+    UserModel? currentUser = await authService.getCurrentUser();
+    if (currentUser == null) {
+      throw Exception("No user is logged in");
+    }
+    if (currentUser.role != UserRole.ADMIN) {
+      print(currentUser.role);
+      throw Exception(
+          "You do not have permission to change the status of the trip.");
+    }
 
-      Trip? trip = await findTripById(tripId);
-      if (trip == null) {
-        return false;
-      }
-      DocumentReference tripRef = _firestore.collection('trips').doc(tripId);
-      await tripRef.update({'tripStatus': newStatus.index});
-
-      return true;
-    } catch (e) {
+    Trip? trip = await findTripById(tripId);
+    if (trip == null) {
       return false;
     }
+    DocumentReference tripRef = _firestore.collection('trips').doc(tripId);
+    await tripRef.update({'tripStatus': newStatus.index});
+    return true;
   }
 }

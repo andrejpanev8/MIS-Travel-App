@@ -17,7 +17,6 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    try {
       if (!ValidationUtils.isValidName(firstName)) {
         throw Exception("First name should only contain letters.");
       }
@@ -34,6 +33,7 @@ class AuthService {
       if (!ValidationUtils.isValidEmail(email)) {
         throw Exception("Email must contain '@'.");
       }
+
 
       bool userExists = await _userService.checkUserExistsByEmailOrPhone(
           email: email, phoneNumber: phoneNumber);
@@ -61,13 +61,9 @@ class AuthService {
       await _firestore.collection('users').doc(userId).set(newUser.toJson());
 
       return userCredential;
-    } catch (e) {
-      return null;
-    }
   }
 
   Future<UserModel?> loginUser(String email, String password) async {
-    try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -83,9 +79,6 @@ class AuthService {
       } else {
         return null;
       }
-    } catch (e) {
-      return null;
-    }
   }
 
   Future<void> logoutUser() async {
