@@ -14,5 +14,6 @@ PreferredSizeWidget customAppBar({
       style: StyledText().appBarText(),
     ),
     backgroundColor: blueDeepColor,
+    automaticallyImplyLeading: false,
   );
 }

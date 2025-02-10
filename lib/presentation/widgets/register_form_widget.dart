@@ -1,43 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:travel_app/data/services/auth_service.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class RegisterForm extends StatefulWidget {
+  const RegisterForm({super.key});
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  State<RegisterForm> createState() => _RegisterFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _RegisterFormState extends State<RegisterForm> {
   bool _passwordVisible = true;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.only(left: 50, top: 35, right: 50, bottom: 35),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 35),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Email",
-            style: StyledText().descriptionText(fontSize: 14, color: blackColor),
-          ),
-          const SizedBox(height: 8),
+          _buildLabel("First Name"),
           inputTextFieldCustom(
             context: context,
-            hintText: AppStrings.email,
+            hintText: "Enter your first name",
           ),
           const SizedBox(height: 12),
 
-          Text(
-            "Password",
-            style: StyledText().descriptionText(fontSize: 14, color: blackColor),
+          _buildLabel("Last Name"),
+          inputTextFieldCustom(
+            context: context,
+            hintText: "Enter your last name",
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
+
+          _buildLabel("Phone Number"),
+          inputTextFieldCustom(
+            context: context,
+            hintText: "Enter your phone number",
+            keyboardType: TextInputType.phone,
+          ),
+          const SizedBox(height: 12),
+
+          _buildLabel("Email"),
+          inputTextFieldCustom(
+            context: context,
+            hintText: AppStrings.email,
+            keyboardType: TextInputType.emailAddress,
+          ),
+          const SizedBox(height: 12),
+
+          _buildLabel("Password"),
           inputTextFieldCustom(
             context: context,
             hintText: AppStrings.password,
@@ -60,19 +75,19 @@ class _LoginFormState extends State<LoginForm> {
             width: double.infinity,
             child: TextButton(
               onPressed: () {
-                // TODO call authService.login
+                // TODO call authService.register(fields...)
               },
               style: TextButton.styleFrom(
-                backgroundColor: blueDeepColor, // Button color
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+                backgroundColor: blueDeepColor,
+                padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
               child: const Text(
-                "Login",
+                "Register",
                 style: TextStyle(
-                  color: Colors.white, // Text color
+                  color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
@@ -84,15 +99,18 @@ class _LoginFormState extends State<LoginForm> {
           Center(
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, "/register");
+                Navigator.pushNamed(context, "/login");
               },
               child: RichText(
                 text: TextSpan(
-                  style: TextStyle(color: blackColor, fontSize: 14),
+                  style: TextStyle(
+                    color: blackColor,
+                    fontSize: 14,
+                  ),
                   children: [
-                    const TextSpan(text: "Don't have an account yet? "),
+                    const TextSpan(text: "Already have an account? "),
                     TextSpan(
-                      text: "Register",
+                      text: "Login",
                       style: TextStyle(
                         color: blueDeepColor,
                         fontWeight: FontWeight.bold,
@@ -105,6 +123,16 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Text(
+      text,
+      style: StyledText().descriptionText(
+        fontSize: 14,
+        color: blackColor,
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:travel_app/utils/color_constants.dart';
+import 'package:travel_app/utils/expanded_wrapper_widget.dart';
 import 'package:travel_app/utils/image_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
@@ -72,27 +73,31 @@ Widget _buildSearchSection(BuildContext context, bool showRides) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(padding: EdgeInsets.only(left: 16, top: 12, right: 16, bottom: 4),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              inputTextFieldCustom(
+        Padding(
+            padding: EdgeInsets.only(left: 16, top: 12, right: 16, bottom: 4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                expandedWidget(inputTextFieldCustom(
                   context: context,
                   prefixIcon: Icon(Icons.location_on_outlined),
-                  hintText: "From where?"),
-              SizedBox(width: 10),
-              inputTextFieldCustom(
+                  hintText: "From where?",
+                )),
+                SizedBox(width: 10),
+                expandedWidget(inputTextFieldCustom(
                   context: context,
                   prefixIcon: Icon(Icons.location_on_outlined),
-                  hintText: "To where?"),
-              SizedBox(width: 10),
-              inputTextFieldCustom(
+                  hintText: "To where?",
+                )),
+                SizedBox(width: 10),
+                expandedWidget(inputTextFieldCustom(
                   context: context,
                   prefixIcon: Icon(Icons.calendar_month_outlined),
-                  hintText: "When?")
-            ]),
-        ),
+                  hintText: "When?",
+                )),
+              ],
+            )),
         Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             child: Text(

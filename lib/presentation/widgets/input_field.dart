@@ -7,11 +7,12 @@ Widget inputTextFieldCustom({
   TextEditingController? controller,
   String hintText = "",
   bool obscureText = false,
+  TextInputType keyboardType = TextInputType.text,
   Widget? prefixIcon,
   Widget? suffixIcon,
 }) {
-  return Expanded(
-    child: TextField(
+  return TextField(
+      keyboardType: keyboardType,
       controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
@@ -35,6 +36,5 @@ Widget inputTextFieldCustom({
           borderSide: BorderSide(color: blueDeepColor),
         ),
       ),
-    ),
-  );
+    );
 }

@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/bloc/home_screen_bloc/home_screen_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
+import 'package:travel_app/presentation/screens/login_screen.dart';
 import 'package:travel_app/presentation/screens/my_rides_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:travel_app/presentation/screens/register_screen.dart';
 import 'package:travel_app/utils/string_constants.dart';
 
 import 'presentation/screens/home_screen.dart';
@@ -34,9 +36,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      initialRoute: "/",
+      initialRoute: "/login",
       routes: {
-        "/": (context) => const MyHomePage(),
+        "/home": (context) => const MyHomePage(),
+        "/login": (context) => const LoginScreen(),
+        "/register": (context) => const RegisterScreen()
       },
     );
   }
@@ -51,11 +55,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentPageIndex = 0;
+
   @override
   Widget build(BuildContext context) {
+    String? currentRoute = ModalRoute.of(context)?.settings.name;
+    bool showNavigationBar = !(currentRoute == "/login" || currentRoute == "/register");
+
     return Scaffold(
       appBar: customAppBar(context: context),
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar: showNavigationBar ?
+      NavigationBar(
         onDestinationSelected: (index) {
           setState(() {
             currentPageIndex = index;
@@ -70,7 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.person_outline), label: 'Profile'),
         ],
         selectedIndex: currentPageIndex,
-      ),
+      ): null,
+      // body: LoginScreen(),
       body: [HomeScreen(), MyRidesScreen(), ProfileScreen()][currentPageIndex],
     );
   }
