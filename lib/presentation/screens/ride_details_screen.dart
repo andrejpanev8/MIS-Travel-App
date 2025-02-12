@@ -52,6 +52,7 @@ class RideDetailsScreen extends StatelessWidget {
                   // children: [_generalInfo(trip!, driver!)],
                   children: [_generalInfo(trip!)],
                 ),
+                SizedBox(height: 10),
                 Text(
                   "Passengers",
                   style: StyledText().appBarText(color: blackColor),
@@ -91,6 +92,7 @@ class RideDetailsScreen extends StatelessWidget {
   // Widget _generalInfo(Trip trip, UserModel driver) {
   Widget _generalInfo(Trip trip) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
