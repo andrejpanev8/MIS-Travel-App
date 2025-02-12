@@ -9,6 +9,7 @@ import 'package:travel_app/presentation/screens/login_screen.dart';
 import 'package:travel_app/presentation/screens/my_rides_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:travel_app/presentation/screens/register_screen.dart';
+import 'package:travel_app/presentation/screens/ride_details_screen.dart';
 import 'package:travel_app/utils/string_constants.dart';
 
 import 'presentation/screens/home_screen.dart';
@@ -36,9 +37,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      initialRoute: "/login",
+      // initialRoute: "/login",
+      initialRoute: "/home",
       routes: {
         "/home": (context) => const MyHomePage(),
+        "/details": (context) => RideDetailsScreen(),
         "/login": (context) => const LoginScreen(),
         "/register": (context) => const RegisterScreen()
       },
@@ -59,27 +62,29 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     String? currentRoute = ModalRoute.of(context)?.settings.name;
-    bool showNavigationBar = !(currentRoute == "/login" || currentRoute == "/register");
+    bool showNavigationBar =
+        !(currentRoute == "/login" || currentRoute == "/register");
 
     return Scaffold(
       appBar: customAppBar(context: context),
-      bottomNavigationBar: showNavigationBar ?
-      NavigationBar(
-        onDestinationSelected: (index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        destinations: [
-          const NavigationDestination(
-              icon: Icon(Icons.home_outlined), label: 'Home'),
-          NavigationDestination(
-              icon: _transportIconWidget(), label: 'My rides'),
-          const NavigationDestination(
-              icon: Icon(Icons.person_outline), label: 'Profile'),
-        ],
-        selectedIndex: currentPageIndex,
-      ): null,
+      bottomNavigationBar: showNavigationBar
+          ? NavigationBar(
+              onDestinationSelected: (index) {
+                setState(() {
+                  currentPageIndex = index;
+                });
+              },
+              destinations: [
+                const NavigationDestination(
+                    icon: Icon(Icons.home_outlined), label: 'Home'),
+                NavigationDestination(
+                    icon: _transportIconWidget(), label: 'My rides'),
+                const NavigationDestination(
+                    icon: Icon(Icons.person_outline), label: 'Profile'),
+              ],
+              selectedIndex: currentPageIndex,
+            )
+          : null,
       // body: LoginScreen(),
       body: [HomeScreen(), MyRidesScreen(), ProfileScreen()][currentPageIndex],
     );

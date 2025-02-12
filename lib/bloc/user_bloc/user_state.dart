@@ -31,7 +31,10 @@ class DriverDataLoaded extends UserState {
   const DriverDataLoaded(this.driverTrips, this.driverDeliveries);
 }
 
-class UsersLoaded extends UserState {
-  final List<UserModel> users;
-  const UsersLoaded(this.users);
+class TripDetailsLoaded extends UserState {
+  final UserModel? driver;
+  final List<PassengerTrip>? passengerTrips;
+  final List<TaskTrip>? taskTrips;
+
+  TripDetailsLoaded(this.driver, this.passengerTrips, this.taskTrips);
 }

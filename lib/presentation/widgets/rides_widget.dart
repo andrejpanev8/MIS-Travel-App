@@ -4,53 +4,36 @@ import 'package:marquee/marquee.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
-import 'dart:ui' as ui;
+
+import '../../data/models/trip.dart';
+import '../../utils/decorations.dart';
+import '../../utils/functions.dart';
 
 class RidesWidget extends StatelessWidget {
-  final String startCity;
-  final String endCity;
-  final DateTime startTime;
-  final int passengers;
+  final BuildContext context;
+  final Trip ride;
 
   const RidesWidget({
     super.key,
-    required this.startCity,
-    required this.endCity,
-    required this.startTime,
-    required this.passengers,
+    required this.context,
+    required this.ride,
   });
-
-  bool _isTextOverflowing(String text, TextStyle style, double maxWidth) {
-    final textPainter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      maxLines: 1,
-      textDirection: ui.TextDirection.ltr,
-    );
-    textPainter.layout(maxWidth: maxWidth);
-    return textPainter.didExceedMaxLines;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: silverColorLight,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: DecorationsCustom().silverBoxRoundedCorners(),
       child: Row(
-        children: [
-          _leftInfo(),
-          SizedBox(width: 20),
-          _rightInfo()
-        ],
+        children: [_leftInfo(), SizedBox(width: 20), _rightInfo(this.ride)],
       ),
     );
   }
 
   Widget _leftInfo() {
-    String formattedDate = DateFormat('dd.MM.yyyy - HH.mm').format(startTime);
-    final text = "$startCity - $endCity";
+    String formattedDate =
+        DateFormat('dd.MM.yyyy - HH.mm').format(ride.startTime);
+    final text = "${ride.startCity} - ${ride.endCity}";
     final textStyle = StyledText().descriptionText(
       color: blackColor,
       fontSize: 16,
@@ -67,7 +50,7 @@ class RidesWidget extends StatelessWidget {
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    final isOverflowing = _isTextOverflowing(
+                    final isOverflowing = Functions.isTextOverflowing(
                       text,
                       textStyle,
                       constraints.maxWidth,
@@ -100,8 +83,8 @@ class RidesWidget extends StatelessWidget {
             children: [
               const SizedBox(width: 5),
               const Icon(
-                  Icons.access_time,
-                  size: 14,
+                Icons.access_time,
+                size: 14,
               ),
               const SizedBox(width: 4),
               Text(
@@ -119,7 +102,7 @@ class RidesWidget extends StatelessWidget {
     );
   }
 
-  Widget _rightInfo() {
+  Widget _rightInfo(Trip trip) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -131,7 +114,7 @@ class RidesWidget extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Text(
-              "$passengers Passengers",
+              "${ride.passengerTrips.length} Passengers",
               style: StyledText().descriptionText(
                 fontSize: 12,
                 color: blackColor,
@@ -143,8 +126,9 @@ class RidesWidget extends StatelessWidget {
         customArrowButton(
             text: "View details",
             fontSize: 12,
-            onPressed: () {}
-        ),
+            onPressed: () {
+              Navigator.pushNamed(context, "/details", arguments: trip);
+            }),
       ],
     );
   }

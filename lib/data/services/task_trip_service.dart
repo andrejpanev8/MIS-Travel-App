@@ -30,31 +30,30 @@ class TaskTripService {
       required Location endLocation,
       required String tripId,
       String description = ""}) async {
-      UserModel? user = await authService.getCurrentUser();
-      if (user == null) {
-        throw Exception("No authenticated user found.");
-      }
+    UserModel? user = await authService.getCurrentUser();
+    if (user == null) {
+      throw Exception("No authenticated user found.");
+    }
 
-      String taskTripIdGenerated =
-          _firestore.collection('task_trips').doc().id;
+    String taskTripIdGenerated = _firestore.collection('task_trips').doc().id;
 
-      TaskTrip newTrip = TaskTrip(
-          id: taskTripIdGenerated,
-          startLocation: startLocation,
-          endLocation: endLocation,
-          user: user,
-          description: description,
-          tripId: tripId);
+    TaskTrip newTrip = TaskTrip(
+        id: taskTripIdGenerated,
+        startLocation: startLocation,
+        endLocation: endLocation,
+        user: user,
+        description: description,
+        tripId: tripId);
 
-      await _firestore
-          .collection('task_trips')
-          .doc(taskTripIdGenerated)
-          .set(newTrip.toJson());
+    await _firestore
+        .collection('task_trips')
+        .doc(taskTripIdGenerated)
+        .set(newTrip.toJson());
 
-      await _firestore.collection('trips').doc(tripId).update({
-        "taskTrips": FieldValue.arrayUnion([taskTripIdGenerated])
-      });
-      return taskTripIdGenerated;
+    await _firestore.collection('trips').doc(tripId).update({
+      "taskTrips": FieldValue.arrayUnion([taskTripIdGenerated])
+    });
+    return taskTripIdGenerated;
   }
 
   Future<List<Map<String, dynamic>>> getUpcomingDeliveriesForUser() async {
@@ -76,10 +75,8 @@ class TaskTripService {
         TaskTrip taskTrip =
             TaskTrip.fromJson(doc.data() as Map<String, dynamic>);
 
-        DocumentSnapshot tripDoc = await _firestore
-            .collection('trips')
-            .doc(taskTrip.tripId)
-            .get();
+        DocumentSnapshot tripDoc =
+            await _firestore.collection('trips').doc(taskTrip.tripId).get();
 
         if (tripDoc.exists) {
           Trip trip = Trip.fromJson(tripDoc.data() as Map<String, dynamic>);
@@ -94,5 +91,10 @@ class TaskTripService {
     } catch (e) {
       return [];
     }
+  }
+
+  //TO:DO Implement this
+  Future<List<TaskTrip>?> getAllTaskTripsForTripId(String tripId) async {
+    return null;
   }
 }

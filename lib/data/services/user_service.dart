@@ -32,29 +32,29 @@ class UserService {
   }
 
   Future<Map<String, dynamic>?> getUserByEmail(String email) async {
-      final userQuerySnapshot = await _firestore
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .limit(1)
-          .get();
+    final userQuerySnapshot = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .limit(1)
+        .get();
 
-      if (userQuerySnapshot.docs.isEmpty) {
-        throw Exception("User not found.");
-      }
+    if (userQuerySnapshot.docs.isEmpty) {
+      throw Exception("User not found.");
+    }
 
-      final userDoc = userQuerySnapshot.docs.first;
-      return userDoc.data();
+    final userDoc = userQuerySnapshot.docs.first;
+    return userDoc.data();
   }
 
-  Future<Map<String, dynamic>?> getUserById(String userId) async {
-      DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(userId).get();
+  Future<UserModel?> getUserById(String userId) async {
+    DocumentSnapshot userDoc =
+        await _firestore.collection('users').doc(userId).get();
 
-      if (userDoc.exists) {
-        return userDoc.data() as Map<String, dynamic>;
-      } else {
-        return null;
-      }
+    if (userDoc.exists) {
+      return UserModel.fromJson(userDoc.data() as Map<String, dynamic>);
+    } else {
+      return null;
+    }
   }
 
   Future<List<UserModel>> getAllUsersByRole(

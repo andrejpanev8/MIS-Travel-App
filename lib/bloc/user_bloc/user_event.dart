@@ -24,8 +24,9 @@ class LoadDriverData extends UserEvent {
   const LoadDriverData({this.forceRefresh = false});
 }
 
-class GetDrivers extends UserEvent {
-  final List<UserModel>? drivers;
+class GetTripDetails extends UserEvent {
+  final String driverId;
+  final String tripId;
 
-  const GetDrivers({this.drivers});
+  const GetTripDetails({required this.driverId, required this.tripId});
 }

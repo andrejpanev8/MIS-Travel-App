@@ -3,8 +3,8 @@ import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/invitation.dart';
 import 'package:travel_app/data/services/auth_service.dart';
 import 'package:travel_app/data/services/user_service.dart';
-import 'package:travel_app/utils/unique_code_generator.dart';
 
+import '../../utils/functions.dart';
 import '../models/user.dart';
 
 class InvitationService {
@@ -13,30 +13,30 @@ class InvitationService {
   UserService userService = UserService();
 
   Future<String?> createInvitation({required String email}) async {
-      UserModel? user = await authService.getCurrentUser();
-      if (user == null) {
-        throw Exception("No authenticated user found.");
-      }
+    UserModel? user = await authService.getCurrentUser();
+    if (user == null) {
+      throw Exception("No authenticated user found.");
+    }
 
-      if (user.role != UserRole.ADMIN) {
-        throw Exception("You do not have a permission to create invitation");
-      }
+    if (user.role != UserRole.ADMIN) {
+      throw Exception("You do not have a permission to create invitation");
+    }
 
-      DocumentReference invitationRef =
-          _firestore.collection('invitations').doc();
+    DocumentReference invitationRef =
+        _firestore.collection('invitations').doc();
 
-      String invitationId = invitationRef.id;
+    String invitationId = invitationRef.id;
 
-      String uniqueCode = UniqueCodeGenerator.generateUniqueCode();
-      Invitation invitation = Invitation(
-          id: invitationId,
-          uniqueCode: uniqueCode,
-          expirationDate: DateTime.now().add(const Duration(days: 1)),
-          email: email);
+    String uniqueCode = Functions.generateUniqueCode();
+    Invitation invitation = Invitation(
+        id: invitationId,
+        uniqueCode: uniqueCode,
+        expirationDate: DateTime.now().add(const Duration(days: 1)),
+        email: email);
 
-      await invitationRef.set(invitation.toJson());
+    await invitationRef.set(invitation.toJson());
 
-      return invitationId;
+    return invitationId;
   }
 
   Future<DocumentSnapshot?> findInvitationByUniqueCode(

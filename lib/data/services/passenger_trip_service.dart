@@ -110,4 +110,10 @@ class PassengerTripService {
       return [];
     }
   }
+
+  // TO:DO Implement this
+  Future<List<PassengerTrip>?> getAllPassengerTripsForTripId(
+      String tripId) async {
+    return null;
+  }
 }

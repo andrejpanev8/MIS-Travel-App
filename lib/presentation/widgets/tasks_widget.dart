@@ -4,38 +4,21 @@ import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
+import '../../data/models/task_trip.dart';
+import '../../utils/decorations.dart';
+import '../../utils/functions.dart';
+
 class TaskTripWidget extends StatelessWidget {
-  final String startCity;
-  final String endCity;
-  final String description;
-  final double price;
+  BuildContext context;
+  TaskTrip task;
 
-  const TaskTripWidget({
-    super.key,
-    required this.startCity,
-    required this.endCity,
-    required this.description,
-    required this.price,
-  });
-
-  bool _isTextOverflowing(String text, TextStyle style, double maxWidth) {
-    final textPainter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      maxLines: 1,
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout(maxWidth: maxWidth);
-    return textPainter.didExceedMaxLines;
-  }
+  TaskTripWidget({super.key, required this.context, required this.task});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: silverColorLight,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: DecorationsCustom().silverBoxRoundedCorners(),
       child: Row(
         children: [
           _leftInfo(),
@@ -47,7 +30,7 @@ class TaskTripWidget extends StatelessWidget {
   }
 
   Widget _leftInfo() {
-    final text = "$startCity - $endCity";
+    final text = "${task.startLocation} - ${task.endLocation}";
     final textStyle = StyledText().descriptionText(
       color: blackColor,
       fontSize: 16,
@@ -64,7 +47,7 @@ class TaskTripWidget extends StatelessWidget {
               Expanded(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    final isOverflowing = _isTextOverflowing(
+                    final isOverflowing = Functions.isTextOverflowing(
                       text,
                       textStyle,
                       constraints.maxWidth,
@@ -96,14 +79,11 @@ class TaskTripWidget extends StatelessWidget {
           Row(
             children: [
               const SizedBox(width: 6),
-              const Icon(
-                  Icons.description_outlined,
-                  size: 14
-              ),
+              const Icon(Icons.description_outlined, size: 14),
               const SizedBox(width: 5),
               Expanded(
                 child: Text(
-                  description,
+                  task.description,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   style: StyledText().descriptionText(
@@ -134,7 +114,8 @@ class TaskTripWidget extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Text(
-              "${price.toStringAsFixed(0)} ден",
+              // "${task.price.toStringAsFixed(0)} ден",
+              "200 ден",
               style: StyledText().descriptionText(
                 fontSize: 12,
                 color: blackColor,
@@ -146,7 +127,7 @@ class TaskTripWidget extends StatelessWidget {
         customArrowButton(
           text: "View details",
           fontSize: 12,
-          onPressed: () {},
+          onPressed: () => Navigator.pop,
         ),
       ],
     );

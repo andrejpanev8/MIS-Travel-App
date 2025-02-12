@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/data/repositories/driver_repository.dart';
+import 'package:travel_app/data/repositories/trips_repository.dart';
 
 import '../../data/models/trip.dart';
 
@@ -25,6 +27,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         driverTrips = await DriverRepository.instance.getDriverTrips();
         emit(DriverUpcomingTripsLoaded(driverTrips));
       }
+
       if (event is GetDriverUpcomingDeliveries) {
         if (!event.forceRefresh && _cachedDriverDeliveries != null) {
           emit(DriverUpcomingDeliveriesLoaded(_cachedDriverDeliveries!));
@@ -54,10 +57,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(DriverDataLoaded(driverTrips, driverDeliveries));
       }
 
-      if (event is GetDrivers) {
-        List<UserModel> users = [];
+      if (event is GetTripDetails) {
+        UserModel user;
+        List<TaskTrip> taskTrips;
+        List<PassengerTrip> passengerTrips;
         emit(ProcessStarted());
-        users = await DriverRepository.instance.getDrivers();
+        user = await DriverRepository.instance.getDriverWithId(event.driverId!);
+        taskTrips = await TripsRepository.instance.getTaskTrips(event.tripId!);
+        passengerTrips =
+            await TripsRepository.instance.getPassengerTrips(event.tripId!);
       }
     });
   }

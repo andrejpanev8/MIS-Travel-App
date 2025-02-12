@@ -24,7 +24,8 @@ class _LoginFormState extends State<LoginForm> {
         children: [
           Text(
             "Email",
-            style: StyledText().descriptionText(fontSize: 14, color: blackColor),
+            style:
+                StyledText().descriptionText(fontSize: 14, color: blackColor),
           ),
           const SizedBox(height: 8),
           inputTextFieldCustom(
@@ -32,10 +33,10 @@ class _LoginFormState extends State<LoginForm> {
             hintText: AppStrings.email,
           ),
           const SizedBox(height: 12),
-
           Text(
             "Password",
-            style: StyledText().descriptionText(fontSize: 14, color: blackColor),
+            style:
+                StyledText().descriptionText(fontSize: 14, color: blackColor),
           ),
           const SizedBox(height: 8),
           inputTextFieldCustom(
@@ -55,7 +56,6 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           const SizedBox(height: 30),
-
           SizedBox(
             width: double.infinity,
             child: TextButton(
@@ -64,7 +64,8 @@ class _LoginFormState extends State<LoginForm> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: blueDeepColor, // Button color
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -80,10 +81,10 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           const SizedBox(height: 12),
-
           Center(
             child: GestureDetector(
               onTap: () {
+                // replace with Naviagor.pushNamedAndRemoveUntil(..., (Route<dynamic> route) => false);
                 Navigator.pushNamed(context, "/register");
               },
               child: RichText(

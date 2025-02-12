@@ -77,13 +77,14 @@ class TripService {
       Map<String, dynamic> tripData = tripDoc.data() as Map<String, dynamic>;
 
       String driverId = tripData['driverId'];
-      Map<String, dynamic>? driverData =
-          await userService.getUserById(driverId);
+      // Made changes here check if it fits well with the rest
+      UserModel? driverData = await userService.getUserById(driverId);
 
       if (driverData == null) {
         return null;
       }
-      tripData['driver'] = driverData;
+      // Also here
+      tripData['driver'] = driverData.toJson();
 
       return tripData;
     } catch (e) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:travel_app/utils/color_constants.dart';
-import 'package:travel_app/utils/expanded_wrapper_widget.dart';
+import 'package:travel_app/presentation/widgets/expanded_wrapper_widget.dart';
 import 'package:travel_app/utils/image_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
 

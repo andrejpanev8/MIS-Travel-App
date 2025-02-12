@@ -1,4 +1,6 @@
+import '../models/user.dart';
 import '../service/api/api_services.dart';
+import '../services/user_service.dart';
 
 class DriverRepository {
   DriverRepository._instantiate();
@@ -14,8 +16,9 @@ class DriverRepository {
     return data;
   }
 
-  Future<dynamic> getDrivers() async {
-    var data = await ApiServices.instance.getDrivers();
-    return data;
+  // Check this here, either try-catch in service or here in case of failure to fetch
+  Future<UserModel> getDriverWithId(String id) async {
+    UserModel? user = await UserService().getUserById(id);
+    return user!;
   }
 }

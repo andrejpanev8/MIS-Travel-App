@@ -11,10 +11,8 @@ final List<Trip> mockTrips = [
     startTime: DateTime(2025, 1, 1, 8, 30),
     startLocation: Location(latitude: 41.9981, longitude: 21.4254),
     maxCapacity: 4,
-    driverId: '2',
-    passengerTrips: [
-     '1','2'
-    ],
+    driverId: 'gVu5cPbsHOZ8IKu8eHsOSyInuTr1',
+    passengerTrips: ['1', '2'],
     taskTrips: [],
     tripStatus: TripStatus.FINISHED,
   ),
@@ -25,11 +23,9 @@ final List<Trip> mockTrips = [
     startTime: DateTime(2025, 6, 15, 10, 0),
     startLocation: Location(latitude: 42.0000, longitude: 21.4350),
     maxCapacity: 5,
-    driverId: '2',
+    driverId: '68cyw7KsrhOHwiQtFQ7AQK95C4g2',
     passengerTrips: [],
-    taskTrips: [
-      '1','2'
-    ],
+    taskTrips: ['1', '2'],
     tripStatus: TripStatus.IN_PROGRESS,
   ),
 ];
