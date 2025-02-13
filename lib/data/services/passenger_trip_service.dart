@@ -111,9 +111,18 @@ class PassengerTripService {
     }
   }
 
-  // TO:DO Implement this
-  Future<List<PassengerTrip>?> getAllPassengerTripsForTripId(
+  Future<List<PassengerTrip>> getAllPassengerTripsForTripId(
       String tripId) async {
-    return null;
+    Trip? trip = await tripService.findTripById(tripId);
+    if (trip != null) {
+      List<Future<PassengerTrip?>> futureTrips = trip.passengerTrips
+          .map((passengerTripId) => findPassengerTripById(passengerTripId))
+          .toList();
+
+      List<PassengerTrip?> resolvedTrips = await Future.wait(futureTrips);
+
+      return resolvedTrips.whereType<PassengerTrip>().toList();
+    }
+    return [];
   }
 }

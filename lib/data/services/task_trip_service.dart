@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_app/data/models/task_trip.dart';
+import 'package:travel_app/data/services/trip_service.dart';
 import 'package:travel_app/data/services/user_service.dart';
 
 import '../models/location.dart';
@@ -11,6 +12,11 @@ class TaskTripService {
   AuthService authService = AuthService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserService userService = UserService();
+  late final TripService tripService;
+
+  void setTripService(TripService service) {
+    tripService = service;
+  }
 
   Future<TaskTrip?> findTaskTripById(String tripId) async {
     try {
@@ -93,8 +99,17 @@ class TaskTripService {
     }
   }
 
-  //TO:DO Implement this
-  Future<List<TaskTrip>?> getAllTaskTripsForTripId(String tripId) async {
-    return null;
+  Future<List<TaskTrip>> getAllTaskTripsForTripId(String tripId) async {
+    Trip? trip = await tripService.findTripById(tripId);
+    if (trip != null) {
+      List<Future<TaskTrip?>> futureTrips = trip.taskTrips
+          .map((taskTripId) => findTaskTripById(taskTripId))
+          .toList();
+
+      List<TaskTrip?> resolvedTrips = await Future.wait(futureTrips);
+
+      return resolvedTrips.whereType<TaskTrip>().toList();
+    }
+    return [];
   }
 }

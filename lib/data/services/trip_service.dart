@@ -17,12 +17,15 @@ class TripService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserService userService = UserService();
   late final PassengerTripService passengerTripService;
+  late final TaskTripService taskTripService;
 
   void setPassengerTripService(PassengerTripService service) {
     passengerTripService = service;
   }
 
-  final TaskTripService taskTripService = TaskTripService();
+  void setTaskTripService(TaskTripService service) {
+    taskTripService = service;
+  }
 
   Future<String?> createTrip(
       {required String startCity,

@@ -31,19 +31,19 @@ class UserService {
     }
   }
 
-  Future<Map<String, dynamic>?> getUserByEmail(String email) async {
-    final userQuerySnapshot = await _firestore
+  Future<UserModel?> getUserByEmail(String email) async {
+    QuerySnapshot userQuerySnapshot = await _firestore
         .collection('users')
         .where('email', isEqualTo: email)
         .limit(1)
         .get();
 
-    if (userQuerySnapshot.docs.isEmpty) {
-      throw Exception("User not found.");
+    if (userQuerySnapshot.docs.isNotEmpty) {
+      return UserModel.fromJson(
+          userQuerySnapshot.docs.first.data() as Map<String, dynamic>);
+    } else {
+      return null;
     }
-
-    final userDoc = userQuerySnapshot.docs.first;
-    return userDoc.data();
   }
 
   Future<UserModel?> getUserById(String userId) async {
