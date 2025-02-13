@@ -80,13 +80,12 @@ class TripService {
       Map<String, dynamic> tripData = tripDoc.data() as Map<String, dynamic>;
 
       String driverId = tripData['driverId'];
-      // Made changes here check if it fits well with the rest
+
       UserModel? driverData = await userService.getUserById(driverId);
 
       if (driverData == null) {
         return null;
       }
-      // Also here
       tripData['driver'] = driverData.toJson();
 
       return tripData;
@@ -110,6 +109,23 @@ class TripService {
     } catch (e) {
       return [];
     }
+  }
+
+  Future<List<Trip>> getAllUpcomingTrips() async {
+    QuerySnapshot querySnapshot = await _firestore
+        .collection('trips')
+        .where('tripStatus', isEqualTo: TripStatus.IN_PROGRESS.index)
+        .get();
+
+    if (querySnapshot.docs.isEmpty) {
+      return [];
+    }
+
+    List<Trip> upcomingTrips = querySnapshot.docs.map((doc) {
+      return Trip.fromJson(doc.data() as Map<String, dynamic>);
+    }).toList();
+
+    return upcomingTrips;
   }
 
   Future<List<Trip>> getUpcomingTripsByDriver(String driverId) async {
@@ -174,6 +190,51 @@ class TripService {
           .toList();
     }
     throw Exception("You do not have permission to view task users by trip.");
+  }
+
+  Future<List<Trip>> filterUpcomingTripsContainingStartCity(String startCity) async {
+    List<Trip> upcomingTrips = await getAllUpcomingTrips();
+    if (upcomingTrips.isEmpty) {
+      return [];
+    }
+    return upcomingTrips
+        .where((trip) =>
+            trip.startCity.toLowerCase().contains(startCity.toLowerCase()))
+        .toList();
+  }
+
+  Future<List<Trip>> filterUpcomingTripsContainingEndCity(String endCity) async {
+    List<Trip> upcomingTrips = await getAllUpcomingTrips();
+    if (upcomingTrips.isEmpty) {
+      return [];
+    }
+    return upcomingTrips
+        .where((trip) =>
+            trip.endCity.toLowerCase().contains(endCity.toLowerCase()))
+        .toList();
+  }
+
+  Future<List<Trip>> filterUpcomingTripsByDate(DateTime date) async {
+    String selectedDate = "${date.year.toString().padLeft(4, '0')}-"
+        "${date.month.toString().padLeft(2, '0')}-"
+        "${date.day.toString().padLeft(2, '0')}";
+
+    QuerySnapshot querySnapshot = await _firestore
+        .collection('trips')
+        .where('tripStatus', isEqualTo: TripStatus.IN_PROGRESS.index)
+        .where('startTime', isGreaterThanOrEqualTo: selectedDate)
+        .where('startTime', isLessThan: "${selectedDate}T23:59:59.999999")
+        .get();
+
+    if (querySnapshot.docs.isEmpty) {
+      return [];
+    }
+
+    List<Trip> trips = querySnapshot.docs.map((doc) {
+      return Trip.fromJson(doc.data() as Map<String, dynamic>);
+    }).toList();
+
+    return trips;
   }
 
   Future<bool> setTripStatus(String tripId, TripStatus newStatus) async {
