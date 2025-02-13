@@ -9,17 +9,20 @@ Widget customArrowButton(
     Color backgroundColor = blueDeepColor,
     Color iconColor = whiteColor,
     Color splashColor = silverColor,
+    IconData? customIcon,
+    Color? textColor,
+    BorderSide? border,
     double? fontSize}) {
   return TextButton.icon(
     onPressed: onPressed,
-    label: Text(
-      text,
-      style: StyledText().descriptionText(fontSize: fontSize)
-    ),
+    label: Text(text,
+        style:
+            StyledText().descriptionText(fontSize: fontSize, color: textColor)),
     style: ButtonStyle(
       backgroundColor: WidgetStatePropertyAll(backgroundColor),
-      shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+          side: border ?? BorderSide.none)),
       overlayColor: WidgetStateProperty.resolveWith<Color?>(
         (Set<WidgetState> states) {
           if (states.contains(WidgetState.pressed)) {
@@ -33,16 +36,25 @@ Widget customArrowButton(
       ),
       minimumSize: WidgetStatePropertyAll(Size(0, 30)),
     ),
-    icon: Transform(
-      alignment: Alignment.center,
-      transform: Matrix4.identity()
-        ..scale(-1.0, 1.0), // Flip arrow icon horizontally
-      child: Icon(
-        Icons.arrow_back,
-        color: iconColor,
-        size: 14,
-      ),
-    ),
-    iconAlignment: IconAlignment.end,
+    icon: _getProperIcon(customIcon, iconColor),
+    iconAlignment: customIcon == null ? IconAlignment.end : IconAlignment.start,
   );
+}
+
+Widget _getProperIcon(IconData? customIcon, Color iconColor) {
+  return customIcon != null
+      ? Icon(
+          customIcon,
+          color: iconColor,
+        )
+      : Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()
+            ..scale(-1.0, 1.0), // Flip arrow icon horizontally
+          child: Icon(
+            Icons.arrow_back,
+            color: iconColor,
+            size: 14,
+          ),
+        );
 }

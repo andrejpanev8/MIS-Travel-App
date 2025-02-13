@@ -49,8 +49,7 @@ class RideDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  // children: [_generalInfo(trip!, driver!)],
-                  children: [_generalInfo(trip!)],
+                  children: [_generalInfo(trip!, driver)],
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -63,6 +62,7 @@ class RideDetailsScreen extends StatelessWidget {
                     itemBuilder: (context, passengerTrip) =>
                         PassengerWidget(passenger: passengerTrip),
                     scrollPhysics: NeverScrollableScrollPhysics()),
+                SizedBox(height: 30),
                 Text(
                   "Packages",
                   style: StyledText().appBarText(color: blackColor),
@@ -89,8 +89,7 @@ class RideDetailsScreen extends StatelessWidget {
     ));
   }
 
-  // Widget _generalInfo(Trip trip, UserModel driver) {
-  Widget _generalInfo(Trip trip) {
+  Widget _generalInfo(Trip trip, UserModel? driver) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -101,41 +100,39 @@ class RideDetailsScreen extends StatelessWidget {
                 style: StyledText().appBarText(color: blackColor))
           ],
         ),
-        Row(
-          children: [Icon(Icons.access_time), Text("${trip.startTime}")],
-        ),
-        Row(
-          children: [
-            Icon(Icons.badge_outlined),
-            // Text("${driver.firstName} ${driver.lastName}")
-            Text("Markus Primus")
-          ],
-        ),
-        Row(
-          children: [
-            // TO:DO Change with resolved location by latitude longitude
-            // create such service to be called
-            SizedBox(width: 20),
-            Text("Starting Location: ${trip.startLocation}")
-          ],
-        ),
-        Row(
-          children: [
-            Icon(Icons.people_alt_outlined),
-            Text("No. Passengers: ${trip.passengerTrips.length}")
-          ],
-        ),
-        Row(
-          children: [
-            SvgPicture.asset(
-              boxIcon,
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(blackColor, BlendMode.srcIn),
-            ),
-            Text("No. Packages: ${trip.taskTrips.length}")
-          ],
-        ),
+        _buildRow(icon: Icons.access_time, text: "${trip.startTime}"),
+        _buildRow(
+            icon: Icons.badge_outlined,
+            text:
+                driver != null ? "${driver.firstName} ${driver.lastName}" : ""),
+        // TO:DO Change with resolved location by latitude longitude
+        // create such service to be called
+        _buildRow(text: "Starting Location: ${trip.startLocation}"),
+        _buildRow(
+            icon: Icons.people_alt_outlined,
+            text: "No. Passengers: ${trip.passengerTrips.length}"),
+        _buildRow(
+            text: "  No. Packages: ${trip.taskTrips.length}",
+            assetIcon: boxIcon),
+      ],
+    );
+  }
+
+  Widget _buildRow({IconData? icon, String text = "", String? assetIcon}) {
+    return Row(
+      children: [
+        icon != null
+            ? Icon(icon)
+            : assetIcon != null
+                ? SvgPicture.asset(
+                    assetIcon,
+                    width: 20,
+                    height: 20,
+                    colorFilter: ColorFilter.mode(blackColor, BlendMode.srcIn),
+                  )
+                : SizedBox(width: 25),
+        SizedBox(width: 10),
+        Text(text)
       ],
     );
   }
