@@ -51,40 +51,43 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _ridesDeliveriesToggle(),
-            BlocConsumer<UserBloc, UserState>(
-              listener: (context, state) {},
-              builder: (context, state) {
-                if (state is DriverUpcomingTripsLoaded) {
-                  // return buildDriverTrips(context, state.driverTrips);
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              child: BlocConsumer<UserBloc, UserState>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  if (state is DriverUpcomingTripsLoaded) {
+                    // return buildDriverTrips(context, state.driverTrips);
 
-                  //check this
-                  return widgetBuilder(
-                      context: context,
-                      items: state.driverTrips,
-                      itemBuilder: (context, ride) =>
-                          RidesWidget(context: context, ride: ride),
-                      onRefresh: () => Functions.emitEvent(
-                          context: context,
-                          event: GetDriverUpcomingRides(forceRefresh: true)),
-                      emptyWidget:
-                          emptyListIndicator("No upcoming rides available"));
-                } else if (state is DriverUpcomingDeliveriesLoaded) {
-                  // return buildDriverDeliveries(context, state.driverDeliveries);
+                    //check this
+                    return widgetBuilder(
+                        context: context,
+                        items: state.driverTrips,
+                        itemBuilder: (context, ride) =>
+                            RidesWidget(context: context, ride: ride),
+                        onRefresh: () => Functions.emitEvent(
+                            context: context,
+                            event: GetDriverUpcomingRides(forceRefresh: true)),
+                        emptyWidget:
+                            emptyListIndicator("No upcoming rides available"));
+                  } else if (state is DriverUpcomingDeliveriesLoaded) {
+                    // return buildDriverDeliveries(context, state.driverDeliveries);
 
-                  return widgetBuilder(
-                      context: context,
-                      items: state.driverDeliveries,
-                      itemBuilder: (context, task) =>
-                          TaskTripWidget(context: context, task: task),
-                      onRefresh: () => Functions.emitEvent(
-                          context: context,
-                          event:
-                              GetDriverUpcomingDeliveries(forceRefresh: true)),
-                      emptyWidget: emptyListIndicator(
-                          "No upcoming deliveries available"));
-                }
-                return Center(child: CircularProgressIndicator());
-              },
+                    return widgetBuilder(
+                        context: context,
+                        items: state.driverDeliveries,
+                        itemBuilder: (context, task) =>
+                            TaskTripWidget(context: context, task: task),
+                        onRefresh: () => Functions.emitEvent(
+                            context: context,
+                            event: GetDriverUpcomingDeliveries(
+                                forceRefresh: true)),
+                        emptyWidget: emptyListIndicator(
+                            "No upcoming deliveries available"));
+                  }
+                  return Center(child: CircularProgressIndicator());
+                },
+              ),
             ),
           ],
         ),

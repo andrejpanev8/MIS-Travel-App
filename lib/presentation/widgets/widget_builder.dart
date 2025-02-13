@@ -15,7 +15,6 @@ Widget widgetBuilder<T>({
       onRefresh: onRefresh ?? () async {},
       child: items.isNotEmpty
           ? ListView.separated(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               physics: scrollPhysics ?? AlwaysScrollableScrollPhysics(),
               itemCount: items.length,
               itemBuilder: (context, index) =>
