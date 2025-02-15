@@ -26,7 +26,7 @@ class _LoginFormState extends State<LoginForm> {
     String password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      showErrorDialog(context, "Firebase error", "Fill required fields");
+      showErrorDialog(context, AppStrings.firebaseError, AppStrings.fillRequiredFields);
       return;
     }
 
@@ -38,10 +38,10 @@ class _LoginFormState extends State<LoginForm> {
       }
     } on FirebaseAuthException catch (e) {
       String errorTitle = getFirebaseErrorTitle(e.code);
-      String errorMessage = e.message ?? "An unknown error occurred.";
+      String errorMessage = e.message ?? AppStrings.unknownError;
       showErrorDialog(context, errorTitle, errorMessage);
     } catch (e) {
-      showErrorDialog(context, "Unexpected Error", e.toString());
+      showErrorDialog(context, AppStrings.unexpectedError, e.toString());
     }
   }
 
@@ -53,7 +53,7 @@ class _LoginFormState extends State<LoginForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Email", style: StyledText().descriptionText(fontSize: 14, color: blackColor)),
+          Text(AppStrings.email, style: StyledText().descriptionText(fontSize: 14, color: blackColor)),
           const SizedBox(height: 8),
           inputTextFieldCustom(
             context: context,
@@ -61,7 +61,7 @@ class _LoginFormState extends State<LoginForm> {
             controller: _emailController,
           ),
           const SizedBox(height: 12),
-          Text("Password", style: StyledText().descriptionText(fontSize: 14, color: blackColor)),
+          Text(AppStrings.password, style: StyledText().descriptionText(fontSize: 14, color: blackColor)),
           const SizedBox(height: 8),
           inputTextFieldCustom(
             context: context,
@@ -87,9 +87,9 @@ class _LoginFormState extends State<LoginForm> {
                 padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
-              child: const Text(
-                "Login",
-                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+              child: Text(
+                AppStrings.login,
+                style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -97,14 +97,13 @@ class _LoginFormState extends State<LoginForm> {
           Center(
             child: GestureDetector(
               onTap: () => Navigator.pushNamedAndRemoveUntil(context, "/register", (route) => false),
-
-                child: RichText(
+              child: RichText(
                 text: TextSpan(
                   style: TextStyle(color: blackColor, fontSize: 14),
                   children: [
-                    const TextSpan(text: "Don't have an account yet? "),
+                    TextSpan(text: AppStrings.dontHaveAnAccount),
                     TextSpan(
-                      text: "Register",
+                      text: AppStrings.register,
                       style: TextStyle(color: blueDeepColor, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
                     ),
                   ],

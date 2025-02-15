@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel_app/presentation/widgets/empty_list_indicator.dart';
+import 'package:travel_app/utils/string_constants.dart';
 
 Widget widgetBuilder<T>({
   required BuildContext context,
@@ -23,7 +24,7 @@ Widget widgetBuilder<T>({
                   separatorBuilder ?? (context, index) => SizedBox(height: 10),
               shrinkWrap: true,
             )
-          : (emptyWidget ?? emptyListIndicator("No items available")),
+          : (emptyWidget ?? emptyListIndicator(AppStrings.noItemsAvailable)),
     ),
   );
 }

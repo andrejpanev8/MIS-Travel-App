@@ -58,8 +58,8 @@ class _RegisterFormState extends State<RegisterForm> {
         );
         showSuccessDialog(
           context,
-          "Registration Successful",
-          "You have successfully registered! You will be redirected to the login page.",
+          AppStrings.registrationSuccessTitle,
+          AppStrings.registrationSuccessMessage,
               () {
             Navigator.of(context).pop();
             Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
@@ -67,10 +67,10 @@ class _RegisterFormState extends State<RegisterForm> {
         );
       } on FirebaseAuthException catch (e) {
         String errorTitle = getFirebaseErrorTitle(e.code);
-        String errorMessage = e.message ?? "An unknown error occurred.";
+        String errorMessage = e.message ?? AppStrings.unknownError;
         showErrorDialog(context, errorTitle, errorMessage);
       } catch (e) {
-        showErrorDialog(context, "Registration Error", e.toString());
+        showErrorDialog(context, AppStrings.registrationErrorTitle, e.toString());
       }
     }
   }
@@ -84,30 +84,30 @@ class _RegisterFormState extends State<RegisterForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildLabel("First Name"),
+            _buildLabel(AppStrings.firstName),
             inputTextFieldCustom(
               context: context,
-              hintText: "Enter your first name",
+              hintText: AppStrings.firstNameHint,
               controller: _firstNameController,
             ),
             _buildErrorText(_firstNameError),
 
             const SizedBox(height: 12),
 
-            _buildLabel("Last Name"),
+            _buildLabel(AppStrings.lastName),
             inputTextFieldCustom(
               context: context,
-              hintText: "Enter your last name",
+              hintText: AppStrings.lastNameHint,
               controller: _lastNameController,
             ),
             _buildErrorText(_lastNameError),
 
             const SizedBox(height: 12),
 
-            _buildLabel("Phone Number"),
+            _buildLabel(AppStrings.phone),
             inputTextFieldCustom(
               context: context,
-              hintText: "Enter your phone number",
+              hintText: AppStrings.phoneHint,
               controller: _phoneController,
               keyboardType: TextInputType.phone,
             ),
@@ -115,10 +115,10 @@ class _RegisterFormState extends State<RegisterForm> {
 
             const SizedBox(height: 12),
 
-            _buildLabel("Email"),
+            _buildLabel(AppStrings.email),
             inputTextFieldCustom(
               context: context,
-              hintText: AppStrings.email,
+              hintText: AppStrings.emailHint,
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
             ),
@@ -126,10 +126,10 @@ class _RegisterFormState extends State<RegisterForm> {
 
             const SizedBox(height: 12),
 
-            _buildLabel("Password"),
+            _buildLabel(AppStrings.password),
             inputTextFieldCustom(
               context: context,
-              hintText: AppStrings.password,
+              hintText: AppStrings.passwordHint,
               controller: _passwordController,
               obscureText: _passwordVisible,
               suffixIcon: IconButton(
@@ -145,8 +145,7 @@ class _RegisterFormState extends State<RegisterForm> {
               ),
             ),
             if (_passwordErrors.isNotEmpty)
-              ..._passwordErrors
-                  .map((error) => _buildErrorText(error))
+              ..._passwordErrors.map((error) => _buildErrorText(error))
             else
               const SizedBox.shrink(),
 
@@ -164,7 +163,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                 ),
                 child: const Text(
-                  "Register",
+                  AppStrings.register,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -187,9 +186,9 @@ class _RegisterFormState extends State<RegisterForm> {
                       fontSize: 14,
                     ),
                     children: [
-                      const TextSpan(text: "Already have an account? "),
+                      const TextSpan(text: AppStrings.alreadyHaveAccount),
                       TextSpan(
-                        text: "Login",
+                        text: AppStrings.login,
                         style: TextStyle(
                           color: blueDeepColor,
                           fontWeight: FontWeight.bold,

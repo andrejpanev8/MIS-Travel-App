@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/utils/color_constants.dart';
+import 'package:travel_app/utils/string_constants.dart';
 
 import '../../data/models/task_trip.dart';
 import '../../utils/decorations.dart';
@@ -36,7 +37,7 @@ class TaskTripDetailsWidget extends StatelessWidget {
             ],
           ),
           Row(
-            children: [Icon(Icons.description_outlined), Text("Description")],
+            children: [Icon(Icons.description_outlined), Text(AppStrings.description)],
           ),
           Row(
             children: [Text(taskTrip.description)],

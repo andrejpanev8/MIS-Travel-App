@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/utils/color_constants.dart';
+import 'package:travel_app/utils/string_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
 import '../../data/models/task_trip.dart';
@@ -125,7 +126,7 @@ class TaskTripWidget extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         customArrowButton(
-          text: "View details",
+          text: AppStrings.viewDetails,
           fontSize: 12,
           onPressed: () => Navigator.pop,
         ),

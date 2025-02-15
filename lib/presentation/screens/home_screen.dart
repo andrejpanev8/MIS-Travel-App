@@ -4,6 +4,7 @@ import 'package:travel_app/presentation/widgets/empty_list_indicator.dart';
 import 'package:travel_app/presentation/widgets/rides_widget.dart';
 import 'package:travel_app/presentation/widgets/tasks_widget.dart';
 import 'package:travel_app/utils/functions.dart';
+import 'package:travel_app/utils/string_constants.dart';
 import '../../bloc/home_screen_bloc/home_screen_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/models/task_trip.dart';
@@ -69,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             context: context,
                             event: GetDriverUpcomingRides(forceRefresh: true)),
                         emptyWidget:
-                            emptyListIndicator("No upcoming rides available"));
+                            emptyListIndicator(AppStrings.noUpcomingRides));
                   } else if (state is DriverUpcomingDeliveriesLoaded) {
                     // return buildDriverDeliveries(context, state.driverDeliveries);
 
@@ -82,8 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             context: context,
                             event: GetDriverUpcomingDeliveries(
                                 forceRefresh: true)),
-                        emptyWidget: emptyListIndicator(
-                            "No upcoming deliveries available"));
+                        emptyWidget: emptyListIndicator(AppStrings.noUpcomingDeliveries));
                   }
                   return Center(child: CircularProgressIndicator());
                 },

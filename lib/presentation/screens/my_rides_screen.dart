@@ -8,6 +8,7 @@ import '../../data/models/task_trip.dart';
 import '../../data/models/trip.dart';
 import '../../utils/color_constants.dart';
 import '../../utils/functions.dart';
+import '../../utils/string_constants.dart';
 import '../widgets/empty_list_indicator.dart';
 import '../widgets/rides_widget.dart';
 import '../widgets/tasks_widget.dart';
@@ -23,6 +24,7 @@ class MyRidesScreen extends StatefulWidget {
 class _MyRidesScreenState extends State<MyRidesScreen> {
   List<Trip> trips = [];
   List<TaskTrip> taskTrips = [];
+
   @override
   void initState() {
     super.initState();
@@ -58,37 +60,39 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(height: 30),
-                      _text("Upcoming Rides"),
+                      const SizedBox(height: 30),
+                      _text(AppStrings.upcomingRides),
                       widgetBuilder(
+                        context: context,
+                        items: trips,
+                        itemBuilder: (context, ride) =>
+                            RidesWidget(context: context, ride: ride),
+                        onRefresh: () => Functions.emitEvent(
                           context: context,
-                          items: trips,
-                          itemBuilder: (context, ride) =>
-                              RidesWidget(context: context, ride: ride),
-                          onRefresh: () => Functions.emitEvent(
-                              context: context,
-                              event: GetDriverUpcomingDeliveries(
-                                  forceRefresh: true)),
-                          emptyWidget: emptyListIndicator(
-                              "No upcoming rides available")),
-                      _text("Upcoming Deliveries"),
+                          event: GetDriverUpcomingDeliveries(forceRefresh: true),
+                        ),
+                        emptyWidget:
+                        emptyListIndicator(AppStrings.noUpcomingRides),
+                      ),
+                      _text(AppStrings.upcomingDeliveries),
                       widgetBuilder(
+                        context: context,
+                        items: taskTrips,
+                        itemBuilder: (context, task) =>
+                            TaskTripWidget(context: context, task: task),
+                        onRefresh: () => Functions.emitEvent(
                           context: context,
-                          items: taskTrips,
-                          itemBuilder: (context, task) =>
-                              TaskTripWidget(context: context, task: task),
-                          onRefresh: () => Functions.emitEvent(
-                              context: context,
-                              event: GetDriverUpcomingDeliveries(
-                                  forceRefresh: true)),
-                          emptyWidget: emptyListIndicator(
-                              "No upcoming deliveries available"))
+                          event: GetDriverUpcomingDeliveries(forceRefresh: true),
+                        ),
+                        emptyWidget:
+                        emptyListIndicator(AppStrings.noUpcomingDeliveries),
+                      ),
                     ],
                   );
                 },
               );
             }
-            return Center(child: _text("You have to login to view your data"));
+            return Center(child: _text(AppStrings.loginRequiredMessage));
           },
         ),
       ),
@@ -97,7 +101,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
 
   Widget _text(String text) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Text(
         text,
         style: StyledText().appBarText(color: blackColor),

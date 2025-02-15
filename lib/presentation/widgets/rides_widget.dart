@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/utils/color_constants.dart';
+import 'package:travel_app/utils/string_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
 import '../../data/models/trip.dart';
@@ -32,7 +33,7 @@ class RidesWidget extends StatelessWidget {
 
   Widget _leftInfo() {
     String formattedDate =
-        DateFormat('dd.MM.yyyy - HH.mm').format(ride.startTime);
+    DateFormat('dd.MM.yyyy - HH.mm').format(ride.startTime);
     final text = "${ride.startCity} - ${ride.endCity}";
     final textStyle = StyledText().descriptionText(
       color: blackColor,
@@ -45,7 +46,7 @@ class RidesWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.location_on_outlined),
+              const Icon(Icons.location_on_outlined, semanticLabel: AppStrings.locationIconTooltip),
               const SizedBox(width: 4),
               Expanded(
                 child: LayoutBuilder(
@@ -59,19 +60,19 @@ class RidesWidget extends StatelessWidget {
                       height: 24,
                       child: isOverflowing
                           ? Marquee(
-                              text: text,
-                              style: textStyle,
-                              pauseAfterRound: Durations.medium1,
-                              startAfter: Durations.medium1,
-                              blankSpace: 20,
-                              velocity: 30,
-                            )
+                        text: text,
+                        style: textStyle,
+                        pauseAfterRound: Durations.medium1,
+                        startAfter: Durations.medium1,
+                        blankSpace: 20,
+                        velocity: 30,
+                      )
                           : Text(
-                              text,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: textStyle,
-                            ),
+                        text,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: textStyle,
+                      ),
                     );
                   },
                 ),
@@ -85,6 +86,7 @@ class RidesWidget extends StatelessWidget {
               const Icon(
                 Icons.access_time,
                 size: 14,
+                semanticLabel: AppStrings.timeIconTooltip,
               ),
               const SizedBox(width: 4),
               Text(
@@ -114,7 +116,7 @@ class RidesWidget extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Text(
-              "${ride.passengerTrips.length} Passengers",
+              "${ride.passengerTrips.length} ${AppStrings.passengersLabel}",
               style: StyledText().descriptionText(
                 fontSize: 12,
                 color: blackColor,
@@ -124,11 +126,12 @@ class RidesWidget extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         customArrowButton(
-            text: "View details",
-            fontSize: 12,
-            onPressed: () {
-              Navigator.pushNamed(context, "/details", arguments: trip);
-            }),
+          text: AppStrings.viewDetails,
+          fontSize: 12,
+          onPressed: () {
+            Navigator.pushNamed(context, "/details", arguments: trip);
+          },
+        ),
       ],
     );
   }
