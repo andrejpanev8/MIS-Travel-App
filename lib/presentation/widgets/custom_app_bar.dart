@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:travel_app/data/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
-
 import '../../utils/text_styles.dart';
 
 PreferredSizeWidget customAppBar({
@@ -9,17 +10,40 @@ PreferredSizeWidget customAppBar({
   final String? appBarText,
   bool arrowBack = false,
 }) {
+  final AuthService authService = AuthService();
+
   return AppBar(
     title: Text(
       appBarText ?? AppStrings.appName,
       style: StyledText().appBarText(),
     ),
+    actions: [
+      StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          bool isLoggedIn = snapshot.hasData && snapshot.data != null;
+
+          return IconButton(
+            icon: Icon(isLoggedIn ? Icons.logout : Icons.login),
+            onPressed: () async {
+              if (isLoggedIn) {
+                await authService.logoutUser();
+                Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+              } else {
+                Navigator.pushNamed(context, "/login");
+              }
+            },
+          );
+        },
+      ),
+    ],
     backgroundColor: blueDeepColor,
-    leading: arrowBack == true
+    leading: arrowBack
         ? IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             color: whiteColor,
-            onPressed: () => Navigator.pop(context))
+            onPressed: () => Navigator.pop(context),
+    )
         : null,
     automaticallyImplyLeading: false,
   );

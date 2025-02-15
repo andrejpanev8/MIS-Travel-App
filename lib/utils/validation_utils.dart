@@ -18,26 +18,80 @@ class ValidationUtils {
   static String? nameValidator(String? value) {
     return MultiValidator([
       RequiredValidator(errorText: "Enter full name"),
-      MinLengthValidator(4, errorText: "Full name must be more than 4 letters")
+      MinLengthValidator(3, errorText: "Full name must be more than 4 letters")
+    ])(value);
+  }
+
+  static String? surnameValidator(String? value) {
+    return MultiValidator([
+      RequiredValidator(errorText: "Enter last name"),
+      MinLengthValidator(3, errorText: "Last name must be more than 4 letters")
     ])(value);
   }
 
   static String? phoneValidator(String? value) {
-    // Define the regular expression for the required format
-    final regex = RegExp(r'^7\d{7}$'); // Only for screen drawing
-
     if (value == null || value.isEmpty) {
       return 'Enter a phone number';
     }
-    if (!regex.hasMatch(value)) {
-      return 'Valid format 7X XXX XXX';
+
+    if (value.startsWith('07') && value.length == 9) {
+      return null;
     }
-    return null;
+
+    if (value.startsWith('+3897') && value.length == 12) {
+      return null;
+    }
+
+    return 'Valid format: 07X XXX XXX or +389 7X XXX XXX';
+  }
+
+
+  static List<String> passwordValidator(String? value) {
+    List<String> errors = [];
+
+    if (value == null || value.isEmpty) {
+      errors.add('Password is required');
+    } else {
+      if (!RegExp(r'(?=.*[a-z])').hasMatch(value)) {
+        errors.add('Password must contain at least one lowercase letter');
+      }
+
+      if (!RegExp(r'(?=.*[A-Z])').hasMatch(value)) {
+        errors.add('Password must contain at least one uppercase letter');
+      }
+
+      if (!RegExp(r'(?=.*\d)').hasMatch(value)) {
+        errors.add('Password must contain at least one number');
+      }
+
+      if (!RegExp(r'(?=.*[!@#$%^&*(),.?":{}|<>])').hasMatch(value)) {
+        errors.add('Password must contain at least one special character');
+      }
+
+      if (value.length < 8) {
+        errors.add('Password must be at least 8 characters long');
+      }
+    }
+
+    return errors;
   }
 
   static String? emailValidator(String? value) {
-    return EmailValidator(errorText: "Enter a correct e-mail address")(value);
+    if (value == null || value.isEmpty) {
+      return "Email is required";
+    }
+
+    final emailRegExp = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+$',
+    );
+
+    if (!emailRegExp.hasMatch(value)) {
+      return "Enter a valid email address";
+    }
+
+    return null;
   }
+
 
   static String? requiredValidator(String? value, {required String field}) {
     return RequiredValidator(errorText: "Required $field! ")(value);

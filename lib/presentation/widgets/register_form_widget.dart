@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_app/data/services/auth_service.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
 import 'package:travel_app/utils/color_constants.dart';
+import 'package:travel_app/utils/error_handler.dart';
 import 'package:travel_app/utils/string_constants.dart';
+import 'package:travel_app/utils/success_handler.dart';
 import 'package:travel_app/utils/text_styles.dart';
+import 'package:travel_app/utils/validation_utils.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -13,116 +17,192 @@ class RegisterForm extends StatefulWidget {
 }
 
 class _RegisterFormState extends State<RegisterForm> {
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   bool _passwordVisible = true;
+  final AuthService _authService = AuthService();
+
+  String? _firstNameError;
+  String? _lastNameError;
+  String? _phoneError;
+  String? _emailError;
+  List<String> _passwordErrors = List.empty();
+
+  void _register() async {
+    setState(() {
+      _firstNameError = ValidationUtils.nameValidator(_firstNameController.text);
+      _lastNameError = ValidationUtils.surnameValidator(_lastNameController.text);
+      _phoneError = ValidationUtils.phoneValidator(_phoneController.text);
+      _emailError = ValidationUtils.emailValidator(_emailController.text);
+      _passwordErrors = ValidationUtils.passwordValidator(_passwordController.text);
+    });
+
+    if (_firstNameError != null || _lastNameError != null || _phoneError != null || _emailError != null || _passwordErrors.isNotEmpty) {
+      return;
+    }
+
+    if (_formKey.currentState!.validate()) {
+      try {
+        await _authService.registerUser(
+          firstName: _firstNameController.text.trim(),
+          lastName: _lastNameController.text.trim(),
+          phoneNumber: _phoneController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+        showSuccessDialog(
+          context,
+          "Registration Successful",
+          "You have successfully registered! You will be redirected to the login page.",
+              () {
+            Navigator.of(context).pop();
+            Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+          },
+        );
+      } on FirebaseAuthException catch (e) {
+        String errorTitle = getFirebaseErrorTitle(e.code);
+        String errorMessage = e.message ?? "An unknown error occurred.";
+        showErrorDialog(context, errorTitle, errorMessage);
+      } catch (e) {
+        showErrorDialog(context, "Registration Error", e.toString());
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 35),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildLabel("First Name"),
-          inputTextFieldCustom(
-            context: context,
-            hintText: "Enter your first name",
-          ),
-          const SizedBox(height: 12),
-
-          _buildLabel("Last Name"),
-          inputTextFieldCustom(
-            context: context,
-            hintText: "Enter your last name",
-          ),
-          const SizedBox(height: 12),
-
-          _buildLabel("Phone Number"),
-          inputTextFieldCustom(
-            context: context,
-            hintText: "Enter your phone number",
-            keyboardType: TextInputType.phone,
-          ),
-          const SizedBox(height: 12),
-
-          _buildLabel("Email"),
-          inputTextFieldCustom(
-            context: context,
-            hintText: AppStrings.email,
-            keyboardType: TextInputType.emailAddress,
-          ),
-          const SizedBox(height: 12),
-
-          _buildLabel("Password"),
-          inputTextFieldCustom(
-            context: context,
-            hintText: AppStrings.password,
-            obscureText: _passwordVisible,
-            suffixIcon: IconButton(
-              icon: Icon(
-                _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                color: blackColor,
-              ),
-              onPressed: () {
-                setState(() {
-                  _passwordVisible = !_passwordVisible;
-                });
-              },
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLabel("First Name"),
+            inputTextFieldCustom(
+              context: context,
+              hintText: "Enter your first name",
+              controller: _firstNameController,
             ),
-          ),
-          const SizedBox(height: 30),
+            _buildErrorText(_firstNameError),
 
-          SizedBox(
-            width: double.infinity,
-            child: TextButton(
-              onPressed: () {
-                // TODO call authService.register(fields...)
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: blueDeepColor,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            const SizedBox(height: 12),
+
+            _buildLabel("Last Name"),
+            inputTextFieldCustom(
+              context: context,
+              hintText: "Enter your last name",
+              controller: _lastNameController,
+            ),
+            _buildErrorText(_lastNameError),
+
+            const SizedBox(height: 12),
+
+            _buildLabel("Phone Number"),
+            inputTextFieldCustom(
+              context: context,
+              hintText: "Enter your phone number",
+              controller: _phoneController,
+              keyboardType: TextInputType.phone,
+            ),
+            _buildErrorText(_phoneError),
+
+            const SizedBox(height: 12),
+
+            _buildLabel("Email"),
+            inputTextFieldCustom(
+              context: context,
+              hintText: AppStrings.email,
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+            ),
+            _buildErrorText(_emailError),
+
+            const SizedBox(height: 12),
+
+            _buildLabel("Password"),
+            inputTextFieldCustom(
+              context: context,
+              hintText: AppStrings.password,
+              controller: _passwordController,
+              obscureText: _passwordVisible,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: blackColor,
                 ),
-              ),
-              child: const Text(
-                "Register",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
+                onPressed: () {
+                  setState(() {
+                    _passwordVisible = !_passwordVisible;
+                  });
+                },
               ),
             ),
-          ),
-          const SizedBox(height: 12),
+            if (_passwordErrors.isNotEmpty)
+              ..._passwordErrors
+                  .map((error) => _buildErrorText(error))
+            else
+              const SizedBox.shrink(),
 
-          Center(
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, "/login");
-              },
-              child: RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    color: blackColor,
-                    fontSize: 14,
+            const SizedBox(height: 30),
+
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                onPressed: _register,
+                style: TextButton.styleFrom(
+                  backgroundColor: blueDeepColor,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  children: [
-                    const TextSpan(text: "Already have an account? "),
-                    TextSpan(
-                      text: "Login",
-                      style: TextStyle(
-                        color: blueDeepColor,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ],
+                ),
+                child: const Text(
+                  "Register",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, "/login");
+                },
+                child: RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: blackColor,
+                      fontSize: 14,
+                    ),
+                    children: [
+                      const TextSpan(text: "Already have an account? "),
+                      TextSpan(
+                        text: "Login",
+                        style: TextStyle(
+                          color: blueDeepColor,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -135,5 +215,17 @@ class _RegisterFormState extends State<RegisterForm> {
         color: blackColor,
       ),
     );
+  }
+
+  Widget _buildErrorText(String? error) {
+    return error != null
+        ? Padding(
+      padding: const EdgeInsets.only(top: 4, left: 8),
+      child: Text(
+        error,
+        style: StyledText().descriptionText(fontSize: 12, color: Colors.red),
+      ),
+    )
+        : const SizedBox.shrink();
   }
 }

@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_app/data/services/auth_service.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
 import 'package:travel_app/utils/color_constants.dart';
+import 'package:travel_app/utils/error_handler.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
@@ -12,42 +15,61 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+
   bool _passwordVisible = true;
+
+  void _login() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      showErrorDialog(context, "Firebase error", "Fill required fields");
+      return;
+    }
+
+    try {
+      var user = await _authService.loginUser(email, password);
+
+      if (user != null) {
+        Navigator.pushNamed(context, "/home");
+      }
+    } on FirebaseAuthException catch (e) {
+      String errorTitle = getFirebaseErrorTitle(e.code);
+      String errorMessage = e.message ?? "An unknown error occurred.";
+      showErrorDialog(context, errorTitle, errorMessage);
+    } catch (e) {
+      showErrorDialog(context, "Unexpected Error", e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.only(left: 50, top: 35, right: 50, bottom: 35),
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 35),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Email",
-            style:
-                StyledText().descriptionText(fontSize: 14, color: blackColor),
-          ),
+          Text("Email", style: StyledText().descriptionText(fontSize: 14, color: blackColor)),
           const SizedBox(height: 8),
           inputTextFieldCustom(
             context: context,
             hintText: AppStrings.email,
+            controller: _emailController,
           ),
           const SizedBox(height: 12),
-          Text(
-            "Password",
-            style:
-                StyledText().descriptionText(fontSize: 14, color: blackColor),
-          ),
+          Text("Password", style: StyledText().descriptionText(fontSize: 14, color: blackColor)),
           const SizedBox(height: 8),
           inputTextFieldCustom(
             context: context,
             hintText: AppStrings.password,
+            controller: _passwordController,
             obscureText: _passwordVisible,
             suffixIcon: IconButton(
-              icon: Icon(
-                _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                color: blackColor,
-              ),
+              icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off, color: blackColor),
               onPressed: () {
                 setState(() {
                   _passwordVisible = !_passwordVisible;
@@ -59,46 +81,31 @@ class _LoginFormState extends State<LoginForm> {
           SizedBox(
             width: double.infinity,
             child: TextButton(
-              onPressed: () {
-                // TODO call authService.login
-              },
+              onPressed: _login,
               style: TextButton.styleFrom(
-                backgroundColor: blueDeepColor, // Button color
-                padding:
-                    const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                backgroundColor: blueDeepColor,
+                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
               child: const Text(
                 "Login",
-                style: TextStyle(
-                  color: Colors.white, // Text color
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),
           ),
           const SizedBox(height: 12),
           Center(
             child: GestureDetector(
-              onTap: () {
-                // replace with Naviagor.pushNamedAndRemoveUntil(..., (Route<dynamic> route) => false);
-                Navigator.pushNamed(context, "/register");
-              },
-              child: RichText(
+              onTap: () => Navigator.pushNamedAndRemoveUntil(context, "/register", (route) => false),
+
+                child: RichText(
                 text: TextSpan(
                   style: TextStyle(color: blackColor, fontSize: 14),
                   children: [
                     const TextSpan(text: "Don't have an account yet? "),
                     TextSpan(
                       text: "Register",
-                      style: TextStyle(
-                        color: blueDeepColor,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                      ),
+                      style: TextStyle(color: blueDeepColor, fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
                     ),
                   ],
                 ),
