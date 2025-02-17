@@ -5,6 +5,7 @@ import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/data/repositories/driver_repository.dart';
 import 'package:travel_app/data/repositories/trips_repository.dart';
+import 'package:travel_app/data/services/user_service.dart';
 
 import '../../data/models/trip.dart';
 
@@ -62,10 +63,23 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         List<TaskTrip> taskTrips;
         List<PassengerTrip> passengerTrips;
         emit(ProcessStarted());
-        user = await DriverRepository.instance.getDriverWithId(event.driverId!);
-        taskTrips = await TripsRepository.instance.getTaskTrips(event.tripId!);
+        user = await DriverRepository.instance.getDriverWithId(event.driverId);
+        taskTrips = await TripsRepository.instance.getTaskTrips(event.tripId);
         passengerTrips =
-            await TripsRepository.instance.getPassengerTrips(event.tripId!);
+            await TripsRepository.instance.getPassengerTrips(event.tripId);
+
+        emit(TripDetailsLoaded(user, passengerTrips, taskTrips));
+      }
+
+      if (event is UpdateUserInfo) {
+        emit(ProcessStarted());
+        try {
+          await UserService().updateUserInfo(
+              event.firstName, event.lastName, event.mobilePhone);
+          emit(UserInitial());
+        } catch (e) {
+          //TO:DO notify user of error
+        }
       }
     });
   }

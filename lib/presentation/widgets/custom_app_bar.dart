@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/data/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
+import '../../utils/functions.dart';
 import '../../utils/text_styles.dart';
 
 PreferredSizeWidget customAppBar({
@@ -27,8 +29,9 @@ PreferredSizeWidget customAppBar({
             icon: Icon(isLoggedIn ? Icons.logout : Icons.login),
             onPressed: () async {
               if (isLoggedIn) {
-                await authService.logoutUser();
-                Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+                Functions.emitAuthEvent(context: context, event: LogOutEvent());
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "/home", (route) => false);
               } else {
                 Navigator.pushNamed(context, "/login");
               }
@@ -43,7 +46,7 @@ PreferredSizeWidget customAppBar({
             icon: const Icon(Icons.arrow_back),
             color: whiteColor,
             onPressed: () => Navigator.pop(context),
-    )
+          )
         : null,
     automaticallyImplyLeading: false,
   );

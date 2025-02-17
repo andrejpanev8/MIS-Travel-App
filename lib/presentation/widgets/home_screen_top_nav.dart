@@ -26,8 +26,8 @@ class RidesDeliveriesToggle extends StatelessWidget {
               children: [
                 _buildToggleButton(
                     context, AppStrings.rides, isRidesActive, true, carIcon),
-                _buildToggleButton(
-                    context, AppStrings.deliveries, !isRidesActive, false, boxIcon),
+                _buildToggleButton(context, AppStrings.deliveries,
+                    !isRidesActive, false, boxIcon),
               ],
             ),
             Row(children: [_buildSearchSection(context, isRidesActive)])
@@ -102,7 +102,9 @@ Widget _buildSearchSection(BuildContext context, bool showRides) {
         Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             child: Text(
-              showRides ? AppStrings.upcomingRides : AppStrings.upcomingDeliveries,
+              showRides
+                  ? AppStrings.upcomingRides
+                  : AppStrings.upcomingDeliveries,
               style: StyledText().appBarText(color: blackColor, fontSize: 18),
             )),
       ],
@@ -123,11 +125,11 @@ Widget _icon(bool showRides, bool isActive, String iconPath) {
 Future<void> _onNavButtonTap(BuildContext context, bool showRides) async {
   if (context.mounted) {
     Functions.emitScreenEvent(
-        context: context, event: ToggleActiveScreen(ridesActive: showRides))
+            context: context, event: ToggleActiveScreen(ridesActive: showRides))
         .whenComplete(() => showRides
-        ? Functions.emitEvent(
-        context: context, event: GetDriverUpcomingRides())
-        : Functions.emitEvent(
-        context: context, event: GetDriverUpcomingDeliveries()));
+            ? Functions.emitUserEvent(
+                context: context, event: GetDriverUpcomingRides())
+            : Functions.emitUserEvent(
+                context: context, event: GetDriverUpcomingDeliveries()));
   }
 }

@@ -5,10 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/home_screen_bloc/home_screen_bloc.dart';
 import 'dart:ui';
 
+import '../bloc/auth_bloc/auth_bloc.dart';
 import '../bloc/user_bloc/user_bloc.dart';
 
 class Functions {
-  static Future<void> emitEvent(
+  static Future<void> emitUserEvent(
       {required BuildContext context, UserEvent? event}) async {
     event != null ? context.read<UserBloc>().add(event) : null;
   }
@@ -16,6 +17,11 @@ class Functions {
   static Future<void> emitScreenEvent(
       {required BuildContext context, HomeScreenEvent? event}) async {
     event != null ? context.read<HomeScreenBloc>().add(event) : null;
+  }
+
+  static Future<void> emitAuthEvent(
+      {required BuildContext context, AuthEvent? event}) async {
+    event != null ? context.read<AuthBloc>().add(event) : null;
   }
 
   static String generateUniqueCode() {

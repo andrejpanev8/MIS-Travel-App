@@ -58,32 +58,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 listener: (context, state) {},
                 builder: (context, state) {
                   if (state is DriverUpcomingTripsLoaded) {
-                    // return buildDriverTrips(context, state.driverTrips);
-
-                    //check this
                     return widgetBuilder(
                         context: context,
                         items: state.driverTrips,
                         itemBuilder: (context, ride) =>
                             RidesWidget(context: context, ride: ride),
-                        onRefresh: () => Functions.emitEvent(
+                        onRefresh: () => Functions.emitUserEvent(
                             context: context,
                             event: GetDriverUpcomingRides(forceRefresh: true)),
                         emptyWidget:
                             emptyListIndicator(AppStrings.noUpcomingRides));
                   } else if (state is DriverUpcomingDeliveriesLoaded) {
-                    // return buildDriverDeliveries(context, state.driverDeliveries);
-
                     return widgetBuilder(
                         context: context,
                         items: state.driverDeliveries,
                         itemBuilder: (context, task) =>
                             TaskTripWidget(context: context, task: task),
-                        onRefresh: () => Functions.emitEvent(
+                        onRefresh: () => Functions.emitUserEvent(
                             context: context,
                             event: GetDriverUpcomingDeliveries(
                                 forceRefresh: true)),
-                        emptyWidget: emptyListIndicator(AppStrings.noUpcomingDeliveries));
+                        emptyWidget: emptyListIndicator(
+                            AppStrings.noUpcomingDeliveries));
                   }
                   return Center(child: CircularProgressIndicator());
                 },

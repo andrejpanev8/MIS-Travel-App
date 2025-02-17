@@ -14,13 +14,14 @@ final class ProcessStarted extends AuthState {}
 final class ProcessFailed extends AuthState {}
 
 final class UserIsLoggedIn extends AuthState {
-  UserModel user;
-  UserIsLoggedIn(this.user);
+  final UserModel user;
+  const UserIsLoggedIn(this.user);
 }
 
 final class LoginFail extends AuthState {
+  final String errorTitle;
   final String errorMessage;
-  const LoginFail(this.errorMessage);
+  const LoginFail(this.errorTitle, this.errorMessage);
 }
 
 class MultiFactorAuthenticationSuccesfull extends AuthState {}

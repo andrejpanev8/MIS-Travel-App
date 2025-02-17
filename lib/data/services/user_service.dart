@@ -74,6 +74,12 @@ class UserService {
     }
   }
 
+  //TO:DO implement method
+  Future<bool> updateUserInfo(
+      String firstName, String lastName, String phoneNumber) async {
+    return true;
+  }
+
   Future<bool> updateUserRole(String userId, UserRole newRole) async {
     try {
       await _firestore
