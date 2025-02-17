@@ -8,7 +8,7 @@ Widget inputTextFieldCustom({
   String hintText = "",
   bool obscureText = false,
   TextInputType keyboardType = TextInputType.text,
-  bool readOnly = true,
+  bool readOnly = false,
   Widget? prefixIcon,
   Widget? suffixIcon,
 }) {
