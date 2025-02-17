@@ -23,7 +23,7 @@ void main() async {
   runApp(MultiBlocProvider(providers: [
     BlocProvider(create: (context) => UserBloc()),
     BlocProvider(create: (context) => HomeScreenBloc()),
-    BlocProvider(create: (context) => AuthBloc()),
+    BlocProvider(create: (context) => AuthBloc()..add(CheckAuthState())),
   ], child: const MyApp()));
 }
 
@@ -37,7 +37,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      // initialRoute: "/login",
       initialRoute: "/home",
       routes: {
         "/home": (context) => const MyHomePage(),
@@ -61,31 +60,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    String? currentRoute = ModalRoute.of(context)?.settings.name;
-    bool showNavigationBar =
-        !(currentRoute == "/login" || currentRoute == "/register");
-
     return Scaffold(
       appBar: customAppBar(context: context),
-      bottomNavigationBar: showNavigationBar
-          ? NavigationBar(
-              onDestinationSelected: (index) {
-                setState(() {
-                  currentPageIndex = index;
-                });
-              },
-              destinations: [
-                const NavigationDestination(
-                    icon: Icon(Icons.home_outlined), label: 'Home'),
-                NavigationDestination(
-                    icon: _transportIconWidget(), label: 'My rides'),
-                const NavigationDestination(
-                    icon: Icon(Icons.person_outline), label: 'Profile'),
-              ],
-              selectedIndex: currentPageIndex,
-            )
-          : null,
-      // body: LoginScreen(),
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        destinations: [
+          const NavigationDestination(
+              icon: Icon(Icons.home_outlined), label: 'Home'),
+          NavigationDestination(
+              icon: _transportIconWidget(), label: 'My rides'),
+          const NavigationDestination(
+              icon: Icon(Icons.person_outline), label: 'Profile'),
+        ],
+        selectedIndex: currentPageIndex,
+      ),
       body: [HomeScreen(), MyRidesScreen(), ProfileScreen()][currentPageIndex],
     );
   }
