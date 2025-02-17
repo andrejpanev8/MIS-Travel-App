@@ -187,6 +187,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     ),
                     children: [
                       const TextSpan(text: AppStrings.alreadyHaveAccount),
+                      const TextSpan(text: " "),
                       TextSpan(
                         text: AppStrings.login,
                         style: TextStyle(

@@ -17,8 +17,8 @@ class ValidationUtils {
 
   static String? nameValidator(String? value) {
     return MultiValidator([
-      RequiredValidator(errorText: "Enter full name"),
-      MinLengthValidator(3, errorText: "Full name must be more than 4 letters")
+      RequiredValidator(errorText: "Enter first name"),
+      MinLengthValidator(3, errorText: "First name must be more than 4 letters")
     ])(value);
   }
 
