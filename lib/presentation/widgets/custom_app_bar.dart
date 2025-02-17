@@ -26,7 +26,8 @@ PreferredSizeWidget customAppBar({
           bool isLoggedIn = snapshot.hasData && snapshot.data != null;
 
           return IconButton(
-            icon: Icon(isLoggedIn ? Icons.logout : Icons.login),
+            icon: Icon(isLoggedIn ? Icons.logout : Icons.login,
+                color: whiteColor),
             onPressed: () async {
               if (isLoggedIn) {
                 Functions.emitAuthEvent(context: context, event: LogOutEvent());

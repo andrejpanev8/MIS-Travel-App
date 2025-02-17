@@ -122,7 +122,8 @@ class _LoginFormState extends State<LoginForm> {
               text: TextSpan(
                 style: TextStyle(color: blackColor, fontSize: 14),
                 children: [
-                  TextSpan(text: AppStrings.dontHaveAnAccount),
+                  const TextSpan(text: AppStrings.dontHaveAnAccount),
+                  const TextSpan(text: " "),
                   TextSpan(
                     text: AppStrings.register,
                     style: TextStyle(
