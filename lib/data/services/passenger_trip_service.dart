@@ -12,11 +12,7 @@ class PassengerTripService {
   AuthService authService = AuthService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserService userService = UserService();
-  late final TripService tripService;
-
-  void setTripService(TripService service) {
-    tripService = service;
-  }
+  final TripService tripService = TripService();
 
   Future<PassengerTrip?> findPassengerTripById(String tripId) async {
     try {

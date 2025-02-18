@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
-import 'package:travel_app/data/mock/mock_passenger_trips.dart';
-import 'package:travel_app/data/mock/mock_task_trips.dart';
-import 'package:travel_app/data/mock/mock_users.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
@@ -22,9 +19,9 @@ import '../../data/models/trip.dart';
 
 class RideDetailsScreen extends StatelessWidget {
   Trip? trip;
-  UserModel? driver = mockUsers[0];
-  List<PassengerTrip>? passengerTrips = mockPassengerTrips;
-  List<TaskTrip>? taskTrips = mockTaskTrips;
+  UserModel? driver;
+  List<PassengerTrip>? passengerTrips;
+  List<TaskTrip>? taskTrips;
   RideDetailsScreen({super.key, this.trip});
 
   @override
@@ -33,60 +30,64 @@ class RideDetailsScreen extends StatelessWidget {
 
     return SafeArea(
         child: Scaffold(
-          appBar: customAppBar(context: context, arrowBack: true),
-          body: BlocConsumer<UserBloc, UserState>(
-            listener: (context, state) => {},
-            builder: (context, state) {
-              if (state is TripDetailsLoaded) {
-                driver = state.driver!;
-                passengerTrips = state.passengerTrips;
-                taskTrips = state.taskTrips;
-              }
-              return SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [_generalInfo(trip!, driver)],
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      AppStrings.passengers,
-                      style: StyledText().appBarText(color: blackColor),
-                    ),
-                    widgetBuilder(
-                        context: context,
-                        items: passengerTrips!,
-                        itemBuilder: (context, passengerTrip) =>
-                            PassengerWidget(passenger: passengerTrip),
-                        scrollPhysics: NeverScrollableScrollPhysics()),
-                    SizedBox(height: 30),
-                    Text(
-                      AppStrings.packages,
-                      style: StyledText().appBarText(color: blackColor),
-                    ),
-                    widgetBuilder(
-                        context: context,
-                        items: taskTrips!,
-                        itemBuilder: (context, taskTrip) =>
-                            TaskTripDetailsWidget(taskTrip: taskTrip),
-                        scrollPhysics: NeverScrollableScrollPhysics()),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(AppStrings.yourRoute,
-                            style: StyledText().descriptionText(color: blackColor)),
-                        _mapSection()
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
+      appBar: customAppBar(context: context, arrowBack: true),
+      body: BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
+          if (state is TripDetailsLoaded) {
+            driver = state.driver!;
+            passengerTrips = state.passengerTrips;
+            taskTrips = state.taskTrips;
+            return _buildContent(context);
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
+    ));
+  }
+
+  Widget _buildContent(BuildContext context) {
+    return SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [_generalInfo(trip!, driver)],
           ),
-        ));
+          SizedBox(height: 10),
+          Text(
+            AppStrings.passengers,
+            style: StyledText().appBarText(color: blackColor),
+          ),
+          widgetBuilder(
+              context: context,
+              items: passengerTrips!,
+              itemBuilder: (context, passengerTrip) =>
+                  PassengerWidget(passenger: passengerTrip),
+              scrollPhysics: NeverScrollableScrollPhysics()),
+          SizedBox(height: 30),
+          Text(
+            AppStrings.packages,
+            style: StyledText().appBarText(color: blackColor),
+          ),
+          widgetBuilder(
+              context: context,
+              items: taskTrips!,
+              itemBuilder: (context, taskTrip) =>
+                  TaskTripDetailsWidget(taskTrip: taskTrip),
+              scrollPhysics: NeverScrollableScrollPhysics()),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(AppStrings.yourRoute,
+                  style: StyledText().descriptionText(color: blackColor)),
+              _mapSection()
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _generalInfo(Trip trip, UserModel? driver) {
@@ -104,11 +105,13 @@ class RideDetailsScreen extends StatelessWidget {
         _buildRow(
             icon: Icons.badge_outlined,
             text:
-            driver != null ? "${driver.firstName} ${driver.lastName}" : ""),
-        _buildRow(text: "${AppStrings.startingLocation}: ${trip.startLocation}"),
+                driver != null ? "${driver.firstName} ${driver.lastName}" : ""),
+        _buildRow(
+            text: "${AppStrings.startingLocation}: ${trip.startLocation}"),
         _buildRow(
             icon: Icons.people_alt_outlined,
-            text: "${AppStrings.numberOfPassengers}: ${trip.passengerTrips.length}"),
+            text:
+                "${AppStrings.numberOfPassengers}: ${trip.passengerTrips.length}"),
         _buildRow(
             text: "${AppStrings.numberOfPackages}: ${trip.taskTrips.length}",
             assetIcon: boxIcon),
@@ -122,13 +125,13 @@ class RideDetailsScreen extends StatelessWidget {
         icon != null
             ? Icon(icon)
             : assetIcon != null
-            ? SvgPicture.asset(
-          assetIcon,
-          width: 20,
-          height: 20,
-          colorFilter: ColorFilter.mode(blackColor, BlendMode.srcIn),
-        )
-            : SizedBox(width: 25),
+                ? SvgPicture.asset(
+                    assetIcon,
+                    width: 20,
+                    height: 20,
+                    colorFilter: ColorFilter.mode(blackColor, BlendMode.srcIn),
+                  )
+                : SizedBox(width: 25),
         SizedBox(width: 10),
         Text(text)
       ],
@@ -138,7 +141,7 @@ class RideDetailsScreen extends StatelessWidget {
   Widget _mapSection() {
     return CachedNetworkImage(
       imageUrl:
-      "https://developers.google.com/static/maps/images/landing/hero_directions_api.png",
+          "https://developers.google.com/static/maps/images/landing/hero_directions_api.png",
       placeholder: (context, url) => const CircularProgressIndicator(),
       errorWidget: (context, url, error) => const Icon(Icons.error),
       width: double.infinity,

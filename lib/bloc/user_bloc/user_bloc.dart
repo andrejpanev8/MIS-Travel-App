@@ -3,10 +3,13 @@ import 'package:equatable/equatable.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
-import 'package:travel_app/data/repositories/driver_repository.dart';
-import 'package:travel_app/data/repositories/trips_repository.dart';
+import 'package:travel_app/data/services/auth_service.dart';
+import 'package:travel_app/data/services/passenger_trip_service.dart';
+import 'package:travel_app/data/services/task_trip_service.dart';
+import 'package:travel_app/data/services/trip_service.dart';
 import 'package:travel_app/data/services/user_service.dart';
 
+import '../../data/DTO/TaskTripDTO.dart';
 import '../../data/models/trip.dart';
 
 part 'user_event.dart';
@@ -14,7 +17,8 @@ part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   List<Trip>? _cachedDriverTrips;
-  List<TaskTrip>? _cachedDriverDeliveries;
+  List<TaskTripDTO>? _cachedDriverDeliveries;
+
   UserBloc() : super(UserInitial()) {
     on<UserEvent>((event, emit) async {
       if (event is GetDriverUpcomingRides) {
@@ -25,7 +29,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
         List<Trip> driverTrips = [];
         emit(ProcessStarted());
-        driverTrips = await DriverRepository.instance.getDriverTrips();
+        driverTrips = await TripService().getAllUpcomingTrips();
         emit(DriverUpcomingTripsLoaded(driverTrips));
       }
 
@@ -35,10 +39,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           return;
         }
 
-        List<TaskTrip> driverDeliveries = [];
+        List<TaskTripDTO> driverDeliveries = [];
         emit(ProcessStarted());
         driverDeliveries =
-            await DriverRepository.instance.getDriverDeliveries();
+            await TaskTripService().getUpcomingDeliveriesForUser();
         emit(DriverUpcomingDeliveriesLoaded(driverDeliveries));
       }
 
@@ -49,24 +53,27 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(DriverUpcomingDeliveriesLoaded(_cachedDriverDeliveries!));
           return;
         }
+        UserModel? currentUser = await AuthService().getCurrentUser();
         List<Trip> driverTrips = [];
-        List<TaskTrip> driverDeliveries = [];
+        List<TaskTripDTO> driverDeliveries = [];
         emit(ProcessStarted());
-        driverTrips = await DriverRepository.instance.getDriverTrips();
+        driverTrips = await TripService().getTripsByDriver(currentUser!.id);
         driverDeliveries =
-            await DriverRepository.instance.getDriverDeliveries();
+            await TaskTripService().getUpcomingDeliveriesForUser();
         emit(DriverDataLoaded(driverTrips, driverDeliveries));
       }
 
       if (event is GetTripDetails) {
-        UserModel user;
-        List<TaskTrip> taskTrips;
-        List<PassengerTrip> passengerTrips;
+        UserModel? user;
+        List<TaskTrip>? taskTrips;
+        List<PassengerTrip>? passengerTrips;
         emit(ProcessStarted());
-        user = await DriverRepository.instance.getDriverWithId(event.driverId);
-        taskTrips = await TripsRepository.instance.getTaskTrips(event.tripId);
-        passengerTrips =
-            await TripsRepository.instance.getPassengerTrips(event.tripId);
+        // user = await DriverRepository.instance.getDriverWithId(event.driverId);
+        user = await UserService().getUserById(event.driverId);
+        taskTrips =
+            await TaskTripService().getAllTaskTripsForTripId(event.tripId);
+        passengerTrips = await PassengerTripService()
+            .getAllPassengerTripsForTripId(event.tripId);
 
         emit(TripDetailsLoaded(user, passengerTrips, taskTrips));
       }

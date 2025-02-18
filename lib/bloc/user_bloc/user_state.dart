@@ -20,14 +20,14 @@ class DriverUpcomingTripsLoaded extends UserState {
 }
 
 class DriverUpcomingDeliveriesLoaded extends UserState {
-  final List<TaskTrip> driverDeliveries;
+  final List<TaskTripDTO> driverDeliveries;
 
   const DriverUpcomingDeliveriesLoaded(this.driverDeliveries);
 }
 
 class DriverDataLoaded extends UserState {
   final List<Trip> driverTrips;
-  final List<TaskTrip> driverDeliveries;
+  final List<TaskTripDTO> driverDeliveries;
   const DriverDataLoaded(this.driverTrips, this.driverDeliveries);
 }
 
@@ -36,5 +36,5 @@ class TripDetailsLoaded extends UserState {
   final List<PassengerTrip>? passengerTrips;
   final List<TaskTrip>? taskTrips;
 
-  TripDetailsLoaded(this.driver, this.passengerTrips, this.taskTrips);
+  const TripDetailsLoaded(this.driver, this.passengerTrips, this.taskTrips);
 }

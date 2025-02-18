@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
-import 'package:travel_app/data/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
@@ -12,8 +11,6 @@ PreferredSizeWidget customAppBar({
   final String? appBarText,
   bool arrowBack = false,
 }) {
-  final AuthService authService = AuthService();
-
   return AppBar(
     title: Text(
       appBarText ?? AppStrings.appName,

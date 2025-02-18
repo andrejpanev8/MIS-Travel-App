@@ -3,6 +3,7 @@ import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/services/trip_service.dart';
 import 'package:travel_app/data/services/user_service.dart';
 
+import '../DTO/TaskTripDTO.dart';
 import '../models/location.dart';
 import '../models/trip.dart';
 import '../models/user.dart';
@@ -12,11 +13,11 @@ class TaskTripService {
   AuthService authService = AuthService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserService userService = UserService();
-  late final TripService tripService;
+  final TripService tripService = TripService();
 
-  void setTripService(TripService service) {
-    tripService = service;
-  }
+  // void setTripService(TripService service) {
+  //   tripService = service;
+  // }
 
   Future<TaskTrip?> findTaskTripById(String tripId) async {
     try {
@@ -62,7 +63,7 @@ class TaskTripService {
     return taskTripIdGenerated;
   }
 
-  Future<List<Map<String, dynamic>>> getUpcomingDeliveriesForUser() async {
+  Future<List<TaskTripDTO>> getUpcomingDeliveriesForUser() async {
     try {
       final currentUser = await authService.getCurrentUser();
       if (currentUser == null) {
@@ -75,7 +76,7 @@ class TaskTripService {
           .where('tripStatus', isEqualTo: 0)
           .get();
 
-      List<Map<String, dynamic>> upcomingTrips = [];
+      List<TaskTripDTO> upcomingTrips = [];
 
       for (var doc in taskTripsSnapshot.docs) {
         TaskTrip taskTrip =
@@ -86,10 +87,11 @@ class TaskTripService {
 
         if (tripDoc.exists) {
           Trip trip = Trip.fromJson(tripDoc.data() as Map<String, dynamic>);
-          upcomingTrips.add({
-            'taskTrip': taskTrip,
-            'trip': trip,
+          TaskTripDTO taskTripDTO = TaskTripDTO.fromJson({
+            'taskTrip': taskTrip.toJson(),
+            'trip': trip.toJson(),
           });
+          upcomingTrips.add(taskTripDTO);
         }
       }
 

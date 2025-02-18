@@ -7,8 +7,6 @@ import 'package:travel_app/utils/functions.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import '../../bloc/home_screen_bloc/home_screen_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
-import '../../data/models/task_trip.dart';
-import '../../data/models/trip.dart';
 import '../widgets/home_screen_top_nav.dart';
 import '../widgets/widget_builder.dart';
 
@@ -20,8 +18,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Trip> trips = [];
-  List<TaskTrip> taskTrips = [];
   @override
   void initState() {
     super.initState();
@@ -54,8 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _ridesDeliveriesToggle(),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: BlocConsumer<UserBloc, UserState>(
-                listener: (context, state) {},
+              child: BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {
                   if (state is DriverUpcomingTripsLoaded) {
                     return widgetBuilder(

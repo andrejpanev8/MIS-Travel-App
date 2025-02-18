@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 
-import '../../data/models/task_trip.dart';
+import '../../data/DTO/TaskTripDTO.dart';
 import '../../data/models/trip.dart';
 import '../../utils/functions.dart';
 import '../../utils/string_constants.dart';
@@ -22,7 +22,7 @@ class MyRidesScreen extends StatefulWidget {
 
 class _MyRidesScreenState extends State<MyRidesScreen> {
   List<Trip> trips = [];
-  List<TaskTrip> taskTrips = [];
+  List<TaskTripDTO> taskTrips = [];
 
   @override
   Widget build(BuildContext context) {

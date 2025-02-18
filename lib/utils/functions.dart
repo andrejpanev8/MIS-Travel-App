@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/home_screen_bloc/home_screen_bloc.dart';
-import 'dart:ui';
 
 import '../bloc/auth_bloc/auth_bloc.dart';
 import '../bloc/user_bloc/user_bloc.dart';

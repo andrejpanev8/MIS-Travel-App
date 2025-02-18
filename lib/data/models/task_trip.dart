@@ -11,7 +11,6 @@ class TaskTrip {
   ClientTripStatus tripStatus;
   final String tripId;
 
-
   TaskTrip(
       {this.id = "",
       required this.startLocation,

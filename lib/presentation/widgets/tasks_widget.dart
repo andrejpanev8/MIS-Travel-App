@@ -5,13 +5,13 @@ import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
-import '../../data/models/task_trip.dart';
+import '../../data/DTO/TaskTripDTO.dart';
 import '../../utils/decorations.dart';
 import '../../utils/functions.dart';
 
 class TaskTripWidget extends StatelessWidget {
   BuildContext context;
-  TaskTrip task;
+  TaskTripDTO task;
 
   TaskTripWidget({super.key, required this.context, required this.task});
 
@@ -31,7 +31,7 @@ class TaskTripWidget extends StatelessWidget {
   }
 
   Widget _leftInfo() {
-    final text = "${task.startLocation} - ${task.endLocation}";
+    final text = "${task.trip!.startCity} - ${task.trip!.endCity}";
     final textStyle = StyledText().descriptionText(
       color: blackColor,
       fontSize: 16,
@@ -84,7 +84,7 @@ class TaskTripWidget extends StatelessWidget {
               const SizedBox(width: 5),
               Expanded(
                 child: Text(
-                  task.description,
+                  task.taskTrip!.description,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   style: StyledText().descriptionText(
@@ -116,6 +116,7 @@ class TaskTripWidget extends StatelessWidget {
             const SizedBox(width: 4),
             Text(
               // "${task.price.toStringAsFixed(0)} ден",
+              // TO:DO price missing in TaskTrip model
               "200 ден",
               style: StyledText().descriptionText(
                 fontSize: 12,
@@ -125,6 +126,9 @@ class TaskTripWidget extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
+        // TO:DO implement a possible pop-up here,
+        // Main goal: viewing entire description with bigger letters,
+        // Possible additions: view location on map or smth
         customArrowButton(
           text: AppStrings.viewDetails,
           fontSize: 12,

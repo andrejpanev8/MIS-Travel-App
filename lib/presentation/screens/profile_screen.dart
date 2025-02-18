@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
-import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
 import 'package:travel_app/utils/color_constants.dart';
 
 import '../../data/models/user.dart';
-import '../../utils/functions.dart';
 import '../../utils/string_constants.dart';
 import '../../utils/text_styles.dart';
 import '../widgets/infoText_widget.dart';
