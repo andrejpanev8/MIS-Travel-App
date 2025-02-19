@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/presentation/widgets/empty_list_indicator.dart';
 import 'package:travel_app/presentation/widgets/rides_widget.dart';
 import 'package:travel_app/presentation/widgets/tasks_widget.dart';
 import 'package:travel_app/utils/functions.dart';
 import 'package:travel_app/utils/string_constants.dart';
+import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../bloc/home_screen_bloc/home_screen_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
+import '../widgets/floating_action_menu.dart';
 import '../widgets/home_screen_top_nav.dart';
 import '../widgets/widget_builder.dart';
 
@@ -44,46 +47,66 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: Scaffold(
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _ridesDeliveriesToggle(),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: BlocBuilder<UserBloc, UserState>(
-                builder: (context, state) {
-                  if (state is DriverUpcomingTripsLoaded) {
-                    return widgetBuilder(
-                        context: context,
-                        items: state.driverTrips,
-                        itemBuilder: (context, ride) =>
-                            RidesWidget(context: context, ride: ride),
-                        onRefresh: () => Functions.emitUserEvent(
+        body: SafeArea(
+          child: Column(
+            children: [
+              _ridesDeliveriesToggle(),
+              Expanded(
+                // Wrap the content in Expanded
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 16.0),
+                  child: BlocBuilder<UserBloc, UserState>(
+                    builder: (context, state) {
+                      if (state is DriverUpcomingTripsLoaded) {
+                        return widgetBuilder(
                             context: context,
-                            event: GetDriverUpcomingRides(forceRefresh: true)),
-                        emptyWidget:
-                            emptyListIndicator(AppStrings.noUpcomingRides));
-                  } else if (state is DriverUpcomingDeliveriesLoaded) {
-                    return widgetBuilder(
-                        context: context,
-                        items: state.driverDeliveries,
-                        itemBuilder: (context, task) =>
-                            TaskTripWidget(context: context, task: task),
-                        onRefresh: () => Functions.emitUserEvent(
+                            items: state.driverTrips,
+                            itemBuilder: (context, ride) =>
+                                RidesWidget(context: context, ride: ride),
+                            onRefresh: () => Functions.emitUserEvent(
+                                context: context,
+                                event:
+                                    GetDriverUpcomingRides(forceRefresh: true)),
+                            emptyWidget:
+                                emptyListIndicator(AppStrings.noUpcomingRides));
+                      } else if (state is DriverUpcomingDeliveriesLoaded) {
+                        return widgetBuilder(
                             context: context,
-                            event: GetDriverUpcomingDeliveries(
-                                forceRefresh: true)),
-                        emptyWidget: emptyListIndicator(
-                            AppStrings.noUpcomingDeliveries));
-                  }
-                  return Center(child: CircularProgressIndicator());
-                },
+                            items: state.driverDeliveries,
+                            itemBuilder: (context, task) =>
+                                TaskTripWidget(context: context, task: task),
+                            onRefresh: () => Functions.emitUserEvent(
+                                context: context,
+                                event: GetDriverUpcomingDeliveries(
+                                    forceRefresh: true)),
+                            emptyWidget: emptyListIndicator(
+                                AppStrings.noUpcomingDeliveries));
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+        floatingActionButton: _floatingActionButton(context),
       ),
     );
+  }
+
+  Widget _floatingActionButton(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is UserIsLoggedIn && state.user.role == UserRole.ADMIN) {
+        // TO:DO implement on tap methods for ride and delivery
+        return PopupFAB(
+          onTapAddRide: () {},
+          onTapAddDelivery: () {},
+        );
+      }
+      return const SizedBox.shrink();
+    });
   }
 
   Widget _ridesDeliveriesToggle() {
