@@ -32,9 +32,11 @@ class GetTripDetails extends UserEvent {
 }
 
 class UpdateUserInfo extends UserEvent {
+  final String userId;
   final String firstName;
   final String lastName;
   final String mobilePhone;
 
-  const UpdateUserInfo(this.firstName, this.lastName, this.mobilePhone);
+  const UpdateUserInfo(
+      this.userId, this.firstName, this.lastName, this.mobilePhone);
 }

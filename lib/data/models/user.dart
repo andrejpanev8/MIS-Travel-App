@@ -15,7 +15,7 @@ class UserModel {
     required this.phoneNumber,
     required this.email,
     required this.role,
-  }) ;
+  });
 
   UserModel.fromJson(Map<String, dynamic> data)
       : id = data['id'],
@@ -34,4 +34,21 @@ class UserModel {
         'role': role.index
       };
 
+  UserModel copyWith({
+      String? id,
+      String? firstName,
+      String? lastName,
+      String? phoneNumber,
+      String? email,
+      UserRole? role
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      email: email ?? this.email,
+      role: role ?? this.role,
+    );
+  }
 }

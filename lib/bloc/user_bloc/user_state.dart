@@ -38,3 +38,26 @@ class TripDetailsLoaded extends UserState {
 
   const TripDetailsLoaded(this.driver, this.passengerTrips, this.taskTrips);
 }
+
+class UserValidationFailed extends UserState {
+  final Map<String, String> errors;
+
+  const UserValidationFailed(this.errors);
+
+  @override
+  List<Object> get props => [errors];
+}
+
+class UserUpdateSuccess extends UserState {
+  @override
+  List<Object> get props => [];
+}
+
+class UserUpdateFailure extends UserState {
+  final String message;
+
+  const UserUpdateFailure(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

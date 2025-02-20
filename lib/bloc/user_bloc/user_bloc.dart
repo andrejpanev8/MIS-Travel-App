@@ -8,6 +8,7 @@ import 'package:travel_app/data/services/passenger_trip_service.dart';
 import 'package:travel_app/data/services/task_trip_service.dart';
 import 'package:travel_app/data/services/trip_service.dart';
 import 'package:travel_app/data/services/user_service.dart';
+import 'package:travel_app/utils/validation_utils.dart';
 
 import '../../data/DTO/TaskTripDTO.dart';
 import '../../data/models/trip.dart';
@@ -80,12 +81,29 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       if (event is UpdateUserInfo) {
         emit(ProcessStarted());
+
+        Map<String, String> errors = {};
+
+        String? nameError = ValidationUtils.nameValidator(event.firstName);
+        if (nameError != null) errors["name"] = nameError;
+
+        String? surnameError = ValidationUtils.surnameValidator(event.lastName);
+        if (surnameError != null) errors["surname"] = surnameError;
+
+        String? phoneError = ValidationUtils.phoneValidator(event.mobilePhone);
+        if (phoneError != null) errors["phoneNumber"] = phoneError;
+
+        if (errors.isNotEmpty) {
+          emit(UserValidationFailed(errors));
+          return;
+        }
         try {
           await UserService().updateUserInfo(
-              event.firstName, event.lastName, event.mobilePhone);
-          emit(UserInitial());
+            event.userId,event.firstName,event.lastName,event.mobilePhone
+          );
+          emit(UserUpdateSuccess());
         } catch (e) {
-          //TO:DO notify user of error
+          emit(UserUpdateFailure("Failed to update user."));
         }
       }
     });

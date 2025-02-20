@@ -33,6 +33,8 @@ class AppStrings {
   static const String registrationSuccessTitle = "Registration Successful";
   static const String registrationSuccessMessage = "You have registered successfully!";
   static const String registrationErrorTitle = "Registration Failed";
+  static const String updateUserInfoSuccessTitle = "Profile Update Successful";
+  static const String updateUserInfoSuccessMessage = "You have updated your profile successfully!";
   static const String firstName = "First Name";
   static const String firstNameHint = "Enter your first name";
   static const String lastName = "Last Name";

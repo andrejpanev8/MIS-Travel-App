@@ -243,7 +243,6 @@ class TripService {
       throw Exception("No user is logged in");
     }
     if (currentUser.role != UserRole.ADMIN) {
-      print(currentUser.role);
       throw Exception(
           "You do not have permission to change the status of the trip.");
     }
