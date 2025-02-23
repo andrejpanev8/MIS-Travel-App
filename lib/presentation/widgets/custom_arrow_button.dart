@@ -12,7 +12,7 @@ Widget customArrowButton(
     IconData? customIcon,
     bool noIcon = false,
     double? iconSize,
-    Color? textColor,
+    Color? textColor = whiteColor,
     BorderSide? border,
     double? fontSize}) {
   return noIcon
@@ -21,7 +21,8 @@ Widget customArrowButton(
           style: _buttonStyle(backgroundColor, splashColor, border),
           child: Text(
             text,
-            style: StyledText().descriptionText(),
+            style: StyledText()
+                .descriptionText(color: textColor, fontSize: fontSize),
           ),
         )
       : TextButton.icon(

@@ -64,8 +64,7 @@ class _LoginFormState extends State<LoginForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(AppStrings.email,
-            style:
-                StyledText().descriptionText(fontSize: 14, color: blackColor)),
+            style: StyledText().descriptionText(fontSize: 14)),
         const SizedBox(height: 8),
         inputTextFieldCustom(
           context: context,
@@ -74,8 +73,7 @@ class _LoginFormState extends State<LoginForm> {
         ),
         const SizedBox(height: 12),
         Text(AppStrings.password,
-            style:
-                StyledText().descriptionText(fontSize: 14, color: blackColor)),
+            style: StyledText().descriptionText(fontSize: 14)),
         const SizedBox(height: 8),
         inputTextFieldCustom(
           context: context,

@@ -11,7 +11,8 @@ class AppStrings {
   static const String login = 'Login';
   static const String upcomingRides = "Upcoming Rides";
   static const String upcomingDeliveries = "Upcoming Deliveries";
-  static const String loginRequiredMessage = "You have to login to view your data";
+  static const String loginRequiredMessage =
+      "You have to login to view your data";
   static const String noUpcomingRides = "No upcoming rides available";
   static const String noUpcomingDeliveries = "No upcoming deliveries available";
   static const String passengers = "Passengers";
@@ -31,10 +32,12 @@ class AppStrings {
   static const String unexpectedError = "Unexpected Error";
   static const String unknownError = "An unknown error occurred.";
   static const String registrationSuccessTitle = "Registration Successful";
-  static const String registrationSuccessMessage = "You have registered successfully!";
+  static const String registrationSuccessMessage =
+      "You have registered successfully!";
   static const String registrationErrorTitle = "Registration Failed";
   static const String updateUserInfoSuccessTitle = "Profile Update Successful";
-  static const String updateUserInfoSuccessMessage = "You have updated your profile successfully!";
+  static const String updateUserInfoSuccessMessage =
+      "You have updated your profile successfully!";
   static const String firstName = "First Name";
   static const String firstNameHint = "Enter your first name";
   static const String lastName = "Last Name";
@@ -48,6 +51,8 @@ class AppStrings {
   static const String timeIconTooltip = "Time";
   static const String passengersLabel = "Passengers";
   static const String viewDetails = "View details";
+  static const String rideDetails = "Ride Details";
+  static const String selectALocation = "Select a location";
   static const String description = "Description";
   static const String noItemsAvailable = "No items available";
 }

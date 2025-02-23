@@ -65,13 +65,15 @@ class _PopupFABState extends State<PopupFAB>
         _buildBackground(),
         _buildAnimatedButton(
           svgAsset: addRideIcon,
+          heroTag: "addRide",
           positionFactor: 5,
-          onTap: () => widget.onTapAddRide,
+          onTap: widget.onTapAddRide ?? () {},
         ),
         _buildAnimatedButton(
           svgAsset: addDeliveryIcon,
+          heroTag: "addDelivery",
           positionFactor: 2.5,
-          onTap: () => widget.onTapAddDelivery,
+          onTap: widget.onTapAddDelivery ?? () {},
         ),
         FloatingActionButton(
           onPressed: animate,
@@ -88,11 +90,11 @@ class _PopupFABState extends State<PopupFAB>
     );
   }
 
-  Widget _buildAnimatedButton({
-    required String svgAsset,
-    required VoidCallback onTap,
-    required double positionFactor,
-  }) {
+  Widget _buildAnimatedButton(
+      {required String svgAsset,
+      required VoidCallback onTap,
+      required double positionFactor,
+      required String heroTag}) {
     return Transform(
       transform: Matrix4.translationValues(
         0.0,
@@ -102,6 +104,7 @@ class _PopupFABState extends State<PopupFAB>
       child: FloatingActionButton(
         onPressed: onTap,
         backgroundColor: transparentColor,
+        heroTag: heroTag,
         shape: const CircleBorder(),
         elevation: 0.0,
         child: SvgPicture.asset(

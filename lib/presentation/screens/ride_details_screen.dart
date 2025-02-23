@@ -58,7 +58,7 @@ class RideDetailsScreen extends StatelessWidget {
           SizedBox(height: 10),
           Text(
             AppStrings.passengers,
-            style: StyledText().appBarText(color: blackColor),
+            style: StyledText().appBarText(),
           ),
           widgetBuilder(
               context: context,
@@ -69,7 +69,7 @@ class RideDetailsScreen extends StatelessWidget {
           SizedBox(height: 30),
           Text(
             AppStrings.packages,
-            style: StyledText().appBarText(color: blackColor),
+            style: StyledText().appBarText(),
           ),
           widgetBuilder(
               context: context,
@@ -80,8 +80,7 @@ class RideDetailsScreen extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(AppStrings.yourRoute,
-                  style: StyledText().descriptionText(color: blackColor)),
+              Text(AppStrings.yourRoute, style: StyledText().descriptionText()),
               _mapSection()
             ],
           ),
@@ -98,7 +97,7 @@ class RideDetailsScreen extends StatelessWidget {
           children: [
             Icon(Icons.location_on_outlined),
             Text("${trip.startCity} - ${trip.endCity}",
-                style: StyledText().appBarText(color: blackColor))
+                style: StyledText().appBarText())
           ],
         ),
         _buildRow(icon: Icons.access_time, text: "${trip.startTime}"),

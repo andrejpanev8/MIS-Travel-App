@@ -18,7 +18,7 @@ class StyledText {
     FontStyle fontStyle = FontStyle.normal,
   }) =>
       TextStyle(
-          color: color ?? whiteColor,
+          color: color ?? blackColor,
           fontWeight: fontWeight ?? bold,
           fontSize: fontSize,
           fontStyle: fontStyle);
@@ -29,7 +29,7 @@ class StyledText {
     FontStyle fontStyle = FontStyle.normal,
   }) =>
       TextStyle(
-        color: color ?? whiteColor,
+        color: color ?? blackColor,
         fontWeight: fontWeight ?? bold,
         fontSize: fontSize,
         fontStyle: fontStyle,

@@ -14,7 +14,7 @@ PreferredSizeWidget customAppBar({
   return AppBar(
     title: Text(
       appBarText ?? AppStrings.appName,
-      style: StyledText().appBarText(),
+      style: StyledText().appBarText(color: whiteColor),
     ),
     actions: [
       StreamBuilder<User?>(

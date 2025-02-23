@@ -94,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children: [
                             Text(
                               "My profile",
-                              style: StyledText().appBarText(color: blackColor),
+                              style: StyledText().appBarText(),
                             ),
                             SizedBox(height: 25),
                             _text("First name"),
@@ -205,7 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 }
 
 Widget _text(String text) {
-  return Text(text, style: StyledText().descriptionText(color: blackColor));
+  return Text(text, style: StyledText().descriptionText());
 }
 
 Widget _errorText(String errorMessage) {

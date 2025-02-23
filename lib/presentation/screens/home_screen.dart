@@ -101,7 +101,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (state is UserIsLoggedIn && state.user.role == UserRole.ADMIN) {
         // TO:DO implement on tap methods for ride and delivery
         return PopupFAB(
-          onTapAddRide: () {},
+          onTapAddRide: () {
+            Navigator.of(context).pushNamed("/addRide");
+          },
           onTapAddDelivery: () {},
         );
       }

@@ -105,7 +105,7 @@ Widget _buildSearchSection(BuildContext context, bool showRides) {
               showRides
                   ? AppStrings.upcomingRides
                   : AppStrings.upcomingDeliveries,
-              style: StyledText().appBarText(color: blackColor, fontSize: 18),
+              style: StyledText().appBarText(fontSize: 18),
             )),
       ],
     ),

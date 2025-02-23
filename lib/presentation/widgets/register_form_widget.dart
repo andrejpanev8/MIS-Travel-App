@@ -36,14 +36,21 @@ class _RegisterFormState extends State<RegisterForm> {
 
   void _register() async {
     setState(() {
-      _firstNameError = ValidationUtils.nameValidator(_firstNameController.text);
-      _lastNameError = ValidationUtils.surnameValidator(_lastNameController.text);
+      _firstNameError =
+          ValidationUtils.nameValidator(_firstNameController.text);
+      _lastNameError =
+          ValidationUtils.surnameValidator(_lastNameController.text);
       _phoneError = ValidationUtils.phoneValidator(_phoneController.text);
       _emailError = ValidationUtils.emailValidator(_emailController.text);
-      _passwordErrors = ValidationUtils.passwordValidator(_passwordController.text);
+      _passwordErrors =
+          ValidationUtils.passwordValidator(_passwordController.text);
     });
 
-    if (_firstNameError != null || _lastNameError != null || _phoneError != null || _emailError != null || _passwordErrors.isNotEmpty) {
+    if (_firstNameError != null ||
+        _lastNameError != null ||
+        _phoneError != null ||
+        _emailError != null ||
+        _passwordErrors.isNotEmpty) {
       return;
     }
 
@@ -60,9 +67,10 @@ class _RegisterFormState extends State<RegisterForm> {
           context,
           AppStrings.registrationSuccessTitle,
           AppStrings.registrationSuccessMessage,
-              () {
+          () {
             Navigator.of(context).pop();
-            Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+            Navigator.pushNamedAndRemoveUntil(
+                context, "/login", (route) => false);
           },
         );
       } on FirebaseAuthException catch (e) {
@@ -70,7 +78,8 @@ class _RegisterFormState extends State<RegisterForm> {
         String errorMessage = e.message ?? AppStrings.unknownError;
         showErrorDialog(context, errorTitle, errorMessage);
       } catch (e) {
-        showErrorDialog(context, AppStrings.registrationErrorTitle, e.toString());
+        showErrorDialog(
+            context, AppStrings.registrationErrorTitle, e.toString());
       }
     }
   }
@@ -91,9 +100,7 @@ class _RegisterFormState extends State<RegisterForm> {
               controller: _firstNameController,
             ),
             _buildErrorText(_firstNameError),
-
             const SizedBox(height: 12),
-
             _buildLabel(AppStrings.lastName),
             inputTextFieldCustom(
               context: context,
@@ -101,9 +108,7 @@ class _RegisterFormState extends State<RegisterForm> {
               controller: _lastNameController,
             ),
             _buildErrorText(_lastNameError),
-
             const SizedBox(height: 12),
-
             _buildLabel(AppStrings.phone),
             inputTextFieldCustom(
               context: context,
@@ -112,9 +117,7 @@ class _RegisterFormState extends State<RegisterForm> {
               keyboardType: TextInputType.phone,
             ),
             _buildErrorText(_phoneError),
-
             const SizedBox(height: 12),
-
             _buildLabel(AppStrings.email),
             inputTextFieldCustom(
               context: context,
@@ -123,9 +126,7 @@ class _RegisterFormState extends State<RegisterForm> {
               keyboardType: TextInputType.emailAddress,
             ),
             _buildErrorText(_emailError),
-
             const SizedBox(height: 12),
-
             _buildLabel(AppStrings.password),
             inputTextFieldCustom(
               context: context,
@@ -148,9 +149,7 @@ class _RegisterFormState extends State<RegisterForm> {
               ..._passwordErrors.map((error) => _buildErrorText(error))
             else
               const SizedBox.shrink(),
-
             const SizedBox(height: 30),
-
             SizedBox(
               width: double.infinity,
               child: TextButton(
@@ -173,7 +172,6 @@ class _RegisterFormState extends State<RegisterForm> {
               ),
             ),
             const SizedBox(height: 12),
-
             Center(
               child: GestureDetector(
                 onTap: () {
@@ -210,22 +208,20 @@ class _RegisterFormState extends State<RegisterForm> {
   Widget _buildLabel(String text) {
     return Text(
       text,
-      style: StyledText().descriptionText(
-        fontSize: 14,
-        color: blackColor,
-      ),
+      style: StyledText().descriptionText(fontSize: 14),
     );
   }
 
   Widget _buildErrorText(String? error) {
     return error != null
         ? Padding(
-      padding: const EdgeInsets.only(top: 4, left: 8),
-      child: Text(
-        error,
-        style: StyledText().descriptionText(fontSize: 12, color: Colors.red),
-      ),
-    )
+            padding: const EdgeInsets.only(top: 4, left: 8),
+            child: Text(
+              error,
+              style:
+                  StyledText().descriptionText(fontSize: 12, color: Colors.red),
+            ),
+          )
         : const SizedBox.shrink();
   }
 }

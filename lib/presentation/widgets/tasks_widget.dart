@@ -32,10 +32,7 @@ class TaskTripWidget extends StatelessWidget {
 
   Widget _leftInfo() {
     final text = "${task.trip!.startCity} - ${task.trip!.endCity}";
-    final textStyle = StyledText().descriptionText(
-      color: blackColor,
-      fontSize: 16,
-    );
+    final textStyle = StyledText().descriptionText();
 
     return Expanded(
       child: Column(
@@ -88,7 +85,6 @@ class TaskTripWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   style: StyledText().descriptionText(
-                    color: blackColor,
                     fontSize: 12,
                     fontWeight: StyledText().regular,
                   ),
@@ -118,10 +114,7 @@ class TaskTripWidget extends StatelessWidget {
               // "${task.price.toStringAsFixed(0)} ден",
               // TO:DO price missing in TaskTrip model
               "200 ден",
-              style: StyledText().descriptionText(
-                fontSize: 12,
-                color: blackColor,
-              ),
+              style: StyledText().descriptionText(fontSize: 12),
             ),
           ],
         ),

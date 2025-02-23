@@ -36,10 +36,7 @@ class RidesWidget extends StatelessWidget {
     String formattedDate =
         DateFormat('dd.MM.yyyy - HH.mm').format(ride.startTime);
     final text = "${ride.startCity} - ${ride.endCity}";
-    final textStyle = StyledText().descriptionText(
-      color: blackColor,
-      fontSize: 16,
-    );
+    final textStyle = StyledText().descriptionText(fontSize: 16);
 
     return Expanded(
       child: Column(
@@ -94,7 +91,6 @@ class RidesWidget extends StatelessWidget {
               Text(
                 formattedDate,
                 style: StyledText().descriptionText(
-                  color: blackColor,
                   fontSize: 12,
                   fontWeight: StyledText().regular,
                 ),
@@ -119,10 +115,7 @@ class RidesWidget extends StatelessWidget {
             const SizedBox(width: 4),
             Text(
               "${ride.passengerTrips.length} ${AppStrings.passengersLabel}",
-              style: StyledText().descriptionText(
-                fontSize: 12,
-                color: blackColor,
-              ),
+              style: StyledText().descriptionText(fontSize: 12),
             ),
           ],
         ),
