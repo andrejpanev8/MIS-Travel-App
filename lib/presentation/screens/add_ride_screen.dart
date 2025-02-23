@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
+import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
 import '../../data/services/map_service.dart';
@@ -25,6 +27,8 @@ class _AddRideScreenState extends State<AddRideScreen> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController driverController = TextEditingController();
 
+  LatLng? _startLocationLatLng;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +48,20 @@ class _AddRideScreenState extends State<AddRideScreen> {
               Row(
                 children: [
                   Expanded(
-                      child: customArrowButton(text: "Save", onPressed: () {})),
+                      child: customArrowButton(
+                          text: "Save",
+                          onPressed: () async {
+                            //TO:DO implement save ride button
+                            var res = await MapService()
+                                .getCoordinatesFromAddress(
+                                    startLocationController.text);
+                            if (res != null) {
+                              setState(() {
+                                _startLocationLatLng =
+                                    LatLng(res["latitude"], res["longitude"]);
+                              });
+                            }
+                          })),
                 ],
               )
             ],
@@ -59,14 +76,25 @@ class _AddRideScreenState extends State<AddRideScreen> {
       padding: EdgeInsets.only(bottom: 16.0, top: 8.0),
       child: GestureDetector(
         onTap: _callMap,
-        child: CachedNetworkImage(
-          imageUrl: MapService().generateMapUrl(41.99812940, 21.42543550),
-          placeholder: (context, url) => const CircularProgressIndicator(),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-          width: double.infinity,
-          height: 250,
-          fit: BoxFit.contain,
-        ),
+        child: _startLocationLatLng != null
+            ? CachedNetworkImage(
+                imageUrl: MapService().generateMapUrl(
+                    _startLocationLatLng!.latitude,
+                    _startLocationLatLng!.longitude),
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+                width: double.infinity,
+                height: 250,
+                fit: BoxFit.contain,
+              )
+            : Container(
+                height: 250,
+                decoration: BoxDecoration(color: silverColor),
+                child: Center(
+                  child: Text("Tap to select starting location"),
+                ),
+              ),
       ),
     );
   }
@@ -76,6 +104,19 @@ class _AddRideScreenState extends State<AddRideScreen> {
       context,
       MaterialPageRoute(builder: (context) => MapScreen()),
     );
+
+    String address = "";
+
+    if (result != null) {
+      address = await MapService()
+              .getAddressFromCoordinates(result.latitude, result.longitude) ??
+          "";
+    }
+
+    setState(() {
+      _startLocationLatLng = result;
+      startLocationController.text = address;
+    });
   }
 
   Widget _buildForm() {

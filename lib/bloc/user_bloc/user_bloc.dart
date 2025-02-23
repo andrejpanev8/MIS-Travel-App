@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/data/services/auth_service.dart';
+import 'package:travel_app/data/services/map_service.dart';
 import 'package:travel_app/data/services/passenger_trip_service.dart';
 import 'package:travel_app/data/services/task_trip_service.dart';
 import 'package:travel_app/data/services/trip_service.dart';
@@ -99,8 +101,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
         try {
           await UserService().updateUserInfo(
-            event.userId,event.firstName,event.lastName,event.mobilePhone
-          );
+              event.userId, event.firstName, event.lastName, event.mobilePhone);
           emit(UserUpdateSuccess());
         } catch (e) {
           emit(UserUpdateFailure("Failed to update user."));
