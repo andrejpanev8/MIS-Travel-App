@@ -34,14 +34,13 @@ class UserModel {
         'role': role.index
       };
 
-  UserModel copyWith({
-      String? id,
+  UserModel copyWith(
+      {String? id,
       String? firstName,
       String? lastName,
       String? phoneNumber,
       String? email,
-      UserRole? role
-  }) {
+      UserRole? role}) {
     return UserModel(
       id: id ?? this.id,
       firstName: firstName ?? this.firstName,
@@ -50,5 +49,10 @@ class UserModel {
       email: email ?? this.email,
       role: role ?? this.role,
     );
+  }
+
+  @override
+  String toString() {
+    return "$firstName $lastName $phoneNumber";
   }
 }

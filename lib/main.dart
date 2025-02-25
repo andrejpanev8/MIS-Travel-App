@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/bloc/home_screen_bloc/home_screen_bloc.dart';
+import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/screens/add_ride_screen.dart';
 import 'package:travel_app/presentation/screens/login_screen.dart';
@@ -23,6 +24,7 @@ void main() async {
   runApp(MultiBlocProvider(providers: [
     BlocProvider(create: (context) => UserBloc()),
     BlocProvider(create: (context) => HomeScreenBloc()),
+    BlocProvider(create: (context) => MapBloc()),
     BlocProvider(create: (context) => AuthBloc()..add(CheckAuthState())),
   ], child: const MyApp()));
 }
@@ -41,7 +43,10 @@ class MyApp extends StatelessWidget {
       routes: {
         "/home": (context) => const MyHomePage(),
         "/details": (context) => RideDetailsScreen(),
-        "/addRide": (context) => AddRideScreen(),
+        "/addRide": (context) {
+          context.read<UserBloc>().add(LoadDrivers());
+          return AddRideScreen();
+        },
         "/login": (context) => const LoginScreen(),
         "/register": (context) => const RegisterScreen()
       },

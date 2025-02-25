@@ -40,3 +40,5 @@ class UpdateUserInfo extends UserEvent {
   const UpdateUserInfo(
       this.userId, this.firstName, this.lastName, this.mobilePhone);
 }
+
+class LoadDrivers extends UserEvent {}

@@ -5,6 +5,7 @@ import 'package:travel_app/utils/text_styles.dart';
 Widget inputTextFieldCustom({
   required BuildContext context,
   TextEditingController? controller,
+  FocusNode? focusNode,
   String hintText = "",
   bool obscureText = false,
   TextInputType keyboardType = TextInputType.text,
@@ -15,6 +16,7 @@ Widget inputTextFieldCustom({
   return TextField(
     keyboardType: keyboardType,
     controller: controller,
+    focusNode: focusNode,
     readOnly: readOnly,
     obscureText: obscureText,
     style: TextStyle(color: readOnly == true ? silverColor : blackColor),

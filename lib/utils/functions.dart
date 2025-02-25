@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/home_screen_bloc/home_screen_bloc.dart';
 
 import '../bloc/auth_bloc/auth_bloc.dart';
+import '../bloc/map_bloc/map_bloc.dart';
 import '../bloc/user_bloc/user_bloc.dart';
 
 class Functions {
@@ -18,9 +19,12 @@ class Functions {
     event != null ? context.read<HomeScreenBloc>().add(event) : null;
   }
 
-  static Future<void> emitAuthEvent(
-      {required BuildContext context, AuthEvent? event}) async {
+  static void emitAuthEvent({required BuildContext context, AuthEvent? event}) {
     event != null ? context.read<AuthBloc>().add(event) : null;
+  }
+
+  static void emitMapEvent({required BuildContext context, MapEvent? event}) {
+    event != null ? context.read<MapBloc>().add(event) : null;
   }
 
   static String generateUniqueCode() {

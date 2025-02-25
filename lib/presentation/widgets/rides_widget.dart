@@ -123,7 +123,7 @@ class RidesWidget extends StatelessWidget {
         customArrowButton(
           text: AppStrings.viewDetails,
           fontSize: 12,
-          onPressed: () async {
+          onPressed: () {
             Functions.emitUserEvent(
                 context: context,
                 event:

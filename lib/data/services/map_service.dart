@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
+import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
+
+import '../../utils/functions.dart';
 
 class MapService {
   String generateMapUrl(double lat, double lng) {
@@ -16,6 +19,8 @@ class MapService {
     );
 
     if (result != null && result is LatLng) {
+      Functions.emitMapEvent(
+          context: context, event: MapSelectionEvent(selectedLocaton: result));
       return result;
     }
     return null;

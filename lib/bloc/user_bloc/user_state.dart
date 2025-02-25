@@ -61,3 +61,8 @@ class UserUpdateFailure extends UserState {
   @override
   List<Object> get props => [message];
 }
+
+class DriversLoaded extends UserState {
+  final List<UserModel> drivers;
+  const DriversLoaded(this.drivers);
+}

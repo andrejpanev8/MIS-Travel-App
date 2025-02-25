@@ -1,15 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
+import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
-import 'package:travel_app/utils/color_constants.dart';
+import 'package:travel_app/presentation/widgets/custom_drop_down_button.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
-import '../../data/services/map_service.dart';
+import '../../data/models/user.dart';
+import '../../utils/functions.dart';
 import '../../utils/string_constants.dart';
+import '../widgets/date_time_picker_widget.dart';
 import '../widgets/input_field.dart';
-import 'map_screen.dart';
+import '../widgets/map_static.dart';
 
 class AddRideScreen extends StatefulWidget {
   const AddRideScreen({super.key});
@@ -27,96 +30,81 @@ class _AddRideScreenState extends State<AddRideScreen> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController driverController = TextEditingController();
 
-  LatLng? _startLocationLatLng;
+  final FocusNode startLocationFocusNode = FocusNode();
+  DateTime? selectedStartDateTime;
+  UserModel? selectedDriver;
+  List<UserModel> allDrivers = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    startLocationFocusNode.addListener(() {
+      if (!startLocationFocusNode.hasFocus) {
+        if (startLocationController.text.isNotEmpty) {
+          Functions.emitMapEvent(
+            context: context,
+            event: AddressEntryEvent(startLocationController.text),
+          );
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    departureCityController.dispose();
+    arrivalCityController.dispose();
+    startTimeController.dispose();
+    startLocationController.dispose();
+    maxCapacityController.dispose();
+    priceController.dispose();
+    driverController.dispose();
+    startLocationFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: customAppBar(context: context, arrowBack: true),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildForm(),
-              SizedBox(height: 24.0),
-              Text(AppStrings.selectALocation,
-                  style: StyledText().descriptionText(
-                      fontSize: 18, fontWeight: StyledText().regular)),
-              _buildMap(),
-              Row(
-                children: [
-                  Expanded(
-                      child: customArrowButton(
-                          text: "Save",
-                          onPressed: () async {
-                            //TO:DO implement save ride button
-                            var res = await MapService()
-                                .getCoordinatesFromAddress(
-                                    startLocationController.text);
-                            if (res != null) {
-                              setState(() {
-                                _startLocationLatLng =
-                                    LatLng(res["latitude"], res["longitude"]);
-                              });
-                            }
-                          })),
-                ],
-              )
-            ],
+    return BlocListener<MapBloc, MapState>(
+      listener: (context, state) => {
+        if (state is MapSingleSelectionLoaded)
+          {
+            setState(() {
+              startLocationController.text = state.address;
+            })
+          }
+      },
+      child: Scaffold(
+        appBar: customAppBar(context: context, arrowBack: true),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildForm(),
+                SizedBox(height: 24.0),
+                Text(AppStrings.selectALocation,
+                    style: StyledText().descriptionText(
+                        fontSize: 18, fontWeight: StyledText().regular)),
+                MapStatic(),
+                Row(
+                  children: [
+                    Expanded(
+                        child: customArrowButton(
+                            text: "Save",
+                            onPressed: () {
+                              //TO:DO Handle Save Ride functionality
+                            })),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
-  }
-
-  Widget _buildMap() {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 16.0, top: 8.0),
-      child: GestureDetector(
-        onTap: _callMap,
-        child: _startLocationLatLng != null
-            ? CachedNetworkImage(
-                imageUrl: MapService().generateMapUrl(
-                    _startLocationLatLng!.latitude,
-                    _startLocationLatLng!.longitude),
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
-                errorWidget: (context, url, error) => Icon(Icons.error),
-                width: double.infinity,
-                height: 250,
-                fit: BoxFit.contain,
-              )
-            : Container(
-                height: 250,
-                decoration: BoxDecoration(color: silverColor),
-                child: Center(
-                  child: Text("Tap to select starting location"),
-                ),
-              ),
-      ),
-    );
-  }
-
-  Future<void> _callMap() async {
-    final result = await MapService().openMap(
-      context,
-      MaterialPageRoute(builder: (context) => MapScreen()),
-    );
-
-    String address = "";
-
-    if (result != null) {
-      address = await MapService()
-              .getAddressFromCoordinates(result.latitude, result.longitude) ??
-          "";
-    }
-
-    setState(() {
-      _startLocationLatLng = result;
-      startLocationController.text = address;
-    });
   }
 
   Widget _buildForm() {
@@ -138,22 +126,29 @@ class _AddRideScreenState extends State<AddRideScreen> {
           //////////////////////////
           SizedBox(height: 16.0),
           _text("Start Time"),
-          inputTextFieldCustom(
-              context: context,
-              controller: startTimeController,
-              suffixIcon: Icon(Icons.access_time)),
+          dateTimePicker(
+            context: context,
+            controller: startTimeController,
+            onDateTimeSelected: (DateTime dateTime) {
+              setState(() {
+                selectedStartDateTime = dateTime;
+              });
+            },
+          ),
           //////////////////////////
           SizedBox(height: 16.0),
           _text("Start Location"),
           inputTextFieldCustom(
               context: context,
               controller: startLocationController,
+              focusNode: startLocationFocusNode,
               suffixIcon: Icon(Icons.map_outlined)),
           //////////////////////////
           SizedBox(height: 16.0),
           _text("Max Capacity"),
           inputTextFieldCustom(
               context: context,
+              keyboardType: TextInputType.numberWithOptions(),
               controller: maxCapacityController,
               suffixIcon: Icon(Icons.person_outline)),
           //////////////////////////
@@ -161,15 +156,27 @@ class _AddRideScreenState extends State<AddRideScreen> {
           _text("Price"),
           inputTextFieldCustom(
               context: context,
+              keyboardType: TextInputType.numberWithOptions(),
               controller: priceController,
               suffixIcon: Icon(Icons.monetization_on_outlined)),
           //////////////////////////
           SizedBox(height: 16.0),
           _text("Driver"),
-          inputTextFieldCustom(
-              context: context,
-              controller: driverController,
-              suffixIcon: Icon(Icons.badge_outlined)),
+          BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+            if (state is DriversLoaded) {
+              allDrivers = state.drivers;
+            }
+            return DropdownCustomButton(
+              items: allDrivers,
+              selectedValue: selectedDriver,
+              hintText: "Select a driver",
+              onChanged: (UserModel? newValue) {
+                setState(() {
+                  selectedDriver = newValue;
+                });
+              },
+            );
+          }),
         ],
       ),
     );

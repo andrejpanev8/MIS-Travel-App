@@ -1,11 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:flutter/material.dart';
+import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/data/services/auth_service.dart';
-import 'package:travel_app/data/services/map_service.dart';
 import 'package:travel_app/data/services/passenger_trip_service.dart';
 import 'package:travel_app/data/services/task_trip_service.dart';
 import 'package:travel_app/data/services/trip_service.dart';
@@ -71,7 +71,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         List<TaskTrip>? taskTrips;
         List<PassengerTrip>? passengerTrips;
         emit(ProcessStarted());
-        // user = await DriverRepository.instance.getDriverWithId(event.driverId);
         user = await UserService().getUserById(event.driverId);
         taskTrips =
             await TaskTripService().getAllTaskTripsForTripId(event.tripId);
@@ -105,6 +104,17 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(UserUpdateSuccess());
         } catch (e) {
           emit(UserUpdateFailure("Failed to update user."));
+        }
+      }
+
+      if (event is LoadDrivers) {
+        emit(ProcessStarted());
+        try {
+          List<UserModel> drivers =
+              await UserService().getAllUsersByRole(userRole: UserRole.DRIVER);
+          emit(DriversLoaded(drivers));
+        } catch (e) {
+          debugPrint(e.toString());
         }
       }
     });
