@@ -150,6 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Expanded(
                                     child: customArrowButton(
                                       text: "Save",
+                                      verticalPadding: 10,
                                       onPressed: () {
                                         if (firstNameController.text !=
                                                 user!.firstName ||

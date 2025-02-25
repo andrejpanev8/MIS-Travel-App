@@ -32,6 +32,8 @@ class TripService {
       required String endCity,
       required DateTime startTime,
       required Location startLocation,
+      required int ridePrice,
+      required int deliveryPrice,
       required int maxCapacity,
       required String driverId}) async {
     UserModel? currentUser = await authService.getCurrentUser();
@@ -50,6 +52,8 @@ class TripService {
       endCity: endCity,
       startTime: startTime,
       startLocation: startLocation,
+      ridePrice: ridePrice,
+      deliveryPrice: deliveryPrice,
       maxCapacity: maxCapacity,
       driverId: driverId,
       passengerTrips: [],

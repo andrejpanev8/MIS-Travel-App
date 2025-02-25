@@ -14,11 +14,13 @@ Widget customArrowButton(
     double? iconSize,
     Color? textColor = whiteColor,
     BorderSide? border,
-    double? fontSize}) {
+    double? fontSize,
+    double horizontalPadding = 10,
+    double verticalPadding = 4}) {
   return noIcon
       ? TextButton(
           onPressed: onPressed,
-          style: _buttonStyle(backgroundColor, splashColor, border),
+          style: _buttonStyle(backgroundColor, splashColor, border, horizontalPadding, verticalPadding),
           child: Text(
             text,
             style: StyledText()
@@ -30,7 +32,7 @@ Widget customArrowButton(
           label: Text(text,
               style: StyledText()
                   .descriptionText(fontSize: fontSize, color: textColor)),
-          style: _buttonStyle(backgroundColor, splashColor, border),
+          style: _buttonStyle(backgroundColor, splashColor, border, horizontalPadding, verticalPadding),
           icon: _getProperIcon(customIcon, iconColor, iconSize),
           iconAlignment:
               customIcon == null ? IconAlignment.end : IconAlignment.start,
@@ -57,7 +59,7 @@ Widget _getProperIcon(IconData? customIcon, Color iconColor, double? iconSize) {
 }
 
 ButtonStyle _buttonStyle(
-    Color backgroundColor, Color splashColor, BorderSide? border) {
+    Color backgroundColor, Color splashColor, BorderSide? border, horizontalPadding, verticalPadding) {
   return ButtonStyle(
     backgroundColor: WidgetStatePropertyAll(backgroundColor),
     shape: WidgetStatePropertyAll(
@@ -71,7 +73,7 @@ ButtonStyle _buttonStyle(
           states.contains(WidgetState.pressed) ? splashColor : null,
     ),
     padding: WidgetStatePropertyAll(
-      EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
     ),
     minimumSize: WidgetStatePropertyAll(Size(0, 30)),
   );

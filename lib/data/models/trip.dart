@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:travel_app/data/models/location.dart';
 
 import '../enums/trip_status.dart';
@@ -8,6 +9,8 @@ class Trip {
   final String endCity;
   final DateTime startTime;
   final Location startLocation;
+  final int ridePrice;
+  final int deliveryPrice;
   final int maxCapacity;
   final String driverId;
   List<String> passengerTrips;
@@ -20,6 +23,8 @@ class Trip {
       required this.endCity,
       required this.startTime,
       required this.startLocation,
+      required this.ridePrice,
+      required this.deliveryPrice,
       required this.maxCapacity,
       required this.driverId,
       List<String>? passengerTrips,
@@ -34,6 +39,8 @@ class Trip {
         endCity = data['endCity'],
         startTime = DateTime.parse(data['startTime']),
         startLocation = Location.fromJson(data['startLocation']),
+        ridePrice = data['ridePrice'],
+        deliveryPrice = data['deliveryPrice'],
         maxCapacity = data['maxCapacity'],
         driverId = data['driverId'],
         passengerTrips = List<String>.from(data['passengerTrips'] ?? []),
@@ -46,6 +53,8 @@ class Trip {
         'endCity': endCity,
         'startTime': startTime.toIso8601String(),
         'startLocation': startLocation.toJson(),
+        'ridePrice': ridePrice,
+        'deliveryPrice': deliveryPrice,
         'maxCapacity': maxCapacity,
         'driverId': driverId,
         'passengerTrips': passengerTrips,
@@ -59,5 +68,15 @@ class Trip {
 
   bool isSeatAvailable() {
     return maxCapacity > passengerTrips.length;
+  }
+
+  String get formattedStartDateTime {
+    final DateFormat formatter = DateFormat('yyyy.MM.dd');
+    return formatter.format(startTime);
+  }
+
+  @override
+  String toString() {
+    return "$startCity - $endCity - $formattedStartDateTime";
   }
 }

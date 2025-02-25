@@ -94,6 +94,7 @@ class _AddRideScreenState extends State<AddRideScreen> {
                     Expanded(
                         child: customArrowButton(
                             text: "Save",
+                            verticalPadding: 10,
                             onPressed: () {
                               //TO:DO Handle Save Ride functionality
                             })),
