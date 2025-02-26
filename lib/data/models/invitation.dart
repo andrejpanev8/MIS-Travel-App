@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Invitation {
   final String id;
   final String uniqueCode;
@@ -27,4 +29,18 @@ class Invitation {
         'email': email,
         'isAccepted': isAccepted,
       };
+
+  String getStatus() {
+    if (isAccepted) {
+      return "Accepted";
+    } else if (expirationDate.isAfter(DateTime.now())) {
+      return "Pending";
+    } else {
+      return "Expired";
+    }
+  }
+
+  String getFormattedExpirationDate() {
+    return DateFormat('dd.MM.yyyy - HH:mm').format(expirationDate);
+  }
 }

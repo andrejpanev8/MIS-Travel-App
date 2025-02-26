@@ -6,6 +6,19 @@ import '../enums/user_role.dart';
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  Future<bool> checkUserExistsByEmail({
+    required String email,
+  }) async {
+      QuerySnapshot emailQuerySnapshot = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
+
+      if (emailQuerySnapshot.docs.isNotEmpty) {
+        return true;
+      }
+      return false;
+  }
   Future<bool> checkUserExistsByEmailOrPhone({
     required String email,
     required String phoneNumber,

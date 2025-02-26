@@ -6,6 +6,7 @@ import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/data/services/auth_service.dart';
+import 'package:travel_app/data/services/invitation_service.dart';
 import 'package:travel_app/data/services/passenger_trip_service.dart';
 import 'package:travel_app/data/services/task_trip_service.dart';
 import 'package:travel_app/data/services/trip_service.dart';
@@ -13,6 +14,7 @@ import 'package:travel_app/data/services/user_service.dart';
 import 'package:travel_app/utils/validation_utils.dart';
 
 import '../../data/DTO/TaskTripDTO.dart';
+import '../../data/models/invitation.dart';
 import '../../data/models/trip.dart';
 
 part 'user_event.dart';
@@ -21,6 +23,8 @@ part 'user_state.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
   List<Trip>? _cachedDriverTrips;
   List<TaskTripDTO>? _cachedDriverDeliveries;
+  List<UserModel>? _cachedDrivers;
+  List<Invitation>? _cachedInvitations;
 
   UserBloc() : super(UserInitial()) {
     on<UserEvent>((event, emit) async {
@@ -45,7 +49,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         List<TaskTripDTO> driverDeliveries = [];
         emit(ProcessStarted());
         driverDeliveries =
-            await TaskTripService().getUpcomingDeliveriesForUser();
+        await TaskTripService().getUpcomingDeliveriesForUser();
         emit(DriverUpcomingDeliveriesLoaded(driverDeliveries));
       }
 
@@ -62,8 +66,48 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(ProcessStarted());
         driverTrips = await TripService().getTripsByDriver(currentUser!.id);
         driverDeliveries =
-            await TaskTripService().getUpcomingDeliveriesForUser();
+        await TaskTripService().getUpcomingDeliveriesForUser();
         emit(DriverDataLoaded(driverTrips, driverDeliveries));
+      }
+
+      if (event is GetAllDrivers) {
+        if (!event.forceRefresh && _cachedDrivers != null) {
+          emit(AllDriversLoaded(_cachedDrivers!));
+          return;
+        }
+        List<UserModel> drivers = [];
+        emit(ProcessStarted());
+        drivers = await UserService().getAllUsersByRole(userRole: UserRole.DRIVER);
+        emit(AllDriversLoaded(drivers));
+      }
+
+      if (event is GetAllInvitations) {
+        if (!event.forceRefresh && _cachedInvitations != null) {
+          emit(AllInvitationsLoaded(_cachedInvitations!));
+          return;
+        }
+        List<Invitation> invitations = [];
+        emit(ProcessStarted());
+        invitations = await InvitationService().getAllInvitations();
+        emit(AllInvitationsLoaded(invitations));
+      }
+
+      if (event is LoadAllDriversData) {
+        emit(ProcessStarted());
+        if (!event.forceRefresh &&
+            _cachedDrivers != null &&
+            _cachedInvitations != null) {
+          emit(AllDriversLoaded(_cachedDrivers!));
+          emit(AllInvitationsLoaded(_cachedInvitations!));
+          return;
+        }
+        List<UserModel> drivers = [];
+        List<Invitation> invitations = [];
+        emit(ProcessStarted());
+        drivers = await UserService().getAllUsersByRole(userRole: UserRole.DRIVER);
+        invitations =
+        await InvitationService().getAllInvitations();
+        emit(AdminDataLoaded(drivers, invitations));
       }
 
       if (event is GetTripDetails) {
@@ -73,7 +117,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(ProcessStarted());
         user = await UserService().getUserById(event.driverId);
         taskTrips =
-            await TaskTripService().getAllTaskTripsForTripId(event.tripId);
+        await TaskTripService().getAllTaskTripsForTripId(event.tripId);
         passengerTrips = await PassengerTripService()
             .getAllPassengerTripsForTripId(event.tripId);
 
@@ -111,11 +155,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(ProcessStarted());
         try {
           List<UserModel> drivers =
-              await UserService().getAllUsersByRole(userRole: UserRole.DRIVER);
+          await UserService().getAllUsersByRole(userRole: UserRole.DRIVER);
           emit(DriversLoaded(drivers));
         } catch (e) {
           debugPrint(e.toString());
         }
+      }
+      if(event is CheckEmailExists) {
+        bool exists = await UserService().checkUserExistsByEmail(email: event.email);
+        if (exists) {
+          emit(EmailExists());
+        } else {
+          emit(EmailAvailable());
+        }
+      }
+      if(event is RegisterDriver) {
+
       }
     });
   }

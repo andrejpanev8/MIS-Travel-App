@@ -39,6 +39,21 @@ class InvitationService {
     return invitationId;
   }
 
+  Future<List<Invitation>> getAllInvitations() async {
+    QuerySnapshot querySnapshot =
+        await _firestore.collection('invitations').get();
+
+    if (querySnapshot.docs.isEmpty) {
+      return [];
+    }
+
+    List<Invitation> invitations = querySnapshot.docs.map((doc) {
+      return Invitation.fromJson(doc.data() as Map<String, dynamic>);
+    }).toList();
+
+    return invitations;
+  }
+
   Future<DocumentSnapshot?> findInvitationByUniqueCode(
       String uniqueCode) async {
     try {

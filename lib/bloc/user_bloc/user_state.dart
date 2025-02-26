@@ -60,9 +60,40 @@ class UserUpdateFailure extends UserState {
 
   @override
   List<Object> get props => [message];
+
+}
+class AllDriversLoaded extends UserState {
+  final List<UserModel> drivers;
+  const AllDriversLoaded(this.drivers);
+}
+
+class AllInvitationsLoaded extends UserState {
+  final List<Invitation> invitations;
+  const AllInvitationsLoaded(this.invitations);
 }
 
 class DriversLoaded extends UserState {
   final List<UserModel> drivers;
   const DriversLoaded(this.drivers);
 }
+class DriversAndInvitationsLoaded extends UserState {
+  final List<UserModel> drivers;
+  final List<Invitation> invitations;
+
+  const DriversAndInvitationsLoaded({required this.drivers, required this.invitations});
+
+  @override
+  List<Object> get props => [drivers, invitations];
+}
+
+class AdminDataLoaded extends UserState {
+  final List<UserModel> drivers;
+  final List<Invitation> invitations;
+  const AdminDataLoaded(this.drivers, this.invitations);
+}
+
+class EmailExists extends UserState {}
+
+class EmailAvailable extends UserState {}
+
+class DriverRegistered extends UserState {}

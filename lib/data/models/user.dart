@@ -55,4 +55,7 @@ class UserModel {
   String toString() {
     return "$firstName $lastName $phoneNumber";
   }
+  String fullName() {
+    return "$firstName $lastName";
+}
 }

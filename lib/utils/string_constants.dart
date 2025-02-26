@@ -49,10 +49,20 @@ class AppStrings {
   static const String alreadyHaveAccount = "Already have an account?";
   static const String locationIconTooltip = "Location";
   static const String timeIconTooltip = "Time";
+  static const String phoneIconTooltip = "Phone";
+  static const String emailIconTooltip = "Email";
+  static const String infoTooltip = "Info";
   static const String passengersLabel = "Passengers";
   static const String viewDetails = "View details";
   static const String rideDetails = "Ride Details";
   static const String selectALocation = "Select a location";
   static const String description = "Description";
   static const String noItemsAvailable = "No items available";
+  static const String driversTitle = "Drivers";
+  static const String noDrivers = "No drivers available";
+  static const String invitationsTitle = "Sent invitations";
+  static const String noInvitations = "No invitations available";
+  static const String registerDriverTitle = "Register driver";
+
+
 }

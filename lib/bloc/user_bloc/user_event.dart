@@ -41,4 +41,36 @@ class UpdateUserInfo extends UserEvent {
       this.userId, this.firstName, this.lastName, this.mobilePhone);
 }
 
+class LoadAllDriversData extends UserEvent {
+  final bool forceRefresh;
+  const LoadAllDriversData({this.forceRefresh = false});
+}
+
+class LoadAllInvitations extends UserEvent {
+  final bool forceRefresh;
+  const LoadAllInvitations({this.forceRefresh = false});
+}
+
 class LoadDrivers extends UserEvent {}
+
+class GetAllDrivers extends UserEvent {
+  final bool forceRefresh;
+
+  const GetAllDrivers({this.forceRefresh = false});
+}
+
+class GetAllInvitations extends UserEvent {
+  final bool forceRefresh;
+
+  const GetAllInvitations({this.forceRefresh = false});
+}
+
+class CheckEmailExists extends UserEvent {
+  final String email;
+  const CheckEmailExists(this.email);
+}
+
+class RegisterDriver extends UserEvent {
+  final String email;
+  const RegisterDriver(this.email);
+}
