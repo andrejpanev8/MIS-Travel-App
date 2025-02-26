@@ -42,3 +42,8 @@ class UpdateUserInfo extends UserEvent {
 }
 
 class LoadDrivers extends UserEvent {}
+
+class GetTripInfo extends UserEvent {
+  final String tripId;
+  const GetTripInfo(this.tripId);
+}

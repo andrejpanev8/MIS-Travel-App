@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
+import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
+import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
-import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
@@ -103,6 +105,7 @@ class RidesWidget extends StatelessWidget {
   }
 
   Widget _rightInfo(Trip trip) {
+    UserRole? userRole;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -120,17 +123,29 @@ class RidesWidget extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        customArrowButton(
-          text: AppStrings.viewDetails,
-          fontSize: 12,
-          onPressed: () {
-            Functions.emitUserEvent(
-                context: context,
-                event:
-                    GetTripDetails(driverId: trip.driverId, tripId: trip.id));
-            Navigator.pushNamed(context, "/details", arguments: trip);
-          },
-        ),
+        BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+          if (state is UserIsLoggedIn) {
+            userRole = state.user.role;
+          }
+          return customArrowButton(
+            text: userRole == UserRole.CLIENT
+                ? AppStrings.reserve
+                : AppStrings.viewDetails,
+            fontSize: 12,
+            onPressed: () {
+              Functions.emitUserEvent(
+                  context: context,
+                  event: userRole == UserRole.CLIENT
+                      ? GetTripInfo(trip.id)
+                      : GetTripDetails(
+                          driverId: trip.driverId, tripId: trip.id));
+              userRole == UserRole.CLIENT
+                  ? Navigator.pushNamed(context, "/reserveRide",
+                      arguments: trip)
+                  : Navigator.pushNamed(context, "/details", arguments: trip);
+            },
+          );
+        }),
       ],
     );
   }

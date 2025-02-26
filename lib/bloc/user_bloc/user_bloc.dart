@@ -117,6 +117,23 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           debugPrint(e.toString());
         }
       }
+
+      if (event is GetTripInfo) {
+        emit(ProcessStarted());
+        try {
+          UserModel? driver;
+          Trip? trip;
+          await TripService()
+              .findTripByIdWithDriver(event.tripId)
+              .then((map) => {
+                    if (map != null)
+                      {trip = map["trip"], driver = map["driver"]}
+                  });
+          emit(TripInfoLoaded(trip, driver));
+        } catch (e) {
+          debugPrint(e.toString());
+        }
+      }
     });
   }
 }

@@ -51,6 +51,9 @@ class AppStrings {
   static const String timeIconTooltip = "Time";
   static const String passengersLabel = "Passengers";
   static const String viewDetails = "View details";
+  static const String reserve = "Reserve";
+  static const String confirmReservation = "Confirm Reservation";
+  static const String sendPackage = "SendPackage";
   static const String rideDetails = "Ride Details";
   static const String selectALocation = "Select a location";
   static const String description = "Description";

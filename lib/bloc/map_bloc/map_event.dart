@@ -12,7 +12,22 @@ class MapSelectionEvent extends MapEvent {
   const MapSelectionEvent({required this.selectedLocaton});
 }
 
+class MapDoubleSelectionEvent extends MapEvent {
+  final LatLng fromSelectedLocation;
+  final LatLng toSelectedLocation;
+  const MapDoubleSelectionEvent(
+      {required this.fromSelectedLocation, required this.toSelectedLocation});
+}
+
 class AddressEntryEvent extends MapEvent {
   final String? address;
-  const AddressEntryEvent(this.address);
+  final String? type;
+  const AddressEntryEvent(this.address, {this.type});
+}
+
+class AddressDoubleEntryEvent extends MapEvent {
+  final String? fromAddress;
+  final String? toAddress;
+
+  const AddressDoubleEntryEvent(this.fromAddress, this.toAddress);
 }

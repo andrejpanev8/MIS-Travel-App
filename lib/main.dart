@@ -10,6 +10,7 @@ import 'package:travel_app/presentation/screens/login_screen.dart';
 import 'package:travel_app/presentation/screens/my_rides_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:travel_app/presentation/screens/register_screen.dart';
+import 'package:travel_app/presentation/screens/reserve_ride_screen.dart';
 import 'package:travel_app/presentation/screens/ride_details_screen.dart';
 import 'package:travel_app/utils/string_constants.dart';
 
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/home": (context) => const MyHomePage(),
         "/details": (context) => RideDetailsScreen(),
+        "/reserveRide": (context) => ReserveRideScreen(),
         "/addRide": (context) {
           context.read<UserBloc>().add(LoadDrivers());
           return AddRideScreen();

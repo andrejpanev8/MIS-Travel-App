@@ -81,16 +81,18 @@ class TripService {
       if (!tripDoc.exists) {
         return null;
       }
-      Map<String, dynamic> tripData = tripDoc.data() as Map<String, dynamic>;
+      Map<String, dynamic> tripData = {};
 
-      String driverId = tripData['driverId'];
+      Trip foundTrip = Trip.fromJson(tripDoc.data() as Map<String, dynamic>);
 
-      UserModel? driverData = await userService.getUserById(driverId);
+      UserModel? driverData = await userService.getUserById(foundTrip.driverId);
 
       if (driverData == null) {
         return null;
       }
-      tripData['driver'] = driverData.toJson();
+
+      tripData["trip"] = foundTrip;
+      tripData['driver'] = driverData;
 
       return tripData;
     } catch (e) {
@@ -196,7 +198,8 @@ class TripService {
     throw Exception("You do not have permission to view task users by trip.");
   }
 
-  Future<List<Trip>> filterUpcomingTripsContainingStartCity(String startCity) async {
+  Future<List<Trip>> filterUpcomingTripsContainingStartCity(
+      String startCity) async {
     List<Trip> upcomingTrips = await getAllUpcomingTrips();
     if (upcomingTrips.isEmpty) {
       return [];
@@ -207,7 +210,8 @@ class TripService {
         .toList();
   }
 
-  Future<List<Trip>> filterUpcomingTripsContainingEndCity(String endCity) async {
+  Future<List<Trip>> filterUpcomingTripsContainingEndCity(
+      String endCity) async {
     List<Trip> upcomingTrips = await getAllUpcomingTrips();
     if (upcomingTrips.isEmpty) {
       return [];

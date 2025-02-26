@@ -1,21 +1,19 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
-import 'package:travel_app/data/models/passenger_trip.dart';
-import 'package:travel_app/data/models/task_trip.dart';
-import 'package:travel_app/data/models/user.dart';
-import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
-import 'package:travel_app/presentation/widgets/passenger_widget.dart';
-import 'package:travel_app/presentation/widgets/task_details_widget.dart';
-import 'package:travel_app/presentation/widgets/widget_builder.dart';
-import 'package:travel_app/utils/color_constants.dart';
-import 'package:travel_app/utils/image_constants.dart';
-import 'package:travel_app/utils/text_styles.dart';
-import 'package:travel_app/utils/string_constants.dart';
 
+import '../../bloc/user_bloc/user_bloc.dart';
+import '../../data/models/passenger_trip.dart';
+import '../../data/models/task_trip.dart';
 import '../../data/models/trip.dart';
+import '../../data/models/user.dart';
+import '../../utils/string_constants.dart';
+import '../../utils/text_styles.dart';
+import '../widgets/custom_app_bar.dart';
+import '../widgets/map_static.dart';
+import '../widgets/passenger_widget.dart';
+import '../widgets/ride_general_info_widget.dart';
+import '../widgets/task_details_widget.dart';
+import '../widgets/widget_builder.dart';
 
 class RideDetailsScreen extends StatelessWidget {
   Trip? trip;
@@ -53,7 +51,7 @@ class RideDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: [_generalInfo(trip!, driver)],
+            children: [rideGeneralInfo(trip!, driver)],
           ),
           SizedBox(height: 10),
           Text(
@@ -81,71 +79,11 @@ class RideDetailsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(AppStrings.yourRoute, style: StyledText().descriptionText()),
-              _mapSection()
+              MapStatic(),
             ],
           ),
         ],
       ),
-    );
-  }
-
-  Widget _generalInfo(Trip trip, UserModel? driver) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(Icons.location_on_outlined),
-            Text("${trip.startCity} - ${trip.endCity}",
-                style: StyledText().appBarText())
-          ],
-        ),
-        _buildRow(icon: Icons.access_time, text: "${trip.startTime}"),
-        _buildRow(
-            icon: Icons.badge_outlined,
-            text:
-                driver != null ? "${driver.firstName} ${driver.lastName}" : ""),
-        _buildRow(
-            text: "${AppStrings.startingLocation}: ${trip.startLocation}"),
-        _buildRow(
-            icon: Icons.people_alt_outlined,
-            text:
-                "${AppStrings.numberOfPassengers}: ${trip.passengerTrips.length}"),
-        _buildRow(
-            text: "${AppStrings.numberOfPackages}: ${trip.taskTrips.length}",
-            assetIcon: boxIcon),
-      ],
-    );
-  }
-
-  Widget _buildRow({IconData? icon, String text = "", String? assetIcon}) {
-    return Row(
-      children: [
-        icon != null
-            ? Icon(icon)
-            : assetIcon != null
-                ? SvgPicture.asset(
-                    assetIcon,
-                    width: 20,
-                    height: 20,
-                    colorFilter: ColorFilter.mode(blackColor, BlendMode.srcIn),
-                  )
-                : SizedBox(width: 25),
-        SizedBox(width: 10),
-        Text(text)
-      ],
-    );
-  }
-
-  Widget _mapSection() {
-    return CachedNetworkImage(
-      imageUrl:
-          "https://developers.google.com/static/maps/images/landing/hero_directions_api.png",
-      placeholder: (context, url) => const CircularProgressIndicator(),
-      errorWidget: (context, url, error) => const Icon(Icons.error),
-      width: double.infinity,
-      height: 250,
-      fit: BoxFit.contain,
     );
   }
 }
