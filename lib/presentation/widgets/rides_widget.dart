@@ -114,7 +114,7 @@ class RidesWidget extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Text(
-              "${ride.passengerTrips.length} ${AppStrings.passengersLabel}",
+              "${ride.maxCapacity - ride.passengerTrips.length} Places left",
               style: StyledText().descriptionText(fontSize: 12),
             ),
           ],

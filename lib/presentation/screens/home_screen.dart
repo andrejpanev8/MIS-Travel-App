@@ -104,7 +104,9 @@ class _HomeScreenState extends State<HomeScreen> {
           onTapAddRide: () {
             Navigator.of(context).pushNamed("/addRide");
           },
-          onTapAddDelivery: () {},
+          onTapAddDelivery: () {
+            Navigator.of(context).pushNamed("/addDelivery");
+          },
         );
       }
       return const SizedBox.shrink();

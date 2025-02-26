@@ -55,4 +55,6 @@ class AppStrings {
   static const String selectALocation = "Select a location";
   static const String description = "Description";
   static const String noItemsAvailable = "No items available";
+  static const String deliveryDetails = "Delivery Details";
+
 }
