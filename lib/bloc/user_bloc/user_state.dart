@@ -60,8 +60,8 @@ class UserUpdateFailure extends UserState {
 
   @override
   List<Object> get props => [message];
-
 }
+
 class AllDriversLoaded extends UserState {
   final List<UserModel> drivers;
   const AllDriversLoaded(this.drivers);
@@ -76,11 +76,19 @@ class DriversLoaded extends UserState {
   final List<UserModel> drivers;
   const DriversLoaded(this.drivers);
 }
+
+class TripInfoLoaded extends UserState {
+  final Trip? trip;
+  final UserModel? driver;
+  const TripInfoLoaded(this.trip, this.driver);
+}
+
 class DriversAndInvitationsLoaded extends UserState {
   final List<UserModel> drivers;
   final List<Invitation> invitations;
 
-  const DriversAndInvitationsLoaded({required this.drivers, required this.invitations});
+  const DriversAndInvitationsLoaded(
+      {required this.drivers, required this.invitations});
 
   @override
   List<Object> get props => [drivers, invitations];

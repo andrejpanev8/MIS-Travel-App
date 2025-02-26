@@ -8,6 +8,8 @@ import '../../utils/color_constants.dart';
 import '../screens/map_screen.dart';
 
 class MapStatic extends StatefulWidget {
+  final bool multipleSelection;
+  const MapStatic({super.key, this.multipleSelection = false});
   @override
   _MapStaticState createState() => _MapStaticState();
 }
@@ -19,11 +21,16 @@ class _MapStaticState extends State<MapStatic> {
     return GestureDetector(
       onTap: () => MapService().openMap(
         context,
-        MaterialPageRoute(builder: (context) => MapScreen()),
+        MaterialPageRoute(
+            builder: (context) =>
+                MapScreen(isSelectingRoute: widget.multipleSelection)),
       ),
       child: BlocBuilder<MapBloc, MapState>(
         builder: (context, state) {
           if (state is MapSingleSelectionLoaded) {
+            currentMapLink = state.mapStaticLink;
+          }
+          if (state is MapDoubleSelectionLoaded) {
             currentMapLink = state.mapStaticLink;
           }
           return currentMapLink != null

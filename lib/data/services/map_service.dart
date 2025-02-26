@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
+import 'package:travel_app/utils/keys.dart';
 
 import '../../utils/functions.dart';
 
@@ -12,15 +13,47 @@ class MapService {
     return 'https://static-maps.yandex.ru/1.x/?ll=$lng,$lat&size=600,400&z=14&l=map&pt=$lng,$lat,pm2rdm';
   }
 
-  Future<LatLng?> openMap(BuildContext context, Route route) async {
+  String generateMapUrlWithRoute(List<LatLng> routePoints) {
+    if (routePoints.isEmpty) return '';
+
+    double minLat =
+        routePoints.map((p) => p.latitude).reduce((a, b) => a < b ? a : b);
+    double maxLat =
+        routePoints.map((p) => p.latitude).reduce((a, b) => a > b ? a : b);
+    double minLng =
+        routePoints.map((p) => p.longitude).reduce((a, b) => a < b ? a : b);
+    double maxLng =
+        routePoints.map((p) => p.longitude).reduce((a, b) => a > b ? a : b);
+
+    String polyline =
+        routePoints.map((p) => '${p.longitude},${p.latitude}').join(',');
+
+    return 'https://static-maps.yandex.ru/1.x/?size=600,400&l=map'
+        '&bbox=$minLng,$minLat~$maxLng,$maxLat' // Auto-fit the zoom level
+        '&pt=${routePoints.first.longitude},${routePoints.first.latitude},pm2rdm~'
+        '${routePoints.last.longitude},${routePoints.last.latitude},pm2rdm'
+        '&pl=c:0000FF,w:5,$polyline';
+  }
+
+  Future<dynamic> openMap(BuildContext context, Route route) async {
     final result = await Navigator.push(
       context,
       route,
     );
 
-    if (result != null && result is LatLng) {
-      Functions.emitMapEvent(
-          context: context, event: MapSelectionEvent(selectedLocaton: result));
+    if (result != null) {
+      if (result is LatLng) {
+        Functions.emitMapEvent(
+            context: context,
+            event: MapSelectionEvent(selectedLocaton: result));
+      }
+      if (result is Map<String, dynamic>) {
+        Functions.emitMapEvent(
+            context: context,
+            event: MapDoubleSelectionEvent(
+                fromSelectedLocation: result["from"] as LatLng,
+                toSelectedLocation: result["to"] as LatLng));
+      }
       return result;
     }
     return null;
@@ -60,5 +93,21 @@ class MapService {
       return data['display_name'];
     }
     return null;
+  }
+
+  Future<List<LatLng>> getRoute(LatLng from, LatLng to) async {
+    final url = Uri.parse(
+        'https://api.openrouteservice.org/v2/directions/driving-car?api_key=$orsKey&start=${from.longitude},${from.latitude}&end=${to.longitude},${to.latitude}');
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      List<dynamic> coordinates =
+          data['features'][0]['geometry']['coordinates'];
+
+      return coordinates.map((coord) => LatLng(coord[1], coord[0])).toList();
+    }
+    return [];
   }
 }

@@ -125,6 +125,7 @@ class TaskTripWidget extends StatelessWidget {
         customArrowButton(
           text: AppStrings.viewDetails,
           fontSize: 12,
+          //TO:DO add screen nav and proper event emit
           onPressed: () => Navigator.pop,
         ),
       ],

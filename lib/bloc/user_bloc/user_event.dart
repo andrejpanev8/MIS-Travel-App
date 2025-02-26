@@ -53,6 +53,11 @@ class LoadAllInvitations extends UserEvent {
 
 class LoadDrivers extends UserEvent {}
 
+class GetTripInfo extends UserEvent {
+  final String tripId;
+  const GetTripInfo(this.tripId);
+}
+
 class GetAllDrivers extends UserEvent {
   final bool forceRefresh;
 
