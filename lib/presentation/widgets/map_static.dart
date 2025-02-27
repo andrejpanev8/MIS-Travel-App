@@ -8,22 +8,28 @@ import '../../utils/color_constants.dart';
 import '../screens/map_screen.dart';
 
 class MapStatic extends StatefulWidget {
+  final String uniqueKey;
+
+  const MapStatic({required this.uniqueKey, super.key});
+
   @override
   _MapStaticState createState() => _MapStaticState();
 }
 
 class _MapStaticState extends State<MapStatic> {
   String? currentMapLink;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => MapService().openMap(
         context,
         MaterialPageRoute(builder: (context) => MapScreen()),
+        widget.uniqueKey
       ),
       child: BlocBuilder<MapBloc, MapState>(
         builder: (context, state) {
-          if (state is MapSingleSelectionLoaded) {
+          if (state is MapSingleSelectionLoaded && state.uniqueKey == widget.uniqueKey) {
             currentMapLink = state.mapStaticLink;
           }
           return currentMapLink != null
@@ -44,7 +50,7 @@ class _MapStaticState extends State<MapStatic> {
                     height: 250,
                     decoration: BoxDecoration(color: silverColor),
                     child: Center(
-                      child: Text("Tap to select starting location"),
+                      child: Text("Tap to select a location"),
                     ),
                   ),
                 );

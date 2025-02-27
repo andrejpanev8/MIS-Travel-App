@@ -35,6 +35,8 @@ class _AddRideScreenState extends State<AddRideScreen> {
   UserModel? selectedDriver;
   List<UserModel> allDrivers = [];
 
+  String START_LOCATION_ADD_RIDE_SCREEN = "START_LOCATION_ADD_RIDE_SCREEN";
+
   @override
   void initState() {
     super.initState();
@@ -44,7 +46,7 @@ class _AddRideScreenState extends State<AddRideScreen> {
         if (startLocationController.text.isNotEmpty) {
           Functions.emitMapEvent(
             context: context,
-            event: AddressEntryEvent(startLocationController.text),
+            event: AddressEntryEvent(startLocationController.text, START_LOCATION_ADD_RIDE_SCREEN),
           );
         }
       }
@@ -68,7 +70,7 @@ class _AddRideScreenState extends State<AddRideScreen> {
   Widget build(BuildContext context) {
     return BlocListener<MapBloc, MapState>(
       listener: (context, state) => {
-        if (state is MapSingleSelectionLoaded)
+        if (state is MapSingleSelectionLoaded && state.uniqueKey == START_LOCATION_ADD_RIDE_SCREEN)
           {
             setState(() {
               startLocationController.text = state.address;
@@ -88,7 +90,7 @@ class _AddRideScreenState extends State<AddRideScreen> {
                 Text(AppStrings.selectALocation,
                     style: StyledText().descriptionText(
                         fontSize: 18, fontWeight: StyledText().regular)),
-                MapStatic(),
+                MapStatic(uniqueKey: START_LOCATION_ADD_RIDE_SCREEN),
                 Row(
                   children: [
                     Expanded(

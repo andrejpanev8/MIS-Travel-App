@@ -1,3 +1,5 @@
+import 'package:latlong2/latlong.dart';
+
 class Location {
   final double latitude;
   final double longitude;
@@ -10,4 +12,9 @@ class Location {
 
   Map<String, dynamic> toJson() =>
       {'latitude': latitude, 'longitude': longitude};
+
+  Location.fromLatLng(LatLng loc)
+      : latitude = loc.latitude,
+        longitude = loc.longitude;
+
 }

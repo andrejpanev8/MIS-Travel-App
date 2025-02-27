@@ -12,7 +12,7 @@ class MapService {
     return 'https://static-maps.yandex.ru/1.x/?ll=$lng,$lat&size=600,400&z=14&l=map&pt=$lng,$lat,pm2rdm';
   }
 
-  Future<LatLng?> openMap(BuildContext context, Route route) async {
+  Future<LatLng?> openMap(BuildContext context, Route route, String uniqueKey) async {
     final result = await Navigator.push(
       context,
       route,
@@ -20,7 +20,7 @@ class MapService {
 
     if (result != null && result is LatLng) {
       Functions.emitMapEvent(
-          context: context, event: MapSelectionEvent(selectedLocaton: result));
+          context: context, event: MapSelectionEvent(selectedLocation: result, uniqueKey: uniqueKey));
       return result;
     }
     return null;

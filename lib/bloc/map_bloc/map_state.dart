@@ -15,6 +15,8 @@ class MapSingleSelectionLoaded extends MapState {
   final LatLng location;
   final String address;
   final String mapStaticLink;
+  final String uniqueKey;
+
   const MapSingleSelectionLoaded(
-      this.location, this.address, this.mapStaticLink);
+      this.location, this.address, this.mapStaticLink, this.uniqueKey);
 }

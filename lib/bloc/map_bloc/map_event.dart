@@ -8,11 +8,13 @@ sealed class MapEvent extends Equatable {
 }
 
 class MapSelectionEvent extends MapEvent {
-  final LatLng selectedLocaton;
-  const MapSelectionEvent({required this.selectedLocaton});
+  final LatLng selectedLocation;
+  final String uniqueKey;
+  const MapSelectionEvent({required this.selectedLocation, required this.uniqueKey});
 }
 
 class AddressEntryEvent extends MapEvent {
   final String? address;
-  const AddressEntryEvent(this.address);
+  final String uniqueKey;
+  const AddressEntryEvent(this.address, this.uniqueKey);
 }
