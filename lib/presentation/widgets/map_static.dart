@@ -9,25 +9,29 @@ import '../screens/map_screen.dart';
 
 class MapStatic extends StatefulWidget {
   final bool multipleSelection;
-  const MapStatic({super.key, this.multipleSelection = false});
+  final String? uniqueKey;
+  const MapStatic({super.key, this.uniqueKey, this.multipleSelection = false});
+
   @override
   _MapStaticState createState() => _MapStaticState();
 }
 
 class _MapStaticState extends State<MapStatic> {
   String? currentMapLink;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => MapService().openMap(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                MapScreen(isSelectingRoute: widget.multipleSelection)),
-      ),
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  MapScreen(isSelectingRoute: widget.multipleSelection)),
+          widget.uniqueKey ?? ""),
       child: BlocBuilder<MapBloc, MapState>(
         builder: (context, state) {
-          if (state is MapSingleSelectionLoaded) {
+          if (state is MapSingleSelectionLoaded &&
+              state.uniqueKey == widget.uniqueKey) {
             currentMapLink = state.mapStaticLink;
           }
           if (state is MapDoubleSelectionLoaded) {
@@ -51,7 +55,7 @@ class _MapStaticState extends State<MapStatic> {
                     height: 250,
                     decoration: BoxDecoration(color: silverColor),
                     child: Center(
-                      child: Text("Tap to select starting location"),
+                      child: Text("Tap to select a location"),
                     ),
                   ),
                 );

@@ -19,16 +19,17 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         String staticLink = "";
 
         address = await MapService().getAddressFromCoordinates(
-                event.selectedLocaton.latitude,
-                event.selectedLocaton.longitude) ??
+                event.selectedLocation.latitude,
+                event.selectedLocation.longitude) ??
             "";
         staticLink = MapService().generateMapUrl(
-            event.selectedLocaton.latitude, event.selectedLocaton.longitude);
+            event.selectedLocation.latitude, event.selectedLocation.longitude);
 
         currentMapLink = staticLink;
 
         emit(MapSingleSelectionLoaded(
-            event.selectedLocaton, address, staticLink));
+            event.selectedLocation, address, staticLink,
+            uniqueKey: event.uniqueKey));
       }
 
       if (event is AddressEntryEvent) {
@@ -45,7 +46,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         currentMapLink = mapStaticLink;
 
         emit(MapSingleSelectionLoaded(location, event.address!, mapStaticLink,
-            type: event.type));
+            uniqueKey: event.uniqeKey ?? ""));
       }
 
       if (event is MapDoubleSelectionEvent) {

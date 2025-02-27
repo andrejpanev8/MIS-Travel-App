@@ -35,7 +35,8 @@ class MapService {
         '&pl=c:0000FF,w:5,$polyline';
   }
 
-  Future<dynamic> openMap(BuildContext context, Route route) async {
+  Future<LatLng?> openMap(
+      BuildContext context, Route route, String uniqueKey) async {
     final result = await Navigator.push(
       context,
       route,
@@ -45,7 +46,8 @@ class MapService {
       if (result is LatLng) {
         Functions.emitMapEvent(
             context: context,
-            event: MapSelectionEvent(selectedLocaton: result));
+            event: MapSelectionEvent(
+                selectedLocation: result, uniqueKey: uniqueKey));
       }
       if (result is Map<String, dynamic>) {
         Functions.emitMapEvent(
@@ -54,9 +56,8 @@ class MapService {
                 fromSelectedLocation: result["from"] as LatLng,
                 toSelectedLocation: result["to"] as LatLng));
       }
-      return result;
+      return null;
     }
-    return null;
   }
 
   Future<Map<String, dynamic>?> getCoordinatesFromAddress(

@@ -12,13 +12,14 @@ class ProcessStarted extends MapState {}
 class MapInitial extends MapState {}
 
 class MapSingleSelectionLoaded extends MapState {
-  final String? type;
   final LatLng location;
   final String address;
   final String mapStaticLink;
+  final String? uniqueKey;
+
   const MapSingleSelectionLoaded(
       this.location, this.address, this.mapStaticLink,
-      {this.type});
+      {this.uniqueKey});
 }
 
 class MapDoubleSelectionLoaded extends MapState {

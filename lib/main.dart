@@ -5,6 +5,7 @@ import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/bloc/home_screen_bloc/home_screen_bloc.dart';
 import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
+import 'package:travel_app/presentation/screens/add_delivery_screen.dart';
 import 'package:travel_app/presentation/screens/add_ride_screen.dart';
 import 'package:travel_app/presentation/screens/login_screen.dart';
 import 'package:travel_app/presentation/screens/my_rides_screen.dart';
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
           context.read<UserBloc>().add(LoadDrivers());
           return AddRideScreen();
         },
+        "/addDelivery": (context) => AddDeliveryScreen(),
         "/login": (context) => const LoginScreen(),
         "/register": (context) => const RegisterScreen()
       },

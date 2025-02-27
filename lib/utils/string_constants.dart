@@ -61,11 +61,16 @@ class AppStrings {
   static const String selectALocation = "Select a location";
   static const String description = "Description";
   static const String noItemsAvailable = "No items available";
+  static const String deliveryDetails = "Delivery Details";
+
   static const String driversTitle = "Drivers";
   static const String noDrivers = "No drivers available";
   static const String invitationsTitle = "Sent invitations";
   static const String noInvitations = "No invitations available";
   static const String registerDriverTitle = "Register driver";
-
-
 }
+
+String START_LOCATION_ADD_DELIVERY_SCREEN =
+    "START_LOCATION_ADD_DELIVERY_SCREEN";
+String END_LOCATION_ADD_DELIVERY_SCREEN = "END_LOCATION_ADD_DELIVERY_SCREEN";
+String START_LOCATION_ADD_RIDE_SCREEN = "START_LOCATION_ADD_RIDE_SCREEN";
