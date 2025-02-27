@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:travel_app/data/enums/user_role.dart';
+import 'package:travel_app/data/models/location.dart';
 import 'package:travel_app/data/models/trip.dart';
 import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/data/services/trip_service.dart';
@@ -45,6 +48,13 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
   UserModel? selectedClient;
   List<Trip> trips = [];
   Trip? selectedTrip;
+  Location? startLocation;
+  Location? endLocation;
+
+  String START_LOCATION_ADD_DELIVERY_SCREEN =
+      "START_LOCATION_ADD_DELIVERY_SCREEN";
+  String END_LOCATION_ADD_DELIVERY_SCREEN =
+      "END_LOCATION_ADD_DELIVERY_SCREEN";
 
   @override
   void initState() {
@@ -55,7 +65,8 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
         if (startLocationController.text.isNotEmpty) {
           Functions.emitMapEvent(
             context: context,
-            event: AddressEntryEvent(startLocationController.text),
+            event: AddressEntryEvent(startLocationController.text,
+                START_LOCATION_ADD_DELIVERY_SCREEN),
           );
         }
       }
@@ -66,7 +77,8 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
         if (endLocationController.text.isNotEmpty) {
           Functions.emitMapEvent(
             context: context,
-            event: AddressEntryEvent(endLocationController.text),
+            event: AddressEntryEvent(
+                endLocationController.text, END_LOCATION_ADD_DELIVERY_SCREEN),
           );
         }
       }
@@ -92,7 +104,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
   Future<void> _loadClients() async {
     try {
       List<UserModel> fetchedClients =
-          await UserService().getAllUsersByRole(userRole: UserRole.CLIENT);
+      await UserService().getAllUsersByRole(userRole: UserRole.CLIENT);
       setState(() {
         clients = fetchedClients;
       });
@@ -118,10 +130,20 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
       listener: (context, state) => {
         if (state is MapSingleSelectionLoaded)
           {
-            setState(() {
-              startLocationController.text = state.address;
-              endLocationController.text = state.address;
-            })
+            if (state.uniqueKey == START_LOCATION_ADD_DELIVERY_SCREEN)
+              {
+                setState(() {
+                  startLocationController.text = state.address;
+                  startLocation = Location.fromLatLng(state.location);
+                })
+              }
+            else if (state.uniqueKey == END_LOCATION_ADD_DELIVERY_SCREEN)
+              {
+                setState(() {
+                  endLocationController.text = state.address;
+                  endLocation = Location.fromLatLng(state.location);
+                })
+              }
           }
       },
       child: Scaffold(
@@ -244,14 +266,17 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
           inputTextFieldCustom(
               context: context,
               controller: startLocationController,
+              focusNode: startLocationFocusNode,
               suffixIcon: Icon(Icons.location_on_outlined)),
-          MapStatic(),
+          SizedBox(height: 8),
+          MapStatic(uniqueKey: START_LOCATION_ADD_DELIVERY_SCREEN),
 
           SizedBox(height: 16.0),
           _text("Drop off phone number"),
           inputTextFieldCustom(
               context: context,
               controller: dropOffPhoneController,
+              focusNode: endLocationFocusNode,
               suffixIcon: Icon(Icons.phone_forwarded_outlined)),
           SizedBox(height: 16.0),
           _text("End location, choose on map"),
@@ -259,7 +284,8 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
               context: context,
               controller: endLocationController,
               suffixIcon: Icon(Icons.location_on_outlined)),
-          MapStatic(),
+          SizedBox(height: 8),
+          MapStatic(uniqueKey: END_LOCATION_ADD_DELIVERY_SCREEN),
         ],
       ),
     );
