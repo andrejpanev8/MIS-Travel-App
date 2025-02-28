@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/invitation.dart';
-import 'package:travel_app/data/services/auth_service.dart';
-import 'package:travel_app/data/services/user_service.dart';
+import 'package:travel_app/service/auth_service.dart';
+import 'package:travel_app/service/user_service.dart';
 
-import '../../utils/functions.dart';
-import '../models/user.dart';
+import '../utils/functions.dart';
+import '../data/models/user.dart';
 
 class InvitationService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

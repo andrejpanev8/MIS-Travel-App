@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/map_bloc/map_bloc.dart';
-import '../../data/services/map_service.dart';
+import '../../service/map_service.dart';
 import '../../utils/color_constants.dart';
 import '../screens/map_screen.dart';
 

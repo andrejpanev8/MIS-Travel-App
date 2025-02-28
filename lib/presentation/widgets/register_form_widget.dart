@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:travel_app/data/services/auth_service.dart';
+import 'package:travel_app/service/auth_service.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/error_handler.dart';

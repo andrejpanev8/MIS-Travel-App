@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_app/data/models/user.dart';
 
-import '../enums/user_role.dart';
+import '../data/enums/user_role.dart';
 
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -9,16 +9,17 @@ class UserService {
   Future<bool> checkUserExistsByEmail({
     required String email,
   }) async {
-      QuerySnapshot emailQuerySnapshot = await _firestore
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .get();
+    QuerySnapshot emailQuerySnapshot = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
 
-      if (emailQuerySnapshot.docs.isNotEmpty) {
-        return true;
-      }
-      return false;
+    if (emailQuerySnapshot.docs.isNotEmpty) {
+      return true;
+    }
+    return false;
   }
+
   Future<bool> checkUserExistsByEmailOrPhone({
     required String email,
     required String phoneNumber,

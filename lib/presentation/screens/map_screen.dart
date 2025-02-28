@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
 
-import '../../data/services/map_service.dart';
+import '../../service/map_service.dart';
 import '../../utils/connections.dart';
 
 class MapScreen extends StatefulWidget {

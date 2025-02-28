@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/user.dart';
-import 'package:travel_app/data/services/trip_service.dart';
-import 'package:travel_app/data/services/user_service.dart';
+import 'package:travel_app/service/trip_service.dart';
+import 'package:travel_app/service/user_service.dart';
 
-import '../models/location.dart';
-import '../models/trip.dart';
+import '../data/models/location.dart';
+import '../data/models/trip.dart';
 import 'auth_service.dart';
 
 class PassengerTripService {

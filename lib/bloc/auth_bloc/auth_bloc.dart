@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/data/models/user.dart';
-import 'package:travel_app/data/services/auth_service.dart';
+import 'package:travel_app/service/auth_service.dart';
 
 import '../../utils/error_handler.dart';
 import '../../utils/string_constants.dart';

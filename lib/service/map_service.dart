@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/utils/keys.dart';
 
-import '../../utils/functions.dart';
+import '../utils/functions.dart';
 
 class MapService {
   String generateMapUrl(double lat, double lng) {

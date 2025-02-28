@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../data/services/map_service.dart';
+import '../../service/map_service.dart';
 
 part 'map_event.dart';
 part 'map_state.dart';

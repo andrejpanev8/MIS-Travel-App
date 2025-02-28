@@ -5,12 +5,12 @@ import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
-import 'package:travel_app/data/services/auth_service.dart';
-import 'package:travel_app/data/services/invitation_service.dart';
-import 'package:travel_app/data/services/passenger_trip_service.dart';
-import 'package:travel_app/data/services/task_trip_service.dart';
-import 'package:travel_app/data/services/trip_service.dart';
-import 'package:travel_app/data/services/user_service.dart';
+import 'package:travel_app/service/auth_service.dart';
+import 'package:travel_app/service/invitation_service.dart';
+import 'package:travel_app/service/passenger_trip_service.dart';
+import 'package:travel_app/service/task_trip_service.dart';
+import 'package:travel_app/service/trip_service.dart';
+import 'package:travel_app/service/user_service.dart';
 import 'package:travel_app/utils/validation_utils.dart';
 
 import '../../data/DTO/TaskTripDTO.dart';

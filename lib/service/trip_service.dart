@@ -3,14 +3,14 @@ import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
-import 'package:travel_app/data/services/auth_service.dart';
-import 'package:travel_app/data/services/passenger_trip_service.dart';
-import 'package:travel_app/data/services/task_trip_service.dart';
-import 'package:travel_app/data/services/user_service.dart';
+import 'package:travel_app/service/auth_service.dart';
+import 'package:travel_app/service/passenger_trip_service.dart';
+import 'package:travel_app/service/task_trip_service.dart';
+import 'package:travel_app/service/user_service.dart';
 
-import '../enums/trip_status.dart';
-import '../models/location.dart';
-import '../models/trip.dart';
+import '../data/enums/trip_status.dart';
+import '../data/models/location.dart';
+import '../data/models/trip.dart';
 
 class TripService {
   AuthService authService = AuthService();
