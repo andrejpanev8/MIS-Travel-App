@@ -198,6 +198,40 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       }
       if (event is RegisterDriver) {}
+
+      if (event is FilterEvent) {
+        emit(ProcessStarted());
+        if (event.state is DriverUpcomingTripsLoaded) {
+          if (_cachedDriverTrips == null) {
+            return;
+          }
+
+          List<Trip> filteredTrips = _cachedDriverTrips!;
+
+          if (event.fromWhere != null && event.fromWhere!.isNotEmpty) {
+            filteredTrips = filteredTrips
+                .where((trip) => trip.startCity.contains(event.fromWhere!))
+                .toList();
+          }
+          if (event.toWhere != null && event.toWhere!.isNotEmpty) {
+            filteredTrips = filteredTrips
+                .where((trip) => trip.endCity.contains(event.toWhere!))
+                .toList();
+          }
+          if (event.dateTime != null) {
+            filteredTrips = filteredTrips
+                .where((trip) => trip.startTime.isAfter(event.dateTime!))
+                .toList();
+          }
+          debugPrint("Filtered trips: $filteredTrips");
+          emit(DriverUpcomingTripsLoaded(filteredTrips));
+          return;
+        }
+        if (event.state is DriverUpcomingDeliveriesLoaded) {
+          emit(DriverUpcomingDeliveriesLoaded(_cachedDriverDeliveries!));
+          return;
+        }
+      }
     });
   }
 }

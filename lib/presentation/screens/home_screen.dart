@@ -49,40 +49,41 @@ class _HomeScreenState extends State<HomeScreen> {
       _loadData(context);
     });
 
-    fromWhereController.addListener(() => _onInputChanged(FromWhereString));
-    toWhereController.addListener(() => _onInputChanged(ToWhereString));
-    dateTimeController.addListener(() => _onInputChanged(DateTimeString));
+    fromWhereController
+        .addListener(() => _onInputChanged(context.read<UserBloc>().state));
+    toWhereController
+        .addListener(() => _onInputChanged(context.read<UserBloc>().state));
+    dateTimeController
+        .addListener(() => _onInputChanged(context.read<UserBloc>().state));
 
     fromWhereFocusNode.addListener(() => _onFocusLost(FromWhereString));
     toWhereFocusNode.addListener(() => _onFocusLost(ToWhereString));
     dateTimeFocusNode.addListener(() => _onFocusLost(DateTimeString));
   }
 
-  void _onInputChanged(String field) {
+  void _onInputChanged([UserState? userState]) {
     _debounce?.cancel();
     _debounce = Timer(Duration(milliseconds: 500), () {
-      _dispatchEvent(field);
+      final fromWhere = fromWhereController.text.trim();
+      final toWhere = toWhereController.text.trim();
+      final dateTime = dateTimeController.text.trim().isNotEmpty
+          ? DateTime.tryParse(dateTimeController.text)
+          : null;
+
+      if (fromWhere.isEmpty && toWhere.isEmpty && dateTime == null) {
+        context.read<UserBloc>().add(GetDriverUpcomingRides());
+      } else {
+        Functions.emitUserEvent(
+          context: context,
+          event: FilterEvent(fromWhere, toWhere, dateTime, userState),
+        );
+      }
     });
   }
 
   void _onFocusLost(String field) {
     if (!getFocusNode(field).hasFocus) {
-      _onInputChanged(field);
-    }
-  }
-
-  //TO:DO Handle Scenarios in user bloc and also send optional data to the event in user Event
-  void _dispatchEvent(String field) {
-    switch (field) {
-      case FromWhereString:
-        context.read<UserBloc>().add(GetDriverUpcomingRides());
-        break;
-      case ToWhereString:
-        context.read<UserBloc>().add(GetDriverUpcomingRides());
-        break;
-      case DateTimeString:
-        context.read<UserBloc>().add(GetDriverUpcomingRides());
-        break;
+      _onInputChanged();
     }
   }
 
@@ -115,7 +116,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    context.read<UserBloc>().add(GetDriverUpcomingRides());
+    Functions.emitUserEvent(context: context, event: GetDriverUpcomingRides());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (fromWhereController.text.isNotEmpty ||
+          toWhereController.text.isNotEmpty ||
+          dateTimeController.text.isNotEmpty) {
+        _onInputChanged();
+      }
+    });
   }
 
   @override

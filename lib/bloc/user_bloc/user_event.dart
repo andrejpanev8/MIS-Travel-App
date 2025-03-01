@@ -79,3 +79,11 @@ class RegisterDriver extends UserEvent {
   final String email;
   const RegisterDriver(this.email);
 }
+
+class FilterEvent extends UserEvent {
+  final String? fromWhere;
+  final String? toWhere;
+  final DateTime? dateTime;
+  final UserState? state;
+  const FilterEvent(this.fromWhere, this.toWhere, this.dateTime, this.state);
+}
