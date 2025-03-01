@@ -72,11 +72,6 @@ class AllInvitationsLoaded extends UserState {
   const AllInvitationsLoaded(this.invitations);
 }
 
-class DriversLoaded extends UserState {
-  final List<UserModel> drivers;
-  const DriversLoaded(this.drivers);
-}
-
 class TripInfoLoaded extends UserState {
   final Trip? trip;
   final UserModel? driver;

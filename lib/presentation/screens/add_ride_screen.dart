@@ -166,7 +166,7 @@ class _AddRideScreenState extends State<AddRideScreen> {
           SizedBox(height: 16.0),
           _text("Driver"),
           BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-            if (state is DriversLoaded) {
+            if (state is AllDriversLoaded) {
               allDrivers = state.drivers;
             }
             return DropdownCustomButton(

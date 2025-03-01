@@ -37,6 +37,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         List<Trip> driverTrips = [];
         emit(ProcessStarted());
         driverTrips = await TripService().getAllUpcomingTrips();
+        _cachedDriverTrips = driverTrips;
         emit(DriverUpcomingTripsLoaded(driverTrips));
       }
 
@@ -50,6 +51,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(ProcessStarted());
         driverDeliveries =
             await TaskTripService().getUpcomingDeliveriesForUser();
+        _cachedDriverDeliveries = driverDeliveries;
         emit(DriverUpcomingDeliveriesLoaded(driverDeliveries));
       }
 
@@ -57,7 +59,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         if (!event.forceRefresh &&
             _cachedDriverDeliveries != null &&
             _cachedDriverTrips != null) {
-          emit(DriverUpcomingDeliveriesLoaded(_cachedDriverDeliveries!));
+          DriverDataLoaded(_cachedDriverTrips!, _cachedDriverDeliveries!);
           return;
         }
         UserModel? currentUser = await AuthService().getCurrentUser();
@@ -67,6 +69,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         driverTrips = await TripService().getTripsByDriver(currentUser!.id);
         driverDeliveries =
             await TaskTripService().getUpcomingDeliveriesForUser();
+
+        _cachedDriverTrips = driverTrips;
+        _cachedDriverDeliveries = driverDeliveries;
         emit(DriverDataLoaded(driverTrips, driverDeliveries));
       }
 
@@ -79,6 +84,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(ProcessStarted());
         drivers =
             await UserService().getAllUsersByRole(userRole: UserRole.DRIVER);
+        _cachedDrivers = drivers;
         emit(AllDriversLoaded(drivers));
       }
 
@@ -90,6 +96,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         List<Invitation> invitations = [];
         emit(ProcessStarted());
         invitations = await InvitationService().getAllInvitations();
+        _cachedInvitations = invitations;
         emit(AllInvitationsLoaded(invitations));
       }
 
@@ -98,8 +105,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         if (!event.forceRefresh &&
             _cachedDrivers != null &&
             _cachedInvitations != null) {
-          emit(AllDriversLoaded(_cachedDrivers!));
-          emit(AllInvitationsLoaded(_cachedInvitations!));
+          emit(AdminDataLoaded(_cachedDrivers!, _cachedInvitations!));
           return;
         }
         List<UserModel> drivers = [];
@@ -108,6 +114,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         drivers =
             await UserService().getAllUsersByRole(userRole: UserRole.DRIVER);
         invitations = await InvitationService().getAllInvitations();
+        _cachedDrivers = drivers;
+        _cachedInvitations = invitations;
         emit(AdminDataLoaded(drivers, invitations));
       }
 
@@ -157,7 +165,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         try {
           List<UserModel> drivers =
               await UserService().getAllUsersByRole(userRole: UserRole.DRIVER);
-          emit(DriversLoaded(drivers));
+          _cachedDrivers = drivers;
+          emit(AllDriversLoaded(drivers));
         } catch (e) {
           debugPrint(e.toString());
         }

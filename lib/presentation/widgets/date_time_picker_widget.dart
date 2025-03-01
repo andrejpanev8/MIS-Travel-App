@@ -4,6 +4,9 @@ import 'package:travel_app/presentation/widgets/input_field.dart';
 Widget dateTimePicker({
   required BuildContext context,
   required TextEditingController controller,
+  FocusNode? focusNode,
+  String? hintText,
+  Widget? icon,
   required Function(DateTime) onDateTimeSelected,
 }) {
   return GestureDetector(
@@ -41,8 +44,10 @@ Widget dateTimePicker({
     child: AbsorbPointer(
       child: inputTextFieldCustom(
         context: context,
+        focusNode: focusNode,
         controller: controller,
-        suffixIcon: Icon(Icons.calendar_today),
+        hintText: hintText ?? "",
+        suffixIcon: icon ?? Icon(Icons.calendar_today),
       ),
     ),
   );

@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:travel_app/presentation/widgets/date_time_picker_widget.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/presentation/widgets/expanded_wrapper_widget.dart';
 import 'package:travel_app/utils/image_constants.dart';
@@ -12,7 +15,12 @@ import '../../bloc/user_bloc/user_bloc.dart';
 import '../../utils/functions.dart';
 import 'input_field.dart';
 
-class RidesDeliveriesToggle extends StatelessWidget {
+class RidesDeliveriesToggle extends StatefulWidget {
+  @override
+  State<RidesDeliveriesToggle> createState() => _RidesDeliveriesToggleState();
+}
+
+class _RidesDeliveriesToggleState extends State<RidesDeliveriesToggle> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeScreenBloc, HomeScreenState>(
@@ -30,7 +38,7 @@ class RidesDeliveriesToggle extends StatelessWidget {
                     !isRidesActive, false, boxIcon),
               ],
             ),
-            Row(children: [_buildSearchSection(context, isRidesActive)])
+            // Row(children: [_buildSearchSection(context, isRidesActive)])
           ],
         );
       },
@@ -67,49 +75,6 @@ class RidesDeliveriesToggle extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget _buildSearchSection(BuildContext context, bool showRides) {
-  return Expanded(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-            padding: EdgeInsets.only(left: 16, top: 12, right: 16, bottom: 4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                expandedWidget(inputTextFieldCustom(
-                  context: context,
-                  prefixIcon: Icon(Icons.location_on_outlined),
-                  hintText: AppStrings.fromWhere,
-                )),
-                SizedBox(width: 10),
-                expandedWidget(inputTextFieldCustom(
-                  context: context,
-                  prefixIcon: Icon(Icons.location_on_outlined),
-                  hintText: AppStrings.toWhere,
-                )),
-                SizedBox(width: 10),
-                expandedWidget(inputTextFieldCustom(
-                  context: context,
-                  prefixIcon: Icon(Icons.calendar_month_outlined),
-                  hintText: AppStrings.when,
-                )),
-              ],
-            )),
-        Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            child: Text(
-              showRides
-                  ? AppStrings.upcomingRides
-                  : AppStrings.upcomingDeliveries,
-              style: StyledText().appBarText(fontSize: 18),
-            )),
-      ],
-    ),
-  );
 }
 
 Widget _icon(bool showRides, bool isActive, String iconPath) {

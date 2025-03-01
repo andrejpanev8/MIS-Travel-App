@@ -74,3 +74,7 @@ String START_LOCATION_ADD_DELIVERY_SCREEN =
     "START_LOCATION_ADD_DELIVERY_SCREEN";
 String END_LOCATION_ADD_DELIVERY_SCREEN = "END_LOCATION_ADD_DELIVERY_SCREEN";
 String START_LOCATION_ADD_RIDE_SCREEN = "START_LOCATION_ADD_RIDE_SCREEN";
+
+const String FromWhereString = "fromWhere";
+const String ToWhereString = "toWhere";
+const String DateTimeString = "dateTime";
