@@ -18,6 +18,8 @@ final List<TaskTrip> mockTaskTrips = [
         email: 'john.doe@example.com',
         role: UserRole.CLIENT,
       ),
+      pickUpPhoneNumber: '+1234567890',
+      dropOffPhoneNumber: '+1234567890',
       tripStatus: ClientTripStatus.INPROGRESS,
       tripId: '1'),
   TaskTrip(
@@ -33,6 +35,8 @@ final List<TaskTrip> mockTaskTrips = [
         email: 'alice.smith@example.com',
         role: UserRole.CLIENT,
       ),
+      pickUpPhoneNumber: '+1234567890',
+      dropOffPhoneNumber: '+1234567890',
       tripStatus: ClientTripStatus.RESERVED,
       tripId: '2'),
   TaskTrip(
@@ -48,6 +52,8 @@ final List<TaskTrip> mockTaskTrips = [
         email: 'bob.johnson@example.com',
         role: UserRole.CLIENT,
       ),
+      pickUpPhoneNumber: '+1234567890',
+      dropOffPhoneNumber: '+1234567890',
       tripStatus: ClientTripStatus.FINISHED,
       tripId: '2'),
   TaskTrip(
@@ -63,6 +69,8 @@ final List<TaskTrip> mockTaskTrips = [
         email: 'ethan.williams@example.com',
         role: UserRole.CLIENT,
       ),
+      pickUpPhoneNumber: '+1234567890',
+      dropOffPhoneNumber: '+1234567890',
       tripStatus: ClientTripStatus.CANCELED,
       tripId: '1'),
 ];

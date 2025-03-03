@@ -4,6 +4,7 @@ import 'package:travel_app/service/trip_service.dart';
 import 'package:travel_app/service/user_service.dart';
 
 import '../data/DTO/TaskTripDTO.dart';
+import '../data/enums/user_role.dart';
 import '../data/models/location.dart';
 import '../data/models/trip.dart';
 import '../data/models/user.dart';
@@ -33,7 +34,9 @@ class TaskTripService {
   }
 
   Future<String?> createTaskTrip(
-      {required Location startLocation,
+      {required String pickUpPhoneNumber,
+      required Location startLocation,
+      required String dropOffPhoneNumber,
       required Location endLocation,
       required String tripId,
       String description = ""}) async {
@@ -46,7 +49,9 @@ class TaskTripService {
 
     TaskTrip newTrip = TaskTrip(
         id: taskTripIdGenerated,
+        pickUpPhoneNumber: pickUpPhoneNumber,
         startLocation: startLocation,
+        dropOffPhoneNumber: dropOffPhoneNumber,
         endLocation: endLocation,
         user: user,
         description: description,
@@ -60,6 +65,56 @@ class TaskTripService {
     await _firestore.collection('trips').doc(tripId).update({
       "taskTrips": FieldValue.arrayUnion([taskTripIdGenerated])
     });
+    return taskTripIdGenerated;
+  }
+
+  Future<String?> createTaskTripWithAdhocUser({
+    required String pickUpPhoneNumber,
+    required Location startLocation,
+    required String dropOffPhoneNumber,
+    required Location endLocation,
+    required String tripId,
+    String? clientId,
+    String? firstName,
+    String? lastName,
+    String description = "",
+  }) async {
+    UserModel? adhocUser;
+    if(clientId != null){
+      adhocUser = await userService.getUserById(clientId);
+    }
+    else {
+      adhocUser = UserModel(
+        firstName: firstName!,
+        lastName: lastName!,
+        phoneNumber: "",
+        email: "",
+        role: UserRole.CLIENT,
+      );
+    }
+
+    String taskTripIdGenerated = _firestore.collection('task_trips').doc().id;
+
+    TaskTrip newTrip = TaskTrip(
+      id: taskTripIdGenerated,
+      pickUpPhoneNumber: pickUpPhoneNumber,
+      startLocation: startLocation,
+      dropOffPhoneNumber: dropOffPhoneNumber,
+      endLocation: endLocation,
+      user: adhocUser!,
+      description: description,
+      tripId: tripId,
+    );
+
+    await _firestore
+        .collection('task_trips')
+        .doc(taskTripIdGenerated)
+        .set(newTrip.toJson());
+
+    await _firestore.collection('trips').doc(tripId).update({
+      "taskTrips": FieldValue.arrayUnion([taskTripIdGenerated])
+    });
+
     return taskTripIdGenerated;
   }
 

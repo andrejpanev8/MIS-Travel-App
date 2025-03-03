@@ -9,13 +9,17 @@ import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/location.dart';
 import 'package:travel_app/data/models/trip.dart';
 import 'package:travel_app/data/models/user.dart';
+import 'package:travel_app/service/task_trip_service.dart';
 import 'package:travel_app/service/trip_service.dart';
 import 'package:travel_app/service/user_service.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/custom_drop_down_button.dart';
 import 'package:travel_app/utils/color_constants.dart';
+import 'package:travel_app/utils/error_handler.dart';
+import 'package:travel_app/utils/success_handler.dart';
 import 'package:travel_app/utils/text_styles.dart';
+import 'package:travel_app/utils/validation_utils.dart';
 
 // import '../../data/services/map_service.dart';
 import '../../bloc/map_bloc/map_bloc.dart';
@@ -36,7 +40,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
 
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController pickupPhoneController = TextEditingController();
+  final TextEditingController pickUpPhoneController = TextEditingController();
   final TextEditingController dropOffPhoneController = TextEditingController();
   final TextEditingController startLocationController = TextEditingController();
   final TextEditingController endLocationController = TextEditingController();
@@ -50,6 +54,13 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
   Trip? selectedTrip;
   Location? startLocation;
   Location? endLocation;
+
+  String? _pickUpPhoneError;
+  String? _startLocationError;
+  String? _endLocationError;
+  String? _dropOffPhoneError;
+  String? _tripError;
+  String? _clientError;
 
   @override
   void initState() {
@@ -87,7 +98,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
   void dispose() {
     firstNameController.dispose();
     lastNameController.dispose();
-    pickupPhoneController.dispose();
+    pickUpPhoneController.dispose();
     dropOffPhoneController.dispose();
     startLocationController.dispose();
     endLocationController.dispose();
@@ -116,6 +127,66 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
       });
     } catch (error) {
       print("Error fetching trips: $error");
+    }
+  }
+
+  Future<void> _saveDelivery() async {
+    _resetErrors();
+    setState(() {
+      if (selectedTrip == null) {
+        _tripError = "Please select a trip";
+      }
+      if (isClientSelected[0]) {
+        if (selectedClient == null) {
+          _clientError = "Please select a client";
+        }
+      }
+      _pickUpPhoneError =
+          ValidationUtils.phoneValidator(pickUpPhoneController.text);
+      _dropOffPhoneError =
+          ValidationUtils.phoneValidator(dropOffPhoneController.text);
+      if (startLocationController.text.isEmpty) {
+        _startLocationError = "Please select a start location";
+      }
+      if (endLocationController.text.isEmpty) {
+        _endLocationError = "Please select a end location";
+      }
+    });
+
+    if (_tripError != null ||
+        _clientError != null ||
+        _pickUpPhoneError != null ||
+        _dropOffPhoneError != null ||
+        _startLocationError != null ||
+        _endLocationError != null) {
+      return;
+    }
+
+    try {
+      await TaskTripService().createTaskTripWithAdhocUser(
+          pickUpPhoneNumber: pickUpPhoneController.text,
+          startLocation: startLocation!,
+          dropOffPhoneNumber: dropOffPhoneController.text,
+          endLocation: endLocation!,
+          tripId: selectedTrip!.id,
+          clientId: selectedClient?.id,
+          firstName: firstNameController.text.isNotEmpty
+              ? firstNameController.text
+              : "Unknown",
+          lastName: lastNameController.text.isNotEmpty
+              ? lastNameController.text
+              : "Unknown");
+      showSuccessDialog(
+        context,
+        "Success",
+        "Delivery successfully created!",
+        () {
+          Navigator.of(context).pop();
+        },
+      );
+    } catch (error) {
+      showErrorDialog(
+          context, "Error", "Error occurred while creating a delivery");
     }
   }
 
@@ -159,7 +230,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
                             fontSize: 16,
                             iconSize: 16,
                             verticalPadding: 10,
-                            onPressed: () {})),
+                            onPressed: _saveDelivery)),
                   ],
                 )
               ],
@@ -194,6 +265,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
               });
             },
           ),
+          _buildErrorText(_tripError),
 
           //////////////////////////
           SizedBox(height: 16.0),
@@ -254,8 +326,9 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
           _text("Pick up phone number"),
           inputTextFieldCustom(
               context: context,
-              controller: pickupPhoneController,
+              controller: pickUpPhoneController,
               suffixIcon: Icon(Icons.phone_callback_outlined)),
+          _buildErrorText(_pickUpPhoneError),
           SizedBox(height: 16.0),
           _text("Start location, choose on map"),
           inputTextFieldCustom(
@@ -263,6 +336,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
               controller: startLocationController,
               focusNode: startLocationFocusNode,
               suffixIcon: Icon(Icons.location_on_outlined)),
+          _buildErrorText(_startLocationError),
           SizedBox(height: 8),
           MapStatic(uniqueKey: START_LOCATION_ADD_DELIVERY_SCREEN),
 
@@ -273,12 +347,14 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
               controller: dropOffPhoneController,
               focusNode: endLocationFocusNode,
               suffixIcon: Icon(Icons.phone_forwarded_outlined)),
+          _buildErrorText(_dropOffPhoneError),
           SizedBox(height: 16.0),
           _text("End location, choose on map"),
           inputTextFieldCustom(
               context: context,
               controller: endLocationController,
               suffixIcon: Icon(Icons.location_on_outlined)),
+          _buildErrorText(_endLocationError),
           SizedBox(height: 8),
           MapStatic(uniqueKey: END_LOCATION_ADD_DELIVERY_SCREEN),
         ],
@@ -302,6 +378,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
             });
           },
         ),
+        _buildErrorText(_clientError)
       ],
     );
   }
@@ -349,6 +426,17 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
     );
   }
 
+  void _resetErrors() {
+    setState(() {
+      _pickUpPhoneError = null;
+      _startLocationError = null;
+      _endLocationError = null;
+      _dropOffPhoneError = null;
+      _tripError = null;
+      _clientError = null;
+    });
+  }
+
   void _resetFields() {
     firstNameController.clear();
     lastNameController.clear();
@@ -359,4 +447,17 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
 
 Widget _text(String text) {
   return Text(text, style: StyledText().descriptionText());
+}
+
+Widget _buildErrorText(String? error) {
+  return error != null
+      ? Padding(
+          padding: const EdgeInsets.only(top: 4, left: 8),
+          child: Text(
+            error,
+            style:
+                StyledText().descriptionText(fontSize: 12, color: Colors.red),
+          ),
+        )
+      : const SizedBox.shrink();
 }
