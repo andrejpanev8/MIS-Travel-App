@@ -4,6 +4,7 @@ import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
+import 'package:travel_app/presentation/widgets/register_driver_widget.dart';
 
 import '../../data/models/user.dart';
 import '../../utils/string_constants.dart';
@@ -87,7 +88,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   return Padding(
                     padding: EdgeInsets.all(16.0),
                     child: SingleChildScrollView(
-                      child: Form(
+                      child:
+                      Column(
+                        children: [
+                      Form(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -152,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       verticalPadding: 10,
                                       onPressed: () {
                                         if (firstNameController.text !=
-                                                user!.firstName ||
+                                            user!.firstName ||
                                             lastNameController.text !=
                                                 user!.lastName ||
                                             phoneController.text !=
@@ -180,7 +184,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                       ),
-                    ),
+                      RegisterDriverWidget(),
+               ]),
+                ),
+
                   );
                 }
                 return Center(child: infoText(AppStrings.loginRequiredMessage));

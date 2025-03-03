@@ -39,6 +39,37 @@ class InvitationService {
     return invitationId;
   }
 
+  Future<String?> createInvitationWithCodeAndDate(
+      {required String email,
+      required String uniqueCode,
+      required DateTime expirationDate}) async {
+    UserModel? user = await authService.getCurrentUser();
+    if (user == null) {
+      throw Exception("No authenticated user found.");
+    }
+
+    if (user.role != UserRole.ADMIN) {
+      throw Exception("You do not have a permission to create invitation");
+    }
+
+    DocumentReference invitationRef =
+        _firestore.collection('invitations').doc();
+
+    String invitationId = invitationRef.id;
+
+    String uniqueCode = Functions.generateUniqueCode();
+
+    Invitation invitation = Invitation(
+        id: invitationId,
+        uniqueCode: uniqueCode,
+        expirationDate: expirationDate,
+        email: email);
+
+    await invitationRef.set(invitation.toJson());
+
+    return invitationId;
+  }
+
   Future<List<Invitation>> getAllInvitations() async {
     QuerySnapshot querySnapshot =
         await _firestore.collection('invitations').get();
@@ -67,6 +98,19 @@ class InvitationService {
         return null;
       }
       return querySnapshot.docs.first;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<Invitation?> findInvitationById(String id) async {
+    try {
+      DocumentSnapshot invitationDoc =
+          await _firestore.collection('invitations').doc(id).get();
+      if (!invitationDoc.exists) {
+        throw Exception("Invitation not found.");
+      }
+      return Invitation.fromJson(invitationDoc.data() as Map<String, dynamic>);
     } catch (e) {
       return null;
     }

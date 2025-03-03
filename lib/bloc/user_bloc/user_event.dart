@@ -75,7 +75,7 @@ class CheckEmailExists extends UserEvent {
   const CheckEmailExists(this.email);
 }
 
-class RegisterDriver extends UserEvent {
+class SendEmail extends UserEvent {
   final String email;
-  const RegisterDriver(this.email);
+  const SendEmail(this.email);
 }

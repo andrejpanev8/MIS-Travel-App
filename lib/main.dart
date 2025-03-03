@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/bloc/home_screen_bloc/home_screen_bloc.dart';
 import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
@@ -23,6 +24,7 @@ import 'utils/image_constants.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await dotenv.load(fileName: ".env");
   runApp(MultiBlocProvider(providers: [
     BlocProvider(create: (context) => UserBloc()),
     BlocProvider(create: (context) => HomeScreenBloc()),
