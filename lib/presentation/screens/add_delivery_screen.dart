@@ -61,7 +61,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
           Functions.emitMapEvent(
             context: context,
             event: AddressEntryEvent(startLocationController.text,
-                uniqeKey: START_LOCATION_ADD_DELIVERY_SCREEN),
+                uniqueKey: START_LOCATION_ADD_DELIVERY_SCREEN),
           );
         }
       }
@@ -73,7 +73,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
           Functions.emitMapEvent(
             context: context,
             event: AddressEntryEvent(endLocationController.text,
-                uniqeKey: END_LOCATION_ADD_DELIVERY_SCREEN),
+                uniqueKey: END_LOCATION_ADD_DELIVERY_SCREEN),
           );
         }
       }
