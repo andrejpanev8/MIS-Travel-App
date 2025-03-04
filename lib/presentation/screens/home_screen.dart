@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/presentation/widgets/empty_list_indicator.dart';
 import 'package:travel_app/presentation/widgets/rides_widget.dart';
-import 'package:travel_app/presentation/widgets/tasks_widget.dart';
 import 'package:travel_app/utils/functions.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import '../../bloc/auth_bloc/auth_bloc.dart';
@@ -13,7 +12,6 @@ import '../../bloc/home_screen_bloc/home_screen_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/DTO/TaskTripDTO.dart';
 import '../../data/models/trip.dart';
-import '../../utils/text_styles.dart';
 import '../widgets/date_time_picker_widget.dart';
 import '../widgets/expanded_wrapper_widget.dart';
 import '../widgets/floating_action_menu.dart';
@@ -25,7 +23,7 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -75,13 +73,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void _dispatchEvent(String field) {
     switch (field) {
       case FromWhereString:
-        context.read<UserBloc>().add(GetDriverUpcomingRides());
+        context.read<UserBloc>().add(GetUpcomingRides());
         break;
       case ToWhereString:
-        context.read<UserBloc>().add(GetDriverUpcomingRides());
+        context.read<UserBloc>().add(GetUpcomingRides());
         break;
       case DateTimeString:
-        context.read<UserBloc>().add(GetDriverUpcomingRides());
+        context.read<UserBloc>().add(GetUpcomingRides());
         break;
     }
   }
@@ -115,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    context.read<UserBloc>().add(GetDriverUpcomingRides());
+    context.read<UserBloc>().add(GetUpcomingRides());
   }
 
   @override
@@ -148,8 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
             if (state is DriverUpcomingTripsLoaded) {
               rides = state.driverTrips;
             }
-            if (state is DriverUpcomingDeliveriesLoaded) {
-              deliveries = state.driverDeliveries;
+            if (state is UpcomingRidesLoaded) {
+              rides = state.trips;
             }
             return _buildBody(userState: state);
           },
@@ -158,28 +156,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildBody({var userState}) {
+  Widget  _buildBody({var userState}) {
     var state = context.watch<HomeScreenBloc>().state;
-    if (state is RidesActive) {
-      return widgetBuilder(
-          context: context,
-          items: rides,
-          itemBuilder: (context, ride) =>
-              RidesWidget(context: context, ride: ride),
-          onRefresh: () => Functions.emitUserEvent(
-              context: context,
-              event: GetDriverUpcomingRides(forceRefresh: true)),
-          emptyWidget: emptyListIndicator(AppStrings.noUpcomingRides));
-    }
     return widgetBuilder(
         context: context,
-        items: deliveries,
-        itemBuilder: (context, delivery) =>
-            TaskTripWidget(context: context, task: delivery),
+        items: rides,
+        itemBuilder: (context, ride) =>
+            RidesWidget(context: context, ride: ride, isRidesScreen: state is RidesActive),
         onRefresh: () => Functions.emitUserEvent(
             context: context,
-            event: GetDriverUpcomingDeliveries(forceRefresh: true)),
-        emptyWidget: emptyListIndicator(AppStrings.noUpcomingDeliveries));
+            event: GetUpcomingRides(forceRefresh: true)),
+        emptyWidget: emptyListIndicator(state is RidesActive ? AppStrings.noUpcomingRides : AppStrings.noUpcomingDeliveries));
   }
 
   Widget _buildSearchSection(BuildContext context, bool? showRides) {
@@ -261,11 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
       listenWhen: (previous, current) =>
           previous.runtimeType != current.runtimeType,
       listener: (context, state) {
-        if (state is RidesActive) {
-          context.read<UserBloc>().add(GetDriverUpcomingRides());
-        } else {
-          context.read<UserBloc>().add(GetDriverUpcomingDeliveries());
-        }
+        context.read<UserBloc>().add(GetUpcomingRides());
       },
       child: RidesDeliveriesToggle(),
     );

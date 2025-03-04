@@ -7,6 +7,12 @@ sealed class UserEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class GetUpcomingRides extends UserEvent {
+  final bool forceRefresh;
+
+  const GetUpcomingRides({this.forceRefresh = false});
+}
+
 class GetDriverUpcomingRides extends UserEvent {
   final bool forceRefresh;
 
