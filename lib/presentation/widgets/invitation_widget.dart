@@ -18,15 +18,19 @@ class InvitationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: DecorationsCustom().silverBoxRoundedCorners(),
-      child: Row(
-        children: [
-          _leftInfo(),
-          const SizedBox(width: 20),
-          _rightInfo(),
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: DecorationsCustom().silverBoxRoundedCorners(),
+        child: Row(
+          mainAxisAlignment:
+              MainAxisAlignment.spaceBetween,
+          children: [
+            _leftInfo(),
+            _rightInfo(),
+          ],
+        ),
       ),
     );
   }

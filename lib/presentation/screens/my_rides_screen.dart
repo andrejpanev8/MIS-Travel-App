@@ -168,6 +168,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                                   scrollPhysics: NeverScrollableScrollPhysics())
                               : const Center(
                                   child: CircularProgressIndicator()),
+                          const SizedBox(height: 12),
                         ],
                       ),
                     );
