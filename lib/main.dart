@@ -8,10 +8,12 @@ import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/screens/add_delivery_screen.dart';
 import 'package:travel_app/presentation/screens/add_ride_screen.dart';
+import 'package:travel_app/presentation/screens/delivery_details_screen.dart';
 import 'package:travel_app/presentation/screens/login_screen.dart';
 import 'package:travel_app/presentation/screens/my_rides_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:travel_app/presentation/screens/register_screen.dart';
+import 'package:travel_app/presentation/screens/reserve_delivery_screen.dart';
 import 'package:travel_app/presentation/screens/reserve_ride_screen.dart';
 import 'package:travel_app/presentation/screens/ride_details_screen.dart';
 import 'package:travel_app/utils/string_constants.dart';
@@ -46,8 +48,11 @@ class MyApp extends StatelessWidget {
       initialRoute: "/home",
       routes: {
         "/home": (context) => const MyHomePage(),
-        "/details": (context) => RideDetailsScreen(),
+        "/rideDetails": (context) => RideDetailsScreen(),
+        //TODO change to delivery details screen
+        "/deliveryDetails": (context) => DeliveryDetailsScreen(),
         "/reserveRide": (context) => ReserveRideScreen(),
+        "/reserveDelivery": (context) => ReserveDeliveryScreen(),
         "/addRide": (context) {
           context.read<UserBloc>().add(LoadDrivers());
           return AddRideScreen();
