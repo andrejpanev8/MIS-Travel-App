@@ -45,7 +45,6 @@ class ValidationUtils {
     return 'Valid format: 07X XXX XXX or +389 7X XXX XXX';
   }
 
-
   static List<String> passwordValidator(String? value) {
     List<String> errors = [];
 
@@ -92,7 +91,6 @@ class ValidationUtils {
     return null;
   }
 
-
   static String? requiredValidator(String? value, {required String field}) {
     return RequiredValidator(errorText: "Required $field! ")(value);
   }
@@ -101,5 +99,15 @@ class ValidationUtils {
     return MaxLengthValidator(maxLength,
         errorText:
             "Message can't be longer than $maxLength characters!")(value);
+  }
+
+  static String? uniqueCodeValidator(String value) {
+    final regex = RegExp(r'^[a-zA-Z]{6}$');
+    if (value.isEmpty) {
+      return 'Invitation code cannot be empty';
+    } else if (!regex.hasMatch(value)) {
+      return 'Invalid invitation code';
+    }
+    return null;
   }
 }

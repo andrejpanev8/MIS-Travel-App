@@ -85,10 +85,9 @@ class InvitationService {
     return invitations;
   }
 
-  Future<DocumentSnapshot?> findInvitationByUniqueCode(
-      String uniqueCode) async {
+  Future<Invitation?> findInvitationByUniqueCode(String uniqueCode) async {
     try {
-      final querySnapshot = await _firestore
+      QuerySnapshot querySnapshot = await _firestore
           .collection('invitations')
           .where('uniqueCode', isEqualTo: uniqueCode)
           .limit(1)
@@ -97,7 +96,9 @@ class InvitationService {
       if (querySnapshot.docs.isEmpty) {
         return null;
       }
-      return querySnapshot.docs.first;
+
+      return Invitation.fromJson(
+          querySnapshot.docs.first.data() as Map<String, dynamic>);
     } catch (e) {
       return null;
     }
@@ -118,43 +119,52 @@ class InvitationService {
 
   Future<bool> acceptInvitation(String uniqueCode) async {
     try {
-      final invitationDoc = await findInvitationByUniqueCode(uniqueCode);
+      final querySnapshot = await _firestore
+          .collection('invitations')
+          .where('uniqueCode', isEqualTo: uniqueCode)
+          .limit(1)
+          .get();
 
-      if (invitationDoc == null) {
+      if (querySnapshot.docs.isEmpty) {
         throw Exception("Invitation not found.");
       }
 
-      final invitationData = invitationDoc.data() as Map<String, dynamic>?;
-
-      if (invitationData == null) {
-        throw Exception("Invitation data is invalid.");
-      }
-
-      final invitation = Invitation.fromJson(invitationData);
+      final invitationDoc = querySnapshot.docs.first;
+      final invitation = Invitation.fromJson(invitationDoc.data());
 
       if (invitation.expirationDate.isBefore(DateTime.now())) {
         throw Exception("Invitation has expired.");
       }
 
-      if (invitation.isAccepted) {
+      if (invitation.isAccepted == true) {
         throw Exception("Invitation has already been accepted.");
       }
-      var currentUser = await authService.getCurrentUser();
-      if (currentUser == null) {
-        throw Exception("No user is logged in");
-      }
-      if (currentUser.email != invitation.email) {
-        throw Exception("Email is not correct");
-      }
       await invitationDoc.reference.update({'isAccepted': true});
-
-      final changeRole = await userService.updateUserRole(
-        currentUser.id,
-        UserRole.DRIVER,
-      );
-      return changeRole;
+      return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<bool> validateRegistrationCode(String email, String uniqueCode) async {
+    Invitation? invitation = await findInvitationByUniqueCode(uniqueCode);
+
+    if (invitation == null) {
+      throw Exception("Invitation code does not exist.");
+    }
+    if (invitation.email == email && invitation.isAccepted == true) {
+      throw Exception("Invitation already accepted");
+    }
+    if (invitation.email == email && invitation.getStatus() == "Expired") {
+      throw Exception("Invitation expired");
+    }
+
+    if (invitation.email == email &&
+        invitation.getStatus() == "Pending" &&
+        !invitation.isAccepted) {
+      return true;
+    } else {
+      throw Exception("Invalid invitation code");
     }
   }
 }
