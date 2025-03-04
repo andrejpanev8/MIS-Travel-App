@@ -45,7 +45,7 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
         Functions.emitMapEvent(
           context: context,
           event:
-              AddressEntryEvent(fromAddressController.text, uniqeKey: "from"),
+              AddressEntryEvent(fromAddressController.text, uniqueKey: "from"),
         );
       }
     }
@@ -54,7 +54,7 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
       if (toAddressController.text.isNotEmpty) {
         Functions.emitMapEvent(
           context: context,
-          event: AddressEntryEvent(toAddressController.text, uniqeKey: "to"),
+          event: AddressEntryEvent(toAddressController.text, uniqueKey: "to"),
         );
       }
     }

@@ -23,8 +23,8 @@ class MapDoubleSelectionEvent extends MapEvent {
 
 class AddressEntryEvent extends MapEvent {
   final String? address;
-  final String? uniqeKey;
-  const AddressEntryEvent(this.address, {this.uniqeKey});
+  final String? uniqueKey;
+  const AddressEntryEvent(this.address, {this.uniqueKey});
 }
 
 class AddressDoubleEntryEvent extends MapEvent {

@@ -5,6 +5,7 @@ import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
+import 'package:travel_app/data/services/email_service.dart';
 import 'package:travel_app/service/auth_service.dart';
 import 'package:travel_app/service/invitation_service.dart';
 import 'package:travel_app/service/passenger_trip_service.dart';
@@ -197,7 +198,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(EmailAvailable());
         }
       }
-      if (event is RegisterDriver) {}
 
       if (event is FilterEvent) {
         emit(ProcessStarted());
@@ -230,6 +230,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         if (event.state is DriverUpcomingDeliveriesLoaded) {
           emit(DriverUpcomingDeliveriesLoaded(_cachedDriverDeliveries!));
           return;
+        }
+      }
+      if (event is SendEmail) {
+        bool emailSent = await EmailService().sendEmail(event.email);
+        if (emailSent) {
+          emit(EmailSentSuccessfully());
+        } else {
+          emit(EmailSentFailed());
         }
       }
     });

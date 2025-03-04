@@ -45,7 +45,7 @@ class _AddRideScreenState extends State<AddRideScreen> {
           Functions.emitMapEvent(
             context: context,
             event: AddressEntryEvent(startLocationController.text,
-                uniqeKey: START_LOCATION_ADD_RIDE_SCREEN),
+                uniqueKey: START_LOCATION_ADD_RIDE_SCREEN),
           );
         }
       }

@@ -95,8 +95,17 @@ class AdminDataLoaded extends UserState {
   const AdminDataLoaded(this.drivers, this.invitations);
 }
 
-class EmailExists extends UserState {}
+class EmailExists extends UserState {
+}
 
 class EmailAvailable extends UserState {}
 
 class DriverRegistered extends UserState {}
+
+class EmailSentSuccessfully extends UserState {
+  const EmailSentSuccessfully();
+}
+
+class EmailSentFailed extends UserState {
+  const EmailSentFailed();
+}

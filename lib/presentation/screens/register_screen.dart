@@ -20,42 +20,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppBar(context: context),
-        body: Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  color: blueDeepColor,
-                  padding:
-                      EdgeInsets.only(left: 50, top: 35, right: 50, bottom: 35),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppStrings.registerTitleWithNewline,
-                        style: TextStyle(
-                            color: silverColorLight,
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        AppStrings.registerTitle,
-                        style: TextStyle(
-                          color: silverColor,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+      appBar: customAppBar(context: context),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              color: blueDeepColor,
+              padding:
+                  EdgeInsets.only(left: 50, top: 35, right: 50, bottom: 35),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppStrings.registerTitleWithNewline,
+                    style: TextStyle(
+                        color: silverColorLight,
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold),
                   ),
-                ),
-                const RegisterForm()
-              ],
+                  SizedBox(height: 5),
+                  Text(
+                    AppStrings.registerTitle,
+                    style: TextStyle(
+                      color: silverColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ));
+            const RegisterForm()
+          ],
+        ),
+      ),
+    );
   }
 }

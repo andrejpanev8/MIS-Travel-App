@@ -46,7 +46,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         currentMapLink = mapStaticLink;
 
         emit(MapSingleSelectionLoaded(location, event.address!, mapStaticLink,
-            uniqueKey: event.uniqeKey ?? ""));
+            uniqueKey: event.uniqueKey ?? ""));
       }
 
       if (event is MapDoubleSelectionEvent) {

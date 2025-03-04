@@ -4,7 +4,9 @@ import 'package:travel_app/data/models/user.dart';
 
 class TaskTrip {
   final String id;
+  final String pickUpPhoneNumber;
   final Location startLocation;
+  final String dropOffPhoneNumber;
   final Location endLocation;
   final String description;
   final UserModel user;
@@ -13,7 +15,9 @@ class TaskTrip {
 
   TaskTrip(
       {this.id = "",
+      required this.pickUpPhoneNumber,
       required this.startLocation,
+      required this.dropOffPhoneNumber,
       required this.endLocation,
       this.description = "",
       required this.user,
@@ -22,7 +26,9 @@ class TaskTrip {
 
   TaskTrip.fromJson(Map<String, dynamic> data)
       : id = data['id'],
+        pickUpPhoneNumber = data['pickUpPhoneNumber'],
         startLocation = Location.fromJson(data['startLocation']),
+        dropOffPhoneNumber = data['dropOffPhoneNumber'],
         endLocation = Location.fromJson(data['endLocation']),
         description = data['description'] ?? "",
         user = UserModel.fromJson(data['user']),
@@ -31,7 +37,9 @@ class TaskTrip {
 
   Map<String, dynamic> toJson() => {
         'id': id,
+        'pickUpPhoneNumber': pickUpPhoneNumber,
         'startLocation': startLocation.toJson(),
+        'dropOffPhoneNumber': dropOffPhoneNumber,
         'endLocation': endLocation.toJson(),
         'description': description,
         'user': user.toJson(),

@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/service/auth_service.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
+import 'package:travel_app/service/invitation_service.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/error_handler.dart';
 import 'package:travel_app/utils/string_constants.dart';
@@ -24,15 +26,21 @@ class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _registrationCodeController =
+      TextEditingController();
 
   bool _passwordVisible = true;
+  bool _showRegistrationCodeField = false;
+
   final AuthService _authService = AuthService();
+  final InvitationService _invitationService = InvitationService();
 
   String? _firstNameError;
   String? _lastNameError;
   String? _phoneError;
   String? _emailError;
   List<String> _passwordErrors = List.empty();
+  String? _uniqueCodeError;
 
   void _register() async {
     setState(() {
@@ -44,25 +52,55 @@ class _RegisterFormState extends State<RegisterForm> {
       _emailError = ValidationUtils.emailValidator(_emailController.text);
       _passwordErrors =
           ValidationUtils.passwordValidator(_passwordController.text);
+      if (_showRegistrationCodeField) {
+        _uniqueCodeError = ValidationUtils.uniqueCodeValidator(
+            _registrationCodeController.text);
+      } else {
+        _uniqueCodeError = null;
+      }
     });
 
     if (_firstNameError != null ||
         _lastNameError != null ||
         _phoneError != null ||
         _emailError != null ||
-        _passwordErrors.isNotEmpty) {
+        _passwordErrors.isNotEmpty ||
+        (_showRegistrationCodeField && _uniqueCodeError != null)) {
       return;
     }
 
     if (_formKey.currentState!.validate()) {
       try {
-        await _authService.registerUser(
-          firstName: _firstNameController.text.trim(),
-          lastName: _lastNameController.text.trim(),
-          phoneNumber: _phoneController.text.trim(),
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        );
+        String registrationCode = _registrationCodeController.text.trim();
+
+        if (registrationCode.isNotEmpty) {
+          bool validateCode = await _invitationService.validateRegistrationCode(
+            _emailController.text.trim(),
+            registrationCode,
+          );
+
+          if (validateCode) {
+            await _invitationService.acceptInvitation(registrationCode);
+            UserRole role = UserRole.DRIVER;
+            await _authService.registerUser(
+              firstName: _firstNameController.text.trim(),
+              lastName: _lastNameController.text.trim(),
+              phoneNumber: _phoneController.text.trim(),
+              email: _emailController.text.trim(),
+              password: _passwordController.text,
+              role: role,
+            );
+          }
+        } else {
+          await _authService.registerUser(
+            firstName: _firstNameController.text.trim(),
+            lastName: _lastNameController.text.trim(),
+            phoneNumber: _phoneController.text.trim(),
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
+        }
+
         showSuccessDialog(
           context,
           AppStrings.registrationSuccessTitle,
@@ -70,7 +108,10 @@ class _RegisterFormState extends State<RegisterForm> {
           () {
             Navigator.of(context).pop();
             Navigator.pushNamedAndRemoveUntil(
-                context, "/login", (route) => false);
+              context,
+              "/login",
+              (route) => false,
+            );
           },
         );
       } on FirebaseAuthException catch (e) {
@@ -78,8 +119,8 @@ class _RegisterFormState extends State<RegisterForm> {
         String errorMessage = e.message ?? AppStrings.unknownError;
         showErrorDialog(context, errorTitle, errorMessage);
       } catch (e) {
-        showErrorDialog(
-            context, AppStrings.registrationErrorTitle, e.toString());
+        showErrorDialog(context, AppStrings.registrationErrorTitle,
+            e.toString().replaceFirst('Exception:', '').trim());
       }
     }
   }
@@ -87,7 +128,7 @@ class _RegisterFormState extends State<RegisterForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 35),
+      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 30),
       child: Form(
         key: _formKey,
         child: Column(
@@ -149,7 +190,39 @@ class _RegisterFormState extends State<RegisterForm> {
               ..._passwordErrors.map((error) => _buildErrorText(error))
             else
               const SizedBox.shrink(),
-            const SizedBox(height: 30),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(AppStrings.haveRegistrationCode),
+                ),
+                Switch(
+                  activeTrackColor: blueDeepColor,
+                  inactiveTrackColor: silverColorLight,
+                  value: _showRegistrationCodeField,
+                  onChanged: (value) {
+                    setState(() {
+                      _showRegistrationCodeField = value;
+                      if (!value) {
+                        _registrationCodeController.clear();
+                      }
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (_showRegistrationCodeField) ...[
+              _buildLabel(AppStrings.registrationCode),
+              inputTextFieldCustom(
+                context: context,
+                hintText: AppStrings.registrationCodeHint,
+                controller: _registrationCodeController,
+              ),
+              _buildErrorText(_uniqueCodeError),
+              const SizedBox(height: 12),
+            ],
             SizedBox(
               width: double.infinity,
               child: TextButton(

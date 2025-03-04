@@ -16,6 +16,7 @@ class AuthService {
     required String phoneNumber,
     required String email,
     required String password,
+    UserRole? role
   }) async {
     if (!ValidationUtils.isValidName(firstName)) {
       throw Exception("First name should only contain letters.");
@@ -53,7 +54,7 @@ class AuthService {
       lastName: lastName,
       phoneNumber: phoneNumber,
       email: email,
-      role: UserRole.CLIENT,
+      role: role ?? UserRole.CLIENT,
     );
 
     await _firestore.collection('users').doc(userId).set(newUser.toJson());

@@ -47,6 +47,9 @@ class AppStrings {
   static const String emailHint = "Enter your email";
   static const String passwordHint = "Enter your password";
   static const String alreadyHaveAccount = "Already have an account?";
+  static const String registrationCode = "Registration Code (Optional)";
+  static const String registrationCodeHint = "Enter your registration Code";
+  static const String haveRegistrationCode = "Have a registration code?";
   static const String locationIconTooltip = "Location";
   static const String timeIconTooltip = "Time";
   static const String phoneIconTooltip = "Phone";
@@ -62,12 +65,18 @@ class AppStrings {
   static const String description = "Description";
   static const String noItemsAvailable = "No items available";
   static const String deliveryDetails = "Delivery Details";
-
   static const String driversTitle = "Drivers";
   static const String noDrivers = "No drivers available";
   static const String invitationsTitle = "Sent invitations";
   static const String noInvitations = "No invitations available";
   static const String registerDriverTitle = "Register driver";
+  static const String emailErrorTitle = "Email already exists";
+  static const String emailErrorMessage = "User with this email already exists";
+  static const String emailSentSuccessfullyTitle = "Email sent successfully";
+  static const String emailSentSuccessfullyMessage =
+      "You have sent the invitation successfully";
+  static const String emailSentFailedTitle = "Email sent failed";
+  static const String emailSentFailedMessage = "Failed to send invitations";
 }
 
 String START_LOCATION_ADD_DELIVERY_SCREEN =
