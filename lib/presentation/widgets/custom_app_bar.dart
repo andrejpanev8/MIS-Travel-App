@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import '../../utils/functions.dart';
@@ -28,6 +29,8 @@ PreferredSizeWidget customAppBar({
             onPressed: () async {
               if (isLoggedIn) {
                 Functions.emitAuthEvent(context: context, event: LogOutEvent());
+                Functions.emitUserEvent(
+                    context: context, event: ClearCacheEvent());
                 Navigator.pushNamedAndRemoveUntil(
                     context, "/home", (route) => false);
               } else {

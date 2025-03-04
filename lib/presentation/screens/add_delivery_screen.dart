@@ -1,10 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
-import 'package:intl/intl.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/location.dart';
 import 'package:travel_app/data/models/trip.dart';

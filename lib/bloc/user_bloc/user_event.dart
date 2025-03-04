@@ -7,10 +7,16 @@ sealed class UserEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetDriverUpcomingRides extends UserEvent {
+class GetUpcomingRides extends UserEvent {
   final bool forceRefresh;
 
-  const GetDriverUpcomingRides({this.forceRefresh = false});
+  const GetUpcomingRides({this.forceRefresh = false});
+}
+
+class GetUpcomingDeliveries extends UserEvent {
+  final bool forceRefresh;
+
+  const GetUpcomingDeliveries({this.forceRefresh = false});
 }
 
 class GetDriverUpcomingDeliveries extends UserEvent {
@@ -19,9 +25,15 @@ class GetDriverUpcomingDeliveries extends UserEvent {
   const GetDriverUpcomingDeliveries({this.forceRefresh = false});
 }
 
-class LoadDriverData extends UserEvent {
+class GetDriverUpcomingRides extends UserEvent {
   final bool forceRefresh;
-  const LoadDriverData({this.forceRefresh = false});
+
+  const GetDriverUpcomingRides({this.forceRefresh = false});
+}
+
+class LoadDriverTripsDeliveries extends UserEvent {
+  final bool forceRefresh;
+  const LoadDriverTripsDeliveries({this.forceRefresh = false});
 }
 
 class GetTripDetails extends UserEvent {
@@ -41,17 +53,15 @@ class UpdateUserInfo extends UserEvent {
       this.userId, this.firstName, this.lastName, this.mobilePhone);
 }
 
-class LoadAllDriversData extends UserEvent {
+class LoadDriversInvitations extends UserEvent {
   final bool forceRefresh;
-  const LoadAllDriversData({this.forceRefresh = false});
+  const LoadDriversInvitations({this.forceRefresh = false});
 }
 
 class LoadAllInvitations extends UserEvent {
   final bool forceRefresh;
   const LoadAllInvitations({this.forceRefresh = false});
 }
-
-class LoadDrivers extends UserEvent {}
 
 class GetTripInfo extends UserEvent {
   final String tripId;
@@ -87,3 +97,5 @@ class FilterEvent extends UserEvent {
   final UserState? state;
   const FilterEvent(this.fromWhere, this.toWhere, this.dateTime, this.state);
 }
+
+class ClearCacheEvent extends UserEvent {}

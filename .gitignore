@@ -49,5 +49,5 @@ firebase.json
 /lib/firebase_options.dart
 /android/app/google-services.json
 #/lib/utils/connections.dart
-.env
+*.env
 /lib/utils/keys.dart

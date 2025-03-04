@@ -13,6 +13,18 @@ class ProcessStarted extends UserState {}
 
 class ProcessFailed extends UserState {}
 
+class UpcomingTripsLoaded extends UserState {
+  final List<Trip> trips;
+
+  const UpcomingTripsLoaded(this.trips);
+}
+
+class UpcomingDeliveriesLoaded extends UserState {
+  final List<TaskTripDTO> deliveries;
+
+  const UpcomingDeliveriesLoaded(this.deliveries);
+}
+
 class DriverUpcomingTripsLoaded extends UserState {
   final List<Trip> driverTrips;
 
@@ -95,8 +107,7 @@ class AdminDataLoaded extends UserState {
   const AdminDataLoaded(this.drivers, this.invitations);
 }
 
-class EmailExists extends UserState {
-}
+class EmailExists extends UserState {}
 
 class EmailAvailable extends UserState {}
 

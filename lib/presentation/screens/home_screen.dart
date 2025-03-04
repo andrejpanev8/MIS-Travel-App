@@ -13,7 +13,6 @@ import '../../bloc/home_screen_bloc/home_screen_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/DTO/TaskTripDTO.dart';
 import '../../data/models/trip.dart';
-import '../../utils/text_styles.dart';
 import '../widgets/date_time_picker_widget.dart';
 import '../widgets/expanded_wrapper_widget.dart';
 import '../widgets/floating_action_menu.dart';
@@ -71,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
           : null;
 
       if (fromWhere.isEmpty && toWhere.isEmpty && dateTime == null) {
-        context.read<UserBloc>().add(GetDriverUpcomingRides());
+        context.read<UserBloc>().add(GetUpcomingRides());
       } else {
         Functions.emitUserEvent(
           context: context,
@@ -116,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    Functions.emitUserEvent(context: context, event: GetDriverUpcomingRides());
+    Functions.emitUserEvent(context: context, event: GetUpcomingRides());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (fromWhereController.text.isNotEmpty ||
@@ -154,11 +153,11 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
-            if (state is DriverUpcomingTripsLoaded) {
-              rides = state.driverTrips;
+            if (state is UpcomingTripsLoaded) {
+              rides = state.trips;
             }
-            if (state is DriverUpcomingDeliveriesLoaded) {
-              deliveries = state.driverDeliveries;
+            if (state is UpcomingDeliveriesLoaded) {
+              deliveries = state.deliveries;
             }
             return _buildBody(userState: state);
           },
@@ -176,8 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
           itemBuilder: (context, ride) =>
               RidesWidget(context: context, ride: ride),
           onRefresh: () => Functions.emitUserEvent(
-              context: context,
-              event: GetDriverUpcomingRides(forceRefresh: true)),
+              context: context, event: GetUpcomingRides(forceRefresh: true)),
           emptyWidget: emptyListIndicator(AppStrings.noUpcomingRides));
     }
     return widgetBuilder(
@@ -186,8 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
         itemBuilder: (context, delivery) =>
             TaskTripWidget(context: context, task: delivery),
         onRefresh: () => Functions.emitUserEvent(
-            context: context,
-            event: GetDriverUpcomingDeliveries(forceRefresh: true)),
+            context: context, event: GetUpcomingDeliveries(forceRefresh: true)),
         emptyWidget: emptyListIndicator(AppStrings.noUpcomingDeliveries));
   }
 
@@ -234,14 +231,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   )),
-              // Padding(
-              //     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              //     child: Text(
-              //       showRides
-              //           ? AppStrings.upcomingRides
-              //           : AppStrings.upcomingDeliveries,
-              //       style: StyledText().appBarText(fontSize: 18),
-              //     )),
             ],
           ),
         ),
@@ -271,9 +260,9 @@ class _HomeScreenState extends State<HomeScreen> {
           previous.runtimeType != current.runtimeType,
       listener: (context, state) {
         if (state is RidesActive) {
-          context.read<UserBloc>().add(GetDriverUpcomingRides());
+          context.read<UserBloc>().add(GetUpcomingRides());
         } else {
-          context.read<UserBloc>().add(GetDriverUpcomingDeliveries());
+          context.read<UserBloc>().add(GetUpcomingDeliveries());
         }
       },
       child: RidesDeliveriesToggle(),

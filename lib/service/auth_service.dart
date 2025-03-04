@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_app/service/user_service.dart';
+import '../utils/functions.dart';
 import '../utils/validation_utils.dart';
 import '../data/models/user.dart';
 import '../data/enums/user_role.dart';
@@ -10,14 +11,13 @@ class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserService _userService = UserService();
 
-  Future<UserCredential?> registerUser({
-    required String firstName,
-    required String lastName,
-    required String phoneNumber,
-    required String email,
-    required String password,
-    UserRole? role
-  }) async {
+  Future<UserCredential?> registerUser(
+      {required String firstName,
+      required String lastName,
+      required String phoneNumber,
+      required String email,
+      required String password,
+      UserRole? role}) async {
     if (!ValidationUtils.isValidName(firstName)) {
       throw Exception("First name should only contain letters.");
     }

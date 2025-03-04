@@ -22,22 +22,54 @@ part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
+  List<Trip>? _cachedTrips;
   List<Trip>? _cachedDriverTrips;
+  List<TaskTripDTO>? _cachedDeliveries;
   List<TaskTripDTO>? _cachedDriverDeliveries;
   List<UserModel>? _cachedDrivers;
   List<Invitation>? _cachedInvitations;
 
   UserBloc() : super(UserInitial()) {
     on<UserEvent>((event, emit) async {
+      emit(ProcessStarted());
+      if (event is GetUpcomingRides) {
+        if (!event.forceRefresh && _cachedTrips != null) {
+          emit(UpcomingTripsLoaded(_cachedTrips!));
+          return;
+        }
+
+        List<Trip> trips = [];
+        trips = await TripService().getAllUpcomingTrips();
+        _cachedTrips = trips;
+        emit(UpcomingTripsLoaded(trips));
+      }
+
+      if (event is GetUpcomingDeliveries) {
+        if (!event.forceRefresh && _cachedDeliveries != null) {
+          emit(UpcomingDeliveriesLoaded(_cachedDeliveries!));
+          return;
+        }
+
+        List<TaskTripDTO> deliveries = [];
+        deliveries = await TaskTripService().getAllUpcomingDeliveries() ?? [];
+        _cachedDeliveries = deliveries;
+        emit(UpcomingDeliveriesLoaded(deliveries));
+      }
+
       if (event is GetDriverUpcomingRides) {
         if (!event.forceRefresh && _cachedDriverTrips != null) {
           emit(DriverUpcomingTripsLoaded(_cachedDriverTrips!));
           return;
         }
+        UserModel? currentUser = await AuthService().getCurrentUser();
+
+        if (currentUser == null) {
+          throw Exception("No authenticated user found.");
+        }
 
         List<Trip> driverTrips = [];
-        emit(ProcessStarted());
-        driverTrips = await TripService().getAllUpcomingTrips();
+        driverTrips =
+            await TripService().getUpcomingTripsByDriver(currentUser.id);
         _cachedDriverTrips = driverTrips;
         emit(DriverUpcomingTripsLoaded(driverTrips));
       }
@@ -49,24 +81,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
 
         List<TaskTripDTO> driverDeliveries = [];
-        emit(ProcessStarted());
         driverDeliveries =
             await TaskTripService().getUpcomingDeliveriesForUser();
         _cachedDriverDeliveries = driverDeliveries;
         emit(DriverUpcomingDeliveriesLoaded(driverDeliveries));
       }
 
-      if (event is LoadDriverData) {
+      if (event is LoadDriverTripsDeliveries) {
         if (!event.forceRefresh &&
             _cachedDriverDeliveries != null &&
             _cachedDriverTrips != null) {
-          DriverDataLoaded(_cachedDriverTrips!, _cachedDriverDeliveries!);
+          emit(DriverDataLoaded(_cachedDriverTrips!, _cachedDriverDeliveries!));
           return;
         }
         UserModel? currentUser = await AuthService().getCurrentUser();
         List<Trip> driverTrips = [];
         List<TaskTripDTO> driverDeliveries = [];
-        emit(ProcessStarted());
         driverTrips = await TripService().getTripsByDriver(currentUser!.id);
         driverDeliveries =
             await TaskTripService().getUpcomingDeliveriesForUser();
@@ -82,7 +112,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           return;
         }
         List<UserModel> drivers = [];
-        emit(ProcessStarted());
         drivers =
             await UserService().getAllUsersByRole(userRole: UserRole.DRIVER);
         _cachedDrivers = drivers;
@@ -95,14 +124,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           return;
         }
         List<Invitation> invitations = [];
-        emit(ProcessStarted());
         invitations = await InvitationService().getAllInvitations();
         _cachedInvitations = invitations;
         emit(AllInvitationsLoaded(invitations));
       }
 
-      if (event is LoadAllDriversData) {
-        emit(ProcessStarted());
+      if (event is LoadDriversInvitations) {
         if (!event.forceRefresh &&
             _cachedDrivers != null &&
             _cachedInvitations != null) {
@@ -111,7 +138,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
         List<UserModel> drivers = [];
         List<Invitation> invitations = [];
-        emit(ProcessStarted());
         drivers =
             await UserService().getAllUsersByRole(userRole: UserRole.DRIVER);
         invitations = await InvitationService().getAllInvitations();
@@ -124,7 +150,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         UserModel? user;
         List<TaskTrip>? taskTrips;
         List<PassengerTrip>? passengerTrips;
-        emit(ProcessStarted());
         user = await UserService().getUserById(event.driverId);
         taskTrips =
             await TaskTripService().getAllTaskTripsForTripId(event.tripId);
@@ -135,8 +160,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       if (event is UpdateUserInfo) {
-        emit(ProcessStarted());
-
         Map<String, String> errors = {};
 
         String? nameError = ValidationUtils.nameValidator(event.firstName);
@@ -161,20 +184,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       }
 
-      if (event is LoadDrivers) {
-        emit(ProcessStarted());
-        try {
-          List<UserModel> drivers =
-              await UserService().getAllUsersByRole(userRole: UserRole.DRIVER);
-          _cachedDrivers = drivers;
-          emit(AllDriversLoaded(drivers));
-        } catch (e) {
-          debugPrint(e.toString());
-        }
-      }
-
       if (event is GetTripInfo) {
-        emit(ProcessStarted());
         try {
           UserModel? driver;
           Trip? trip;
@@ -200,7 +210,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       if (event is FilterEvent) {
-        emit(ProcessStarted());
         if (event.state is DriverUpcomingTripsLoaded) {
           if (_cachedDriverTrips == null) {
             return;
@@ -239,6 +248,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         } else {
           emit(EmailSentFailed());
         }
+      }
+
+      if (event is ClearCacheEvent) {
+        _cachedDriverTrips = null;
+        _cachedDriverDeliveries = null;
+        _cachedTrips = null;
+        _cachedDeliveries = null;
+        _cachedDrivers = null;
+        _cachedInvitations = null;
       }
     });
   }

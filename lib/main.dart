@@ -16,6 +16,7 @@ import 'package:travel_app/presentation/screens/reserve_ride_screen.dart';
 import 'package:travel_app/presentation/screens/ride_details_screen.dart';
 import 'package:travel_app/utils/string_constants.dart';
 
+import 'data/enums/user_role.dart';
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/profile_screen.dart';
 import 'presentation/widgets/custom_app_bar.dart';
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
         "/details": (context) => RideDetailsScreen(),
         "/reserveRide": (context) => ReserveRideScreen(),
         "/addRide": (context) {
-          context.read<UserBloc>().add(LoadDrivers());
+          context.read<UserBloc>().add(GetAllDrivers(forceRefresh: true));
           return AddRideScreen();
         },
         "/addDelivery": (context) => AddDeliveryScreen(),
@@ -78,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onDestinationSelected: (index) {
           setState(() {
             currentPageIndex = index;
+            _dispatchEvent(index);
           });
         },
         destinations: [
@@ -92,6 +94,19 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: [HomeScreen(), MyRidesScreen(), ProfileScreen()][currentPageIndex],
     );
+  }
+
+  void _dispatchEvent(int index) {
+    if (index == 1) {
+      var state = context.read<AuthBloc>().state;
+      if (state is UserIsLoggedIn) {
+        if (state.user.role == UserRole.DRIVER) {
+          context.read<UserBloc>().add(LoadDriverTripsDeliveries());
+        } else if (state.user.role == UserRole.ADMIN) {
+          context.read<UserBloc>().add(LoadDriversInvitations());
+        }
+      }
+    }
   }
 }
 

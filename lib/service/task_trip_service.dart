@@ -16,10 +16,6 @@ class TaskTripService {
   final UserService userService = UserService();
   final TripService tripService = TripService();
 
-  // void setTripService(TripService service) {
-  //   tripService = service;
-  // }
-
   Future<TaskTrip?> findTaskTripById(String tripId) async {
     try {
       DocumentSnapshot tripDoc =
@@ -80,10 +76,9 @@ class TaskTripService {
     String description = "",
   }) async {
     UserModel? adhocUser;
-    if(clientId != null){
+    if (clientId != null) {
       adhocUser = await userService.getUserById(clientId);
-    }
-    else {
+    } else {
       adhocUser = UserModel(
         firstName: firstName!,
         lastName: lastName!,
@@ -128,6 +123,43 @@ class TaskTripService {
       QuerySnapshot taskTripsSnapshot = await _firestore
           .collection('task_trips')
           .where('user.id', isEqualTo: currentUser.id)
+          .where('tripStatus', isEqualTo: 0)
+          .get();
+
+      List<TaskTripDTO> upcomingTrips = [];
+
+      for (var doc in taskTripsSnapshot.docs) {
+        TaskTrip taskTrip =
+            TaskTrip.fromJson(doc.data() as Map<String, dynamic>);
+
+        DocumentSnapshot tripDoc =
+            await _firestore.collection('trips').doc(taskTrip.tripId).get();
+
+        if (tripDoc.exists) {
+          Trip trip = Trip.fromJson(tripDoc.data() as Map<String, dynamic>);
+          TaskTripDTO taskTripDTO = TaskTripDTO.fromJson({
+            'taskTrip': taskTrip.toJson(),
+            'trip': trip.toJson(),
+          });
+          upcomingTrips.add(taskTripDTO);
+        }
+      }
+
+      return upcomingTrips;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<List<TaskTripDTO>> getAllUpcomingDeliveries() async {
+    try {
+      final currentUser = await authService.getCurrentUser();
+      if (currentUser == null) {
+        throw Exception("User is not authenticated.");
+      }
+
+      QuerySnapshot taskTripsSnapshot = await _firestore
+          .collection('task_trips')
           .where('tripStatus', isEqualTo: 0)
           .get();
 

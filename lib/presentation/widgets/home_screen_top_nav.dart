@@ -93,8 +93,8 @@ Future<void> _onNavButtonTap(BuildContext context, bool showRides) async {
             context: context, event: ToggleActiveScreen(ridesActive: showRides))
         .whenComplete(() => showRides
             ? Functions.emitUserEvent(
-                context: context, event: GetDriverUpcomingRides())
+                context: context, event: GetUpcomingRides())
             : Functions.emitUserEvent(
-                context: context, event: GetDriverUpcomingDeliveries()));
+                context: context, event: GetUpcomingDeliveries()));
   }
 }
