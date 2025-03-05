@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     dateTimeFocusNode.addListener(() => _onFocusLost(DateTimeString));
   }
 
-  void _onInputChanged([UserState? userState]) {
+  void _onInputChanged(UserState userState) {
     _debounce?.cancel();
     _debounce = Timer(Duration(milliseconds: 500), () {
       final fromWhere = fromWhereController.text.trim();
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onFocusLost(String field) {
     if (!getFocusNode(field).hasFocus) {
-      _onInputChanged();
+      _onInputChanged(context.read<UserBloc>().state);
     }
   }
 
@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (fromWhereController.text.isNotEmpty ||
           toWhereController.text.isNotEmpty ||
           dateTimeController.text.isNotEmpty) {
-        _onInputChanged();
+        _onInputChanged(context.read<UserBloc>().state);
       }
     });
   }
@@ -217,7 +217,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               focusNode: dateTimeFocusNode,
                               hintText: AppStrings.when,
                               icon: Icon(Icons.calendar_month_outlined),
-                              onDateTimeSelected: (DateTime time) {}),
+                              onDateTimeSelected: (DateTime time) {
+                                _debounce?.cancel();
+                                _debounce =
+                                    Timer(Duration(milliseconds: 500), () {
+                                  final userState =
+                                      context.read<UserBloc>().state;
+                                  _onInputChanged(userState);
+                                });
+                              }),
                         ),
                       ],
                     ),

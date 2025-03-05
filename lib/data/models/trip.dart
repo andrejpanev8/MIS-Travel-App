@@ -1,12 +1,16 @@
 import 'package:intl/intl.dart';
 import 'package:travel_app/data/models/location.dart';
 
+import '../../service/filter_service.dart';
 import '../enums/trip_status.dart';
 
-class Trip {
+class Trip implements HasFilterProperties {
   final String id;
+  @override
   final String startCity;
+  @override
   final String endCity;
+  @override
   final DateTime startTime;
   final Location startLocation;
   final int ridePrice;

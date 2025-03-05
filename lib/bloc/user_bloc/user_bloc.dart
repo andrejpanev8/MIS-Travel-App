@@ -17,6 +17,7 @@ import 'package:travel_app/utils/validation_utils.dart';
 import '../../data/DTO/TaskTripDTO.dart';
 import '../../data/models/invitation.dart';
 import '../../data/models/trip.dart';
+import '../../service/filter_service.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
@@ -31,34 +32,36 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   UserBloc() : super(UserInitial()) {
     on<UserEvent>((event, emit) async {
-      emit(ProcessStarted());
       if (event is GetUpcomingRides) {
+        emit(ProcessStarted());
         if (!event.forceRefresh && _cachedTrips != null) {
-          emit(UpcomingTripsLoaded(_cachedTrips!));
+          emit(UpcomingRidesLoaded(_cachedTrips!));
           return;
         }
 
         List<Trip> trips = [];
         trips = await TripService().getAllUpcomingTrips();
         _cachedTrips = trips;
-        emit(UpcomingTripsLoaded(trips));
+        emit(UpcomingRidesLoaded(trips));
       }
 
       if (event is GetUpcomingDeliveries) {
+        emit(ProcessStarted());
         if (!event.forceRefresh && _cachedDeliveries != null) {
           emit(UpcomingDeliveriesLoaded(_cachedDeliveries!));
           return;
         }
 
         List<TaskTripDTO> deliveries = [];
-        deliveries = await TaskTripService().getAllUpcomingDeliveries() ?? [];
+        deliveries = await TaskTripService().getAllUpcomingDeliveries();
         _cachedDeliveries = deliveries;
         emit(UpcomingDeliveriesLoaded(deliveries));
       }
 
       if (event is GetDriverUpcomingRides) {
+        emit(ProcessStarted());
         if (!event.forceRefresh && _cachedDriverTrips != null) {
-          emit(DriverUpcomingTripsLoaded(_cachedDriverTrips!));
+          emit(DriverUpcomingRidesLoaded(_cachedDriverTrips!));
           return;
         }
         UserModel? currentUser = await AuthService().getCurrentUser();
@@ -71,23 +74,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         driverTrips =
             await TripService().getUpcomingTripsByDriver(currentUser.id);
         _cachedDriverTrips = driverTrips;
-        emit(DriverUpcomingTripsLoaded(driverTrips));
-      }
-
-      if (event is GetUpcomingRides) {
-        if (!event.forceRefresh && _cachedDriverTrips != null) {
-          emit(UpcomingRidesLoaded(_cachedDriverTrips!));
-          return;
-        }
-
-        List<Trip> trips = [];
-        emit(ProcessStarted());
-        trips = await TripService().getAllUpcomingTrips();
-        _cachedDriverTrips = trips;
-        emit(UpcomingRidesLoaded(trips));
+        emit(DriverUpcomingRidesLoaded(driverTrips));
       }
 
       if (event is GetDriverUpcomingDeliveries) {
+        emit(ProcessStarted());
         if (!event.forceRefresh && _cachedDriverDeliveries != null) {
           emit(DriverUpcomingDeliveriesLoaded(_cachedDriverDeliveries!));
           return;
@@ -101,6 +92,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       if (event is LoadDriverTripsDeliveries) {
+        emit(ProcessStarted());
         if (!event.forceRefresh &&
             _cachedDriverDeliveries != null &&
             _cachedDriverTrips != null) {
@@ -120,6 +112,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       if (event is GetAllDrivers) {
+        emit(ProcessStarted());
         if (!event.forceRefresh && _cachedDrivers != null) {
           emit(AllDriversLoaded(_cachedDrivers!));
           return;
@@ -132,6 +125,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       if (event is GetAllInvitations) {
+        emit(ProcessStarted());
         if (!event.forceRefresh && _cachedInvitations != null) {
           emit(AllInvitationsLoaded(_cachedInvitations!));
           return;
@@ -143,6 +137,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       if (event is LoadDriversInvitations) {
+        emit(ProcessStarted());
         if (!event.forceRefresh &&
             _cachedDrivers != null &&
             _cachedInvitations != null) {
@@ -160,6 +155,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       if (event is GetTripDetails) {
+        emit(ProcessStarted());
         UserModel? user;
         List<TaskTrip>? taskTrips;
         List<PassengerTrip>? passengerTrips;
@@ -173,6 +169,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       if (event is UpdateUserInfo) {
+        emit(ProcessStarted());
         Map<String, String> errors = {};
 
         String? nameError = ValidationUtils.nameValidator(event.firstName);
@@ -198,6 +195,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       if (event is GetTripInfo) {
+        emit(ProcessStarted());
         try {
           UserModel? driver;
           Trip? trip;
@@ -213,6 +211,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       }
       if (event is CheckEmailExists) {
+        emit(ProcessStarted());
         bool exists =
             await UserService().checkUserExistsByEmail(email: event.email);
         if (exists) {
@@ -223,34 +222,30 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       if (event is FilterEvent) {
-        if (event.state is DriverUpcomingTripsLoaded) {
-          if (_cachedDriverTrips == null) {
+        var filteredTrips = [];
+        if (event.state is UpcomingRidesLoaded) {
+          emit(ProcessStarted());
+          if (_cachedTrips == null) {
             return;
           }
-
-          List<Trip> filteredTrips = _cachedDriverTrips!;
-
-          if (event.fromWhere != null && event.fromWhere!.isNotEmpty) {
-            filteredTrips = filteredTrips
-                .where((trip) => trip.startCity.contains(event.fromWhere!))
-                .toList();
-          }
-          if (event.toWhere != null && event.toWhere!.isNotEmpty) {
-            filteredTrips = filteredTrips
-                .where((trip) => trip.endCity.contains(event.toWhere!))
-                .toList();
-          }
-          if (event.dateTime != null) {
-            filteredTrips = filteredTrips
-                .where((trip) => trip.startTime.isAfter(event.dateTime!))
-                .toList();
-          }
-          debugPrint("Filtered trips: $filteredTrips");
-          emit(DriverUpcomingTripsLoaded(filteredTrips));
+          filteredTrips = _cachedTrips!;
+          filteredTrips = _filterList<Trip>(filteredTrips.cast<Trip>(),
+              event.fromWhere, event.toWhere, event.dateTime);
+          emit(UpcomingRidesLoaded(filteredTrips.cast<Trip>()));
           return;
         }
-        if (event.state is DriverUpcomingDeliveriesLoaded) {
-          emit(DriverUpcomingDeliveriesLoaded(_cachedDriverDeliveries!));
+        if (event.state is UpcomingDeliveriesLoaded) {
+          emit(ProcessStarted());
+          if (_cachedDeliveries == null) {
+            return;
+          }
+          filteredTrips = _cachedDeliveries!;
+          filteredTrips = _filterList<TaskTripDTO>(
+              filteredTrips.cast<TaskTripDTO>(),
+              event.fromWhere,
+              event.toWhere,
+              event.dateTime);
+          emit(UpcomingDeliveriesLoaded(filteredTrips.cast<TaskTripDTO>()));
           return;
         }
       }
@@ -273,4 +268,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
     });
   }
+}
+
+List<T> _filterList<T extends HasFilterProperties>(List<T> incomingItems,
+    String? fromWhere, String? toWhere, DateTime? dateTime) {
+  var items = incomingItems;
+  if (fromWhere != null && fromWhere.isNotEmpty) {
+    items = FilterService.instance.filterByStartCity(items, fromWhere);
+  }
+  if (toWhere != null && toWhere.isNotEmpty) {
+    items = FilterService.instance.filterByEndCity(items, toWhere);
+  }
+  if (dateTime != null) {
+    items = FilterService.instance.filterByStartTime(items, dateTime);
+  }
+  return items;
 }

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_app/service/user_service.dart';
-import '../utils/functions.dart';
 import '../utils/validation_utils.dart';
 import '../data/models/user.dart';
 import '../data/enums/user_role.dart';

@@ -13,10 +13,10 @@ class ProcessStarted extends UserState {}
 
 class ProcessFailed extends UserState {}
 
-class UpcomingTripsLoaded extends UserState {
+class UpcomingRidesLoaded extends UserState {
   final List<Trip> trips;
 
-  const UpcomingTripsLoaded(this.trips);
+  const UpcomingRidesLoaded(this.trips);
 }
 
 class UpcomingDeliveriesLoaded extends UserState {
@@ -25,22 +25,16 @@ class UpcomingDeliveriesLoaded extends UserState {
   const UpcomingDeliveriesLoaded(this.deliveries);
 }
 
-class DriverUpcomingTripsLoaded extends UserState {
+class DriverUpcomingRidesLoaded extends UserState {
   final List<Trip> driverTrips;
 
-  const DriverUpcomingTripsLoaded(this.driverTrips);
+  const DriverUpcomingRidesLoaded(this.driverTrips);
 }
 
 class DriverUpcomingDeliveriesLoaded extends UserState {
   final List<TaskTripDTO> driverDeliveries;
 
   const DriverUpcomingDeliveriesLoaded(this.driverDeliveries);
-}
-
-class UpcomingRidesLoaded extends UserState {
-  final List<Trip> trips;
-
-  const UpcomingRidesLoaded(this.trips);
 }
 
 class DriverDataLoaded extends UserState {

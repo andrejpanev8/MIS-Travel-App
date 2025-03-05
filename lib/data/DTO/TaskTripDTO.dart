@@ -1,9 +1,10 @@
 // ignore_for_file: file_names
 
+import '../../service/filter_service.dart';
 import '../models/task_trip.dart';
 import '../models/trip.dart';
 
-class TaskTripDTO {
+class TaskTripDTO implements HasFilterProperties {
   late TaskTrip? taskTrip;
   late Trip? trip;
 
@@ -27,4 +28,13 @@ class TaskTripDTO {
     }
     return data;
   }
+
+  @override
+  DateTime get startTime => trip!.startTime;
+
+  @override
+  String get endCity => trip!.endCity;
+
+  @override
+  String get startCity => trip!.startCity;
 }

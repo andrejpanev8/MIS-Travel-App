@@ -47,7 +47,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                   taskTrips = state.driverDeliveries;
                 }
 
-                if (state is DriverUpcomingTripsLoaded) {
+                if (state is DriverUpcomingRidesLoaded) {
                   trips = state.driverTrips;
                 }
 
