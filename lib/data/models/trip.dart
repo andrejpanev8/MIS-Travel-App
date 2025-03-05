@@ -75,7 +75,7 @@ class Trip implements HasFilterProperties {
   }
 
   String get formattedStartDateTime {
-    final DateFormat formatter = DateFormat('yyyy.MM.dd');
+    final DateFormat formatter = DateFormat('yyyy.MM.dd - HH:mm');
     return formatter.format(startTime);
   }
 

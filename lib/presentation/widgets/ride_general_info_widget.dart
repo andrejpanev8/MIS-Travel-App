@@ -15,23 +15,27 @@ Widget rideGeneralInfo(Trip? trip, UserModel? driver) {
           children: [
             Row(
               children: [
-                Icon(Icons.location_on_outlined),
+                Icon(Icons.location_on_outlined, size: 22),
+                SizedBox(width: 10),
                 Text("${trip.startCity} - ${trip.endCity}",
-                    style: StyledText().appBarText())
+                    style: StyledText().appBarText().copyWith(fontSize: 20))
               ],
             ),
-            _buildRow(icon: Icons.access_time, text: "${trip.startTime}"),
+            SizedBox(height: 10),
+            _buildRow(
+                icon: Icons.access_time, text: trip.formattedStartDateTime),
+            SizedBox(height: 6),
             _buildRow(
                 icon: Icons.badge_outlined,
                 text: driver != null
                     ? "${driver.firstName} ${driver.lastName}"
                     : ""),
-            _buildRow(
-                text: "${AppStrings.startingLocation}: ${trip.startLocation}"),
+            SizedBox(height: 6),
             _buildRow(
                 icon: Icons.people_alt_outlined,
                 text:
                     "${AppStrings.numberOfPassengers}: ${trip.passengerTrips.length}"),
+            SizedBox(height: 6),
             _buildRow(
                 text:
                     "${AppStrings.numberOfPackages}: ${trip.taskTrips.length}",
@@ -45,17 +49,17 @@ Widget _buildRow({IconData? icon, String text = "", String? assetIcon}) {
   return Row(
     children: [
       icon != null
-          ? Icon(icon)
+          ? Icon(icon, size: 16)
           : assetIcon != null
               ? SvgPicture.asset(
                   assetIcon,
-                  width: 20,
-                  height: 20,
+                  width: 16,
+                  height: 16,
                   colorFilter: ColorFilter.mode(blackColor, BlendMode.srcIn),
                 )
               : SizedBox(width: 25),
       SizedBox(width: 10),
-      Text(text)
+      Text(text, style: TextStyle(fontSize: 15))
     ],
   );
 }

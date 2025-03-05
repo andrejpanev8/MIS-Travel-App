@@ -116,11 +116,15 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
             Text(AppStrings.selectALocation,
                 style: StyledText().descriptionText()),
             MapStatic(multipleSelection: true),
+            SizedBox(height: 32.0),
             Row(
               children: [
                 Expanded(
-                    child:
-                        customArrowButton(text: AppStrings.confirmReservation)),
+                    child: customArrowButton(
+                        text: AppStrings.confirmReservation,
+                        fontSize: 16,
+                        iconSize: 16,
+                        verticalPadding: 10)),
               ],
             )
           ]),
