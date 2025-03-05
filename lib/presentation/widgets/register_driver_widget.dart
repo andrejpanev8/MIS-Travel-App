@@ -28,14 +28,14 @@ class RegisterDriverWidgetState extends State<RegisterDriverWidget> {
 
   void _register() async {
     setState(() {
-      _emailError = ValidationUtils.emailValidator(_emailController.text);
+      _emailError = ValidationUtils.emailValidator(_emailController.text.trim());
     });
 
     if (_emailError != null) {
       return;
     }
     BlocProvider.of<UserBloc>(context)
-        .add(CheckEmailExists(_emailController.text));
+        .add(CheckEmailExists(_emailController.text.trim()));
   }
 
   @override
@@ -45,7 +45,7 @@ class RegisterDriverWidgetState extends State<RegisterDriverWidget> {
         showErrorDialog(context, AppStrings.emailErrorTitle, AppStrings.emailErrorMessage);
       } else if (state is EmailAvailable) {
         BlocProvider.of<UserBloc>(context)
-            .add(SendEmail(_emailController.text));
+            .add(SendEmail(_emailController.text.trim()));
       } else if (state is EmailSentSuccessfully) {
         showSuccessDialog(context, AppStrings.emailSentSuccessfullyTitle,
             AppStrings.emailSentSuccessfullyMessage, () {

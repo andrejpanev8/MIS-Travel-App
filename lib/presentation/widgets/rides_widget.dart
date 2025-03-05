@@ -5,6 +5,7 @@ import 'package:marquee/marquee.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
+import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
@@ -16,12 +17,13 @@ import '../../utils/functions.dart';
 class RidesWidget extends StatelessWidget {
   final BuildContext context;
   final Trip ride;
+  final bool isRidesScreen;
 
-  const RidesWidget({
-    super.key,
-    required this.context,
-    required this.ride,
-  });
+  const RidesWidget(
+      {super.key,
+      required this.context,
+      required this.ride,
+      this.isRidesScreen = false});
 
   @override
   Widget build(BuildContext context) {
@@ -109,19 +111,35 @@ class RidesWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Row(
-          children: [
-            const Icon(
-              Icons.people_alt_outlined,
-              size: 14,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              "${ride.maxCapacity - ride.passengerTrips.length} Places left",
-              style: StyledText().descriptionText(fontSize: 12),
-            ),
-          ],
-        ),
+        isRidesScreen
+            ? Row(
+                children: [
+                  const Icon(
+                    Icons.people_alt_outlined,
+                    size: 14,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    "${ride.maxCapacity - ride.passengerTrips.length} Places left",
+                    style: StyledText().descriptionText(fontSize: 12),
+                  )
+                ],
+              )
+            : Row(
+                children: [
+                  const Icon(
+                    Icons.monetization_on_outlined,
+                    color: greenColor,
+                    size: 14,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    "${ride.deliveryPrice}",
+                    style: StyledText().descriptionText(fontSize: 12),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              ),
         const SizedBox(height: 8),
         BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
           if (state is UserIsLoggedIn) {
@@ -129,9 +147,10 @@ class RidesWidget extends StatelessWidget {
           }
           return customArrowButton(
             text: userRole == UserRole.CLIENT
-                ? AppStrings.reserve
+                ? (isRidesScreen ? AppStrings.reserve : "Send Package")
                 : AppStrings.viewDetails,
             fontSize: 12,
+            horizontalPadding: 20,
             onPressed: () {
               Functions.emitUserEvent(
                   context: context,
@@ -140,9 +159,8 @@ class RidesWidget extends StatelessWidget {
                       : GetTripDetails(
                           driverId: trip.driverId, tripId: trip.id));
               userRole == UserRole.CLIENT
-                  ? Navigator.pushNamed(context, "/reserveRide",
-                      arguments: trip)
-                  : Navigator.pushNamed(context, "/details", arguments: trip);
+                  ? Navigator.pushNamed(context, isRidesScreen ? "/reserveRide" : "/reserveDelivery", arguments: trip)
+                  : Navigator.pushNamed(context, isRidesScreen ? "/rideDetails" : "/deliveryDetails", arguments: trip);
             },
           );
         }),

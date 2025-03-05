@@ -194,8 +194,19 @@ class _RegisterFormState extends State<RegisterForm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Text(AppStrings.haveRegistrationCode),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        color: blackColor,
+                        fontSize: 14,
+                      ),
+                      children: [
+                        const TextSpan(text: AppStrings.haveRegistrationCode),
+                      ],
+                    ),
+                  ),
                 ),
                 Switch(
                   activeTrackColor: blueDeepColor,

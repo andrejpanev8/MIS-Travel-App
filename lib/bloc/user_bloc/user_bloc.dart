@@ -74,6 +74,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(DriverUpcomingTripsLoaded(driverTrips));
       }
 
+      if (event is GetUpcomingRides) {
+        if (!event.forceRefresh && _cachedDriverTrips != null) {
+          emit(UpcomingRidesLoaded(_cachedDriverTrips!));
+          return;
+        }
+
+        List<Trip> trips = [];
+        emit(ProcessStarted());
+        trips = await TripService().getAllUpcomingTrips();
+        _cachedDriverTrips = trips;
+        emit(UpcomingRidesLoaded(trips));
+      }
+
       if (event is GetDriverUpcomingDeliveries) {
         if (!event.forceRefresh && _cachedDriverDeliveries != null) {
           emit(DriverUpcomingDeliveriesLoaded(_cachedDriverDeliveries!));

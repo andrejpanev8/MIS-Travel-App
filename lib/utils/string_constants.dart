@@ -48,7 +48,7 @@ class AppStrings {
   static const String passwordHint = "Enter your password";
   static const String alreadyHaveAccount = "Already have an account?";
   static const String registrationCode = "Registration Code (Optional)";
-  static const String registrationCodeHint = "Enter your registration Code";
+  static const String registrationCodeHint = "Enter your registration code";
   static const String haveRegistrationCode = "Have a registration code?";
   static const String locationIconTooltip = "Location";
   static const String timeIconTooltip = "Time";
