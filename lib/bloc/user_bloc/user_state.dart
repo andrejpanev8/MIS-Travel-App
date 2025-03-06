@@ -120,3 +120,21 @@ class EmailSentSuccessfully extends UserState {
 class EmailSentFailed extends UserState {
   const EmailSentFailed();
 }
+
+class ClientDataLoaded extends UserState {
+  final List<PassengerTripDTO> clientTrips;
+  final List<TaskTripDTO> clientDeliveries;
+  const ClientDataLoaded(this.clientTrips, this.clientDeliveries);
+}
+
+class ClientUpcomingTripsLoaded extends UserState {
+  final List<PassengerTripDTO> clientTrips;
+
+  const ClientUpcomingTripsLoaded(this.clientTrips);
+}
+
+class ClientUpcomingDeliveriesLoaded extends UserState {
+  final List<TaskTripDTO> clientDeliveries;
+
+  const ClientUpcomingDeliveriesLoaded(this.clientDeliveries);
+}

@@ -4,6 +4,7 @@ import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/service/trip_service.dart';
 import 'package:travel_app/service/user_service.dart';
 
+import '../data/DTO/PassengerTripDTO.dart';
 import '../data/models/location.dart';
 import '../data/models/trip.dart';
 import 'auth_service.dart';
@@ -68,36 +69,35 @@ class PassengerTripService {
     return tripIdGenerated;
   }
 
-  Future<List<Map<String, dynamic>>> getUpcomingTripsForUser() async {
+  Future<List<PassengerTripDTO>> getUpcomingTripsForUser() async {
     try {
       final currentUser = await authService.getCurrentUser();
       if (currentUser == null) {
         throw Exception("User is not authenticated.");
       }
 
-      QuerySnapshot passengerTripsSnapshot = await _firestore
+      QuerySnapshot passengerTripSnapshot = await _firestore
           .collection('passenger_trips')
           .where('user.id', isEqualTo: currentUser.id)
           .where('tripStatus', isEqualTo: 0)
           .get();
 
-      List<Map<String, dynamic>> upcomingTrips = [];
+      List<PassengerTripDTO> upcomingTrips = [];
 
-      for (var doc in passengerTripsSnapshot.docs) {
-        PassengerTrip passengerTrip =
-            PassengerTrip.fromJson(doc.data() as Map<String, dynamic>);
+      for (var doc in passengerTripSnapshot.docs) {
+        PassengerTrip taskTrip =
+        PassengerTrip.fromJson(doc.data() as Map<String, dynamic>);
 
-        DocumentSnapshot tripDoc = await _firestore
-            .collection('trips')
-            .doc(passengerTrip.tripId)
-            .get();
+        DocumentSnapshot tripDoc =
+        await _firestore.collection('trips').doc(taskTrip.tripId).get();
 
         if (tripDoc.exists) {
           Trip trip = Trip.fromJson(tripDoc.data() as Map<String, dynamic>);
-          upcomingTrips.add({
-            'passengerTrip': passengerTrip,
-            'trip': trip,
+          PassengerTripDTO taskTripDTO = PassengerTripDTO.fromJson({
+            'passengerTrip': taskTrip.toJson(),
+            'trip': trip.toJson(),
           });
+          upcomingTrips.add(taskTripDTO);
         }
       }
 

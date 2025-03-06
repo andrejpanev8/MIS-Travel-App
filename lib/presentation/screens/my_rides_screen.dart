@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
+import 'package:travel_app/data/DTO/PassengerTripDTO.dart';
 import 'package:travel_app/data/models/invitation.dart';
 import 'package:travel_app/presentation/widgets/drivers_widget.dart';
 import 'package:travel_app/presentation/widgets/invitation_widget.dart';
@@ -30,6 +31,8 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
   List<UserModel> drivers = [];
   List<Invitation> invitations = [];
   dynamic userRole;
+  List<PassengerTripDTO> clientTrips = [];
+  List<TaskTripDTO> clientDeliveries = [];
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +71,26 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                   invitations = state.invitations;
                 }
 
+                if (state is ClientDataLoaded) {
+                  clientTrips = state.clientTrips;
+                  clientDeliveries = state.clientDeliveries;
+                }
+
+                if (state is ClientUpcomingTripsLoaded) {
+                  clientTrips = state.clientTrips;
+                }
+
+                if (state is ClientUpcomingDeliveriesLoaded) {
+                  clientDeliveries = state.clientDeliveries;
+                }
+
                 switch (userRole) {
                   case UserRole.DRIVER:
                     return _driverView();
                   case UserRole.ADMIN:
                     return _adminView();
+                  case UserRole.CLIENT:
+                    return _clientView();
                   default:
                     return Center(
                         child: infoText(AppStrings.loginRequiredMessage));
@@ -154,6 +172,43 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                   ),
               emptyWidget: emptyListIndicator(AppStrings.noInvitations),
               scrollPhysics: NeverScrollableScrollPhysics())
+        ],
+      ),
+    );
+  }
+
+  Widget _clientView() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(height: 30),
+          infoText(AppStrings.upcomingRides),
+          widgetBuilder(
+              context: context,
+              items: clientTrips,
+              itemBuilder: (context, ride) =>
+                  RidesWidget(context: context, ride: ride.trip),
+              onRefresh: () => Functions.emitUserEvent(
+                    context: context,
+                    event: GetClientUpcomingRides(forceRefresh: true),
+                  ),
+              emptyWidget: emptyListIndicator(AppStrings.noUpcomingRides),
+              scrollPhysics: NeverScrollableScrollPhysics()),
+          SizedBox(height: 25),
+          infoText(AppStrings.upcomingDeliveries),
+          widgetBuilder(
+              context: context,
+              items: clientDeliveries,
+              itemBuilder: (context, task) =>
+                  TaskTripWidget(context: context, task: task),
+              onRefresh: () => Functions.emitUserEvent(
+                    context: context,
+                    event: GetClientUpcomingDeliveries(forceRefresh: true),
+                  ),
+              emptyWidget: emptyListIndicator(AppStrings.noUpcomingDeliveries),
+              scrollPhysics: NeverScrollableScrollPhysics()),
         ],
       ),
     );

@@ -14,6 +14,7 @@ import 'package:travel_app/service/trip_service.dart';
 import 'package:travel_app/service/user_service.dart';
 import 'package:travel_app/utils/validation_utils.dart';
 
+import '../../data/DTO/PassengerTripDTO.dart';
 import '../../data/DTO/TaskTripDTO.dart';
 import '../../data/models/invitation.dart';
 import '../../data/models/trip.dart';
@@ -29,6 +30,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   List<TaskTripDTO>? _cachedDriverDeliveries;
   List<UserModel>? _cachedDrivers;
   List<Invitation>? _cachedInvitations;
+  List<PassengerTripDTO>? _cachedClientTrips;
+  List<TaskTripDTO>? _cachedClientDeliveries;
 
   UserBloc() : super(UserInitial()) {
     on<UserEvent>((event, emit) async {
@@ -265,6 +268,56 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         _cachedDeliveries = null;
         _cachedDrivers = null;
         _cachedInvitations = null;
+        _cachedClientDeliveries = null;
+        _cachedClientTrips = null;
+      }
+
+      if (event is GetClientUpcomingRides) {
+        emit(ProcessStarted());
+        if (!event.forceRefresh && _cachedClientTrips != null) {
+          emit(ClientUpcomingTripsLoaded(_cachedClientTrips!));
+          return;
+        }
+
+        List<PassengerTripDTO> clientTrips = [];
+        emit(ProcessStarted());
+        clientTrips = await PassengerTripService().getUpcomingTripsForUser();
+        _cachedClientTrips = clientTrips;
+        emit(ClientUpcomingTripsLoaded(clientTrips));
+      }
+
+      if (event is GetClientUpcomingDeliveries) {
+        emit(ProcessStarted());
+        if (!event.forceRefresh && _cachedClientDeliveries != null) {
+          emit(ClientUpcomingDeliveriesLoaded(_cachedClientDeliveries!));
+          return;
+        }
+
+        List<TaskTripDTO> clientDeliveries = [];
+        emit(ProcessStarted());
+        clientDeliveries =
+            await TaskTripService().getUpcomingDeliveriesForUser();
+        _cachedClientDeliveries = clientDeliveries;
+        emit(ClientUpcomingDeliveriesLoaded(clientDeliveries));
+      }
+
+      if (event is LoadClientTripsDeliveries) {
+        emit(ProcessStarted());
+        if (!event.forceRefresh &&
+            _cachedClientDeliveries != null &&
+            _cachedClientTrips != null) {
+          emit(ClientDataLoaded(_cachedClientTrips!, _cachedClientDeliveries!));
+          return;
+        }
+        List<PassengerTripDTO> clientTrips = [];
+        List<TaskTripDTO> clientDeliveries = [];
+        emit(ProcessStarted());
+        clientTrips = await PassengerTripService().getUpcomingTripsForUser();
+        clientDeliveries =
+            await TaskTripService().getUpcomingDeliveriesForUser();
+        _cachedClientTrips = clientTrips;
+        _cachedClientDeliveries = clientDeliveries;
+        emit(ClientDataLoaded(clientTrips, clientDeliveries));
       }
     });
   }

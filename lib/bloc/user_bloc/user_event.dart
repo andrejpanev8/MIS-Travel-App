@@ -99,3 +99,20 @@ class FilterEvent extends UserEvent {
 }
 
 class ClearCacheEvent extends UserEvent {}
+
+class LoadClientTripsDeliveries extends UserEvent {
+  final bool forceRefresh;
+  const LoadClientTripsDeliveries({this.forceRefresh = false});
+}
+
+class GetClientUpcomingRides extends UserEvent {
+  final bool forceRefresh;
+
+  const GetClientUpcomingRides({this.forceRefresh = false});
+}
+
+class GetClientUpcomingDeliveries extends UserEvent {
+  final bool forceRefresh;
+
+  const GetClientUpcomingDeliveries({this.forceRefresh = false});
+}

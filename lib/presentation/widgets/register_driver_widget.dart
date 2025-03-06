@@ -8,6 +8,7 @@ import 'package:travel_app/presentation/widgets/input_field.dart';
 
 import '../../data/models/user.dart';
 import '../../utils/error_handler.dart';
+import '../../utils/functions.dart';
 import '../../utils/string_constants.dart';
 import '../../utils/success_handler.dart';
 import '../../utils/text_styles.dart';
@@ -52,7 +53,9 @@ class RegisterDriverWidgetState extends State<RegisterDriverWidget> {
           Navigator.of(context).pop();
         });
         _emailController.clear();
-
+        Functions.emitUserEvent(
+            context: context,
+            event: GetAllInvitations(forceRefresh: true));
       } else if (state is EmailSentFailed) {
         showErrorDialog(context, AppStrings.emailSentFailedTitle,
             AppStrings.emailSentFailedMessage);

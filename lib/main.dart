@@ -109,6 +109,8 @@ class _MyHomePageState extends State<MyHomePage> {
           context.read<UserBloc>().add(LoadDriverTripsDeliveries());
         } else if (state.user.role == UserRole.ADMIN) {
           context.read<UserBloc>().add(LoadDriversInvitations());
+        } else if (state.user.role == UserRole.CLIENT) {
+          context.read<UserBloc>().add(LoadClientTripsDeliveries());
         }
       }
     }
