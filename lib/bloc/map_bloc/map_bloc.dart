@@ -14,7 +14,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   MapBloc() : super(MapInitial()) {
     on<MapEvent>((event, emit) async {
       if (event is MapSelectionEvent) {
-        emit(MapProcessStarted());
+        emit(ProcessStarted());
         String address = "";
         String staticLink = "";
 
@@ -33,7 +33,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       }
 
       if (event is AddressEntryEvent) {
-        emit(MapProcessStarted());
+        emit(ProcessStarted());
         LatLng location = await MapService()
             .getCoordinatesFromAddress(event.address!)
             .then((result) => LatLng(result!["latitude"], result["longitude"]));
@@ -50,7 +50,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       }
 
       if (event is MapDoubleSelectionEvent) {
-        emit(MapProcessStarted());
+        emit(ProcessStarted());
         String addressFrom = "";
         String addressTo = "";
         String staticLink = "";
@@ -77,7 +77,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       }
 
       if (event is AddressDoubleEntryEvent) {
-        emit(MapProcessStarted());
+        emit(ProcessStarted());
         try {
           String mapStaticLink = "";
           List<LatLng> route = [];

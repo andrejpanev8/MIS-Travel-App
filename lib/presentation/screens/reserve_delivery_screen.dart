@@ -7,11 +7,10 @@ import 'package:travel_app/presentation/widgets/ride_general_short_info_widget.d
 import 'package:travel_app/utils/error_handler.dart';
 import 'package:travel_app/utils/map_unique_keys.dart';
 
-import '../../bloc/map_bloc/map_bloc.dart';
+import '../../bloc/map_bloc/map_bloc.dart' as map_bloc;
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/models/location.dart';
 import '../../data/models/trip.dart';
-import '../../service/task_trip_service.dart';
 import '../../utils/functions.dart';
 import '../../utils/string_constants.dart';
 import '../../utils/success_handler.dart';
@@ -58,7 +57,7 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
         if (startLocationController.text.isNotEmpty) {
           Functions.emitMapEvent(
             context: context,
-            event: AddressEntryEvent(startLocationController.text,
+            event: map_bloc.AddressEntryEvent(startLocationController.text,
                 uniqueKey: START_LOCATION_RESERVE_DELIVERY_SCREEN),
           );
         }
@@ -70,7 +69,7 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
         if (endLocationController.text.isNotEmpty) {
           Functions.emitMapEvent(
             context: context,
-            event: AddressEntryEvent(endLocationController.text,
+            event: map_bloc.AddressEntryEvent(endLocationController.text,
                 uniqueKey: END_LOCATION_RESERVE_DELIVERY_SCREEN),
           );
         }
@@ -125,9 +124,9 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MapBloc, MapState>(
+    return BlocListener<map_bloc.MapBloc, map_bloc.MapState>(
         listener: (context, state) => {
-              if (state is MapSingleSelectionLoaded)
+              if (state is map_bloc.MapSingleSelectionLoaded)
                 {
                   if (state.uniqueKey == START_LOCATION_RESERVE_DELIVERY_SCREEN)
                     {
