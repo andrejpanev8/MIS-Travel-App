@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_app/data/DTO/AddDeliveryDTO.dart';
+import 'package:travel_app/data/DTO/ReserveDeliveryDTO.dart';
 import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
@@ -224,6 +226,32 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       }
 
+      if (event is SendEmail) {
+        bool emailSent = await EmailService().sendEmail(event.email);
+        if (emailSent) {
+          emit(EmailSentSuccessfully());
+        } else {
+          emit(EmailSentFailed());
+        }
+      }
+
+      if (event is CreateDelivery) {
+        emit(ProcessStarted());
+        try {
+          await TaskTripService().createTaskTrip(
+              pickUpPhoneNumber: event.delivery.pickUpPhoneNumber,
+              startLocation: event.delivery.startLocation,
+              dropOffPhoneNumber: event.delivery.dropOffPhoneNumber,
+              endLocation: event.delivery.endLocation,
+              tripId: event.delivery.tripId,
+              description: event.delivery.description);
+          emit(DeliveryCreateSuccess());
+        }
+        catch (error) {
+          emit(DeliveryCreateError());
+        }
+      }
+
       if (event is FilterEvent) {
         var filteredTrips = [];
         if (event.state is UpcomingRidesLoaded) {
@@ -250,14 +278,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               event.dateTime);
           emit(UpcomingDeliveriesLoaded(filteredTrips.cast<TaskTripDTO>()));
           return;
-        }
-      }
-      if (event is SendEmail) {
-        bool emailSent = await EmailService().sendEmail(event.email);
-        if (emailSent) {
-          emit(EmailSentSuccessfully());
-        } else {
-          emit(EmailSentFailed());
         }
       }
 

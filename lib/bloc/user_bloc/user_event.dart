@@ -100,6 +100,18 @@ class FilterEvent extends UserEvent {
 
 class ClearCacheEvent extends UserEvent {}
 
+class CreateDelivery extends UserEvent {
+  final ReserveDeliveryDTO delivery;
+
+  const CreateDelivery(this.delivery);
+}
+
+class CreateAdhocUserDelivery extends UserEvent {
+  final ReserveAdhocDeliveryDTO delivery;
+
+  const CreateAdhocUserDelivery(this.delivery);
+}
+
 class LoadClientTripsDeliveries extends UserEvent {
   final bool forceRefresh;
   const LoadClientTripsDeliveries({this.forceRefresh = false});

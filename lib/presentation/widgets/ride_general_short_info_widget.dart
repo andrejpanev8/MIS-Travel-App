@@ -27,11 +27,11 @@ Widget rideGeneralShortInfo(Trip? trip, UserModel? driver) {
       _buildRow(
           icon: Icons.badge_outlined,
           text: driver != null
-              ? "${driver.firstName} ${driver.lastName}"
+              ? driver.fullName
               : ""),
     ],
   )
-      : SizedBox.shrink();
+      : Center(child: CircularProgressIndicator());
 }
 
 

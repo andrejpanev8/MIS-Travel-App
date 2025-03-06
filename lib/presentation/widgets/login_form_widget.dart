@@ -19,7 +19,6 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  // final AuthService _authService = AuthService();
 
   bool _passwordVisible = true;
 

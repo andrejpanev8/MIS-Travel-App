@@ -13,7 +13,7 @@ class MapStatic extends StatefulWidget {
   const MapStatic({super.key, this.uniqueKey, this.multipleSelection = false});
 
   @override
-  _MapStaticState createState() => _MapStaticState();
+  State<MapStatic> createState() => _MapStaticState();
 }
 
 class _MapStaticState extends State<MapStatic> {

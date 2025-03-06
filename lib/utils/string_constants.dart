@@ -13,6 +13,8 @@ class AppStrings {
   static const String upcomingDeliveries = "Upcoming Deliveries";
   static const String loginRequiredMessage =
       "You have to login to view your data";
+  static const String loginRequiredMessage1 = "You have to login to reserve a ride";
+  static const String loginRequiredMessage2 = "You have to login to reserve a delivery";
   static const String noUpcomingRides = "No upcoming rides available";
   static const String noUpcomingDeliveries = "No upcoming deliveries available";
   static const String passengers = "Passengers";

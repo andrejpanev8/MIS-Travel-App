@@ -10,6 +10,7 @@ Widget infoText(String text) {
     child: Text(
       text,
       style: StyledText().appBarText(),
+      textAlign: TextAlign.center,
     ),
   );
 }

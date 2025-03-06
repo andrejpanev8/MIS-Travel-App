@@ -38,6 +38,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
   final TextEditingController dropOffPhoneController = TextEditingController();
   final TextEditingController startLocationController = TextEditingController();
   final TextEditingController endLocationController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
 
   final FocusNode startLocationFocusNode = FocusNode();
   final FocusNode endLocationFocusNode = FocusNode();
@@ -169,14 +170,15 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
               : "Unknown",
           lastName: lastNameController.text.isNotEmpty
               ? lastNameController.text
-              : "Unknown");
+              : "Unknown",
+          description: descriptionController.text);
       showSuccessDialog(
         context,
         "Success",
         "Delivery successfully created!",
         () {
           Navigator.of(context).pop();
-        },
+        }
       );
     } catch (error) {
       showErrorDialog(
@@ -339,7 +341,6 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
           inputTextFieldCustom(
               context: context,
               controller: dropOffPhoneController,
-              focusNode: endLocationFocusNode,
               suffixIcon: Icon(Icons.phone_forwarded_outlined)),
           _buildErrorText(_dropOffPhoneError),
           SizedBox(height: 16.0),
@@ -347,10 +348,19 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
           inputTextFieldCustom(
               context: context,
               controller: endLocationController,
+              focusNode: endLocationFocusNode,
               suffixIcon: Icon(Icons.location_on_outlined)),
           _buildErrorText(_endLocationError),
           SizedBox(height: 8),
           MapStatic(uniqueKey: END_LOCATION_ADD_DELIVERY_SCREEN),
+          SizedBox(height: 16.0),
+          _text("Description"),
+          inputTextFieldCustom(
+              context: context,
+              controller: descriptionController,
+              maxLines: 4,
+              hintText: "Enter description..."
+          ),
         ],
       ),
     );

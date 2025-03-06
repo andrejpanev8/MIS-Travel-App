@@ -7,6 +7,7 @@ Widget inputTextFieldCustom({
   TextEditingController? controller,
   FocusNode? focusNode,
   String hintText = "",
+  int maxLines = 1,
   bool obscureText = false,
   TextInputType keyboardType = TextInputType.text,
   bool readOnly = false,
@@ -18,6 +19,7 @@ Widget inputTextFieldCustom({
     controller: controller,
     focusNode: focusNode,
     readOnly: readOnly,
+    maxLines: maxLines,
     obscureText: obscureText,
     style: TextStyle(color: readOnly == true ? silverColor : blackColor),
     decoration: InputDecoration(

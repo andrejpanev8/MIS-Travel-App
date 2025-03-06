@@ -42,7 +42,7 @@ class DriversWidget extends StatelessWidget {
           Row(
             children: [
               Text(
-                driver.fullName(),
+                driver.fullName,
                 style: StyledText()
                     .descriptionText(color: blackColor, fontSize: 16),
               ),

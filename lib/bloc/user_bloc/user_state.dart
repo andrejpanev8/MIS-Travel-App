@@ -121,6 +121,10 @@ class EmailSentFailed extends UserState {
   const EmailSentFailed();
 }
 
+class DeliveryCreateSuccess extends UserState {}
+
+class DeliveryCreateError extends UserState {}
+
 class ClientDataLoaded extends UserState {
   final List<PassengerTripDTO> clientTrips;
   final List<TaskTripDTO> clientDeliveries;

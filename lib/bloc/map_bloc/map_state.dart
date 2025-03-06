@@ -7,7 +7,7 @@ sealed class MapState extends Equatable {
   List<Object?> get props => [];
 }
 
-class ProcessStarted extends MapState {}
+class MapProcessStarted extends MapState {}
 
 class MapInitial extends MapState {}
 
