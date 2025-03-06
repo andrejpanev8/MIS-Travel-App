@@ -33,15 +33,15 @@ class RideDetailsScreen extends StatelessWidget {
         child: Scaffold(
             appBar: customAppBar(context: context, arrowBack: true),
             body:
-              BlocBuilder<AuthBloc, AuthState>(builder: (context, authState) {
+                BlocBuilder<AuthBloc, AuthState>(builder: (context, authState) {
               if (authState is UserIsLoggedIn) {
                 userRole = authState.user.role;
               }
               return BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {
-                  if(userRole == null) {
+                  if (userRole == null) {
                     return Center(
-                      child: infoText(AppStrings.loginRequiredMessage1));
+                        child: infoText(AppStrings.loginRequiredMessage1));
                   }
 
                   if (state is TripDetailsLoaded) {
@@ -58,45 +58,53 @@ class RideDetailsScreen extends StatelessWidget {
 
   Widget _buildContent(BuildContext context) {
     return SingleChildScrollView(
-      physics: AlwaysScrollableScrollPhysics(),
-      padding: EdgeInsets.all(16.0),
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [rideGeneralInfo(trip!, driver)],
-          ),
-          SizedBox(height: 10),
-          Text(
-            AppStrings.passengers,
-            style: StyledText().appBarText(),
-          ),
-          widgetBuilder(
-              context: context,
-              items: passengerTrips!,
-              itemBuilder: (context, passengerTrip) =>
-                  PassengerWidget(passenger: passengerTrip),
-              scrollPhysics: NeverScrollableScrollPhysics()),
-          SizedBox(height: 30),
-          Text(
-            AppStrings.packages,
-            style: StyledText().appBarText(),
-          ),
-          widgetBuilder(
-              context: context,
-              items: taskTrips!,
-              itemBuilder: (context, taskTrip) =>
-                  TaskTripDetailsWidget(taskTrip: taskTrip),
-              scrollPhysics: NeverScrollableScrollPhysics()),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(AppStrings.yourRoute, style: StyledText().descriptionText()),
-              MapStatic(),
-            ],
-          ),
+          rideGeneralInfo(trip!, driver),
+          const SizedBox(height: 16),
+          _sectionTitle(AppStrings.passengers),
+          _buildPassengerList(context),
+          const SizedBox(height: 24),
+          _sectionTitle(AppStrings.packages),
+          _buildTaskList(context),
+          const SizedBox(height: 24),
+          _sectionTitle(AppStrings.yourRoute),
+          const MapStatic(),
         ],
       ),
+    );
+  }
+
+  Widget _sectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+      child: Text(
+        title,
+        style: StyledText().appBarText(),
+      ),
+    );
+  }
+
+  Widget _buildPassengerList(BuildContext context) {
+    return widgetBuilder(
+      context: context,
+      items: passengerTrips!,
+      itemBuilder: (context, passengerTrip) =>
+          PassengerWidget(passenger: passengerTrip),
+      scrollPhysics: const NeverScrollableScrollPhysics(),
+    );
+  }
+
+  Widget _buildTaskList(BuildContext context) {
+    return widgetBuilder(
+      context: context,
+      items: taskTrips!,
+      itemBuilder: (context, taskTrip) =>
+          TaskTripDetailsWidget(taskTrip: taskTrip),
+      scrollPhysics: const NeverScrollableScrollPhysics(),
     );
   }
 }

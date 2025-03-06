@@ -5,13 +5,13 @@ import '../../data/models/passenger_trip.dart';
 import '../../utils/decorations.dart';
 
 class PassengerWidget extends StatelessWidget {
-  PassengerTrip passenger;
-  PassengerWidget({super.key, required this.passenger});
+  final PassengerTrip passenger;
+  const PassengerWidget({super.key, required this.passenger});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: DecorationsCustom().silverBoxRoundedCorners(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -22,35 +22,52 @@ class PassengerWidget extends StatelessWidget {
 
   Widget _leftInfo() {
     return Expanded(
-        child: Column(
-      children: [
-        Row(
-          children: [
-            Icon(Icons.person_outline),
-            Text("${passenger.user.firstName} ${passenger.user.lastName}")
-          ],
-        ),
-        Row(
-          children: [
-            Icon(Icons.location_on_outlined),
-            //TO:DO Change with resolved location
-            Text("${passenger.startLocation}")
-          ],
-        ),
-        Row(
-          children: [
-            Icon(Icons.location_on_outlined),
-            //TO:DO Change with resolved location
-            Text("${passenger.endLocation}")
-          ],
-        )
-      ],
-    ));
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.person_outline),
+              const SizedBox(width: 8),
+              Text(
+                "${passenger.user.firstName} ${passenger.user.lastName}",
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              const Icon(Icons.location_on_outlined),
+              const SizedBox(width: 8),
+              //TO:DO Change with resolved location
+              Text(
+                "${passenger.startLocation}",
+                style: const TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              const Icon(Icons.location_on_outlined),
+              const SizedBox(width: 8),
+              //TO:DO Change with resolved location
+              Text(
+                "${passenger.endLocation}",
+                style: const TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _rightInfo() {
     return customArrowButton(
-        text: passenger.user.phoneNumber,
-        customIcon: Icons.local_phone_outlined);
+      text: passenger.user.phoneNumber,
+      customIcon: Icons.local_phone_outlined,
+    );
   }
 }

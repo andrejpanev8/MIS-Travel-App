@@ -65,6 +65,7 @@ class AppStrings {
   static const String rideDetails = "Ride Details";
   static const String selectALocation = "Select a location";
   static const String description = "Description";
+  static String noDescription = "No description";
   static const String noItemsAvailable = "No items available";
   static const String deliveryDetails = "Delivery Details";
   static const String driversTitle = "Drivers";
@@ -79,6 +80,7 @@ class AppStrings {
       "You have sent the invitation successfully";
   static const String emailSentFailedTitle = "Email sent failed";
   static const String emailSentFailedMessage = "Failed to send invitations";
+
 }
 
 const String FromWhereString = "fromWhere";

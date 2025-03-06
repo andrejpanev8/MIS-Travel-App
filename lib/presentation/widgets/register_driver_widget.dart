@@ -15,7 +15,7 @@ import '../../utils/text_styles.dart';
 import '../../utils/validation_utils.dart';
 
 class RegisterDriverWidget extends StatefulWidget {
-  const   RegisterDriverWidget({super.key});
+  const RegisterDriverWidget({super.key});
 
   @override
   State<RegisterDriverWidget> createState() => RegisterDriverWidgetState();
@@ -29,7 +29,8 @@ class RegisterDriverWidgetState extends State<RegisterDriverWidget> {
 
   void _register() async {
     setState(() {
-      _emailError = ValidationUtils.emailValidator(_emailController.text.trim());
+      _emailError =
+          ValidationUtils.emailValidator(_emailController.text.trim());
     });
 
     if (_emailError != null) {
@@ -43,7 +44,8 @@ class RegisterDriverWidgetState extends State<RegisterDriverWidget> {
   Widget build(BuildContext context) {
     return BlocListener<UserBloc, UserState>(listener: (context, state) {
       if (state is EmailExists) {
-        showErrorDialog(context, AppStrings.emailErrorTitle, AppStrings.emailErrorMessage);
+        showErrorDialog(
+            context, AppStrings.emailErrorTitle, AppStrings.emailErrorMessage);
       } else if (state is EmailAvailable) {
         BlocProvider.of<UserBloc>(context)
             .add(SendEmail(_emailController.text.trim()));
@@ -54,50 +56,46 @@ class RegisterDriverWidgetState extends State<RegisterDriverWidget> {
         });
         _emailController.clear();
         Functions.emitUserEvent(
-            context: context,
-            event: GetAllInvitations(forceRefresh: true));
+            context: context, event: GetAllInvitations(forceRefresh: true));
       } else if (state is EmailSentFailed) {
         showErrorDialog(context, AppStrings.emailSentFailedTitle,
             AppStrings.emailSentFailedMessage);
         _emailController.clear();
-
       }
     }, child: BlocBuilder<AuthBloc, AuthState>(builder: (context, authState) {
       if (authState is UserIsLoggedIn &&
           authState.user.role == UserRole.ADMIN) {
-        return Padding(
-          padding: EdgeInsets.fromLTRB(5.0, 36.0, 36.0, 36.0),
-          child: Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppStrings.registerDriverTitle,
-                  style: StyledText().appBarText(),
-                ),
-                SizedBox(height: 25),
-                _text("Email"),
-                inputTextFieldCustom(
-                    context: context, controller: _emailController),
-                if (_emailError != null) _errorText(_emailError!),
-                SizedBox(height: 15),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: customArrowButton(
-                          text: "Send code",
-                          verticalPadding: 10,
-                          onPressed: () => _register(),
-                          noIcon: true,
-                        ),
+        return Form(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 12),
+              Text(
+                AppStrings.registerDriverTitle,
+                style: StyledText().appBarText(),
+              ),
+              SizedBox(height: 25),
+              _text("Email"),
+              inputTextFieldCustom(
+                  context: context, controller: _emailController),
+              if (_emailError != null) _errorText(_emailError!),
+              SizedBox(height: 15),
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: customArrowButton(
+                        text: "Send code",
+                        verticalPadding: 10,
+                        onPressed: () => _register(),
+                        noIcon: true,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       }
