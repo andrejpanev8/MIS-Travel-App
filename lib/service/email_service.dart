@@ -1,9 +1,9 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
-import '../../service/invitation_service.dart';
-import '../../utils/formatter.dart';
-import '../../utils/functions.dart';
+import 'invitation_service.dart';
+import '../utils/formatter.dart';
+import '../utils/functions.dart';
 
 class EmailService {
   final InvitationService _invitationService = InvitationService();

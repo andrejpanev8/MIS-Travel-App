@@ -142,3 +142,7 @@ class ClientUpcomingDeliveriesLoaded extends UserState {
 
   const ClientUpcomingDeliveriesLoaded(this.clientDeliveries);
 }
+
+class RideReserveSuccess extends UserState {}
+
+class RideReserveError extends UserState {}

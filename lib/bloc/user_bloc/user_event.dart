@@ -128,3 +128,11 @@ class GetClientUpcomingDeliveries extends UserEvent {
 
   const GetClientUpcomingDeliveries({this.forceRefresh = false});
 }
+
+class ReserveRide extends UserEvent {
+  final String startLocation;
+  final String endLocation;
+  final String tripId;
+
+  const ReserveRide(this.startLocation, this.endLocation, this.tripId);
+}

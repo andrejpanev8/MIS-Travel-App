@@ -159,8 +159,16 @@ class RidesWidget extends StatelessWidget {
                       : GetTripDetails(
                           driverId: trip.driverId, tripId: trip.id));
               userRole == UserRole.CLIENT
-                  ? Navigator.pushNamed(context, isRidesScreen ? "/reserveRide" : "/reserveDelivery", arguments: trip)
-                  : Navigator.pushNamed(context, isRidesScreen ? "/rideDetails" : "/deliveryDetails", arguments: trip);
+                  ? {
+                      Functions.emitUserEvent(
+                          context: context, event: GetClientUpcomingRides()),
+                      Navigator.pushNamed(context,
+                          isRidesScreen ? "/reserveRide" : "/reserveDelivery",
+                          arguments: trip)
+                    }
+                  : Navigator.pushNamed(context,
+                      isRidesScreen ? "/rideDetails" : "/deliveryDetails",
+                      arguments: trip);
             },
           );
         }),

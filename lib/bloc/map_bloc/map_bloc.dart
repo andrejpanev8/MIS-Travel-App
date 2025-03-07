@@ -82,15 +82,19 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           String mapStaticLink = "";
           List<LatLng> route = [];
 
+          // Crashes in scenario where api can't find address coordinates
+          // check if address result is valid before trying to access it
           LatLng fromLocation = await MapService()
               .getCoordinatesFromAddress(event.fromAddress!)
-              .then(
-                  (result) => LatLng(result!["latitude"], result["longitude"]));
+              .then((result) => result != null
+                  ? LatLng(result["latitude"], result["longitude"])
+                  : LatLng(41.99812940, 21.42543550));
 
           LatLng toLocation = await MapService()
               .getCoordinatesFromAddress(event.toAddress!)
-              .then(
-                  (result) => LatLng(result!["latitude"], result["longitude"]));
+              .then((result) => result != null
+                  ? LatLng(result["latitude"], result["longitude"])
+                  : LatLng(41.99812940, 21.42543550));
 
           route = await MapService().getRoute(fromLocation, toLocation);
 

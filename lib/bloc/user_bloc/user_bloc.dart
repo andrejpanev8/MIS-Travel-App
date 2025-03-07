@@ -1,13 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:travel_app/data/DTO/AddDeliveryDTO.dart';
 import 'package:travel_app/data/DTO/ReserveDeliveryDTO.dart';
 import 'package:travel_app/data/enums/user_role.dart';
+import 'package:travel_app/data/models/location.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/data/models/user.dart';
-import 'package:travel_app/data/services/email_service.dart';
+import 'package:travel_app/service/email_service.dart';
 import 'package:travel_app/service/auth_service.dart';
 import 'package:travel_app/service/invitation_service.dart';
 import 'package:travel_app/service/passenger_trip_service.dart';
@@ -21,6 +23,8 @@ import '../../data/DTO/TaskTripDTO.dart';
 import '../../data/models/invitation.dart';
 import '../../data/models/trip.dart';
 import '../../service/filter_service.dart';
+import '../../service/interface/HasFilterProperties.dart';
+import '../../service/map_service.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
@@ -246,8 +250,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               tripId: event.delivery.tripId,
               description: event.delivery.description);
           emit(DeliveryCreateSuccess());
-        }
-        catch (error) {
+        } catch (error) {
           emit(DeliveryCreateError());
         }
       }
@@ -338,6 +341,35 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         _cachedClientTrips = clientTrips;
         _cachedClientDeliveries = clientDeliveries;
         emit(ClientDataLoaded(clientTrips, clientDeliveries));
+      }
+
+      if (event is ReserveRide) {
+        emit(ProcessStarted());
+        try {
+          Location startLocation = await MapService()
+              .getCoordinatesFromAddress(event.startLocation)
+              .then((result) => result != null
+                  ? Location(
+                      latitude: result["latitude"],
+                      longitude: result["longitude"])
+                  : Location(latitude: 0, longitude: 0));
+
+          Location endLocation = await MapService()
+              .getCoordinatesFromAddress(event.endLocation)
+              .then((result) => result != null
+                  ? Location(
+                      latitude: result["latitude"],
+                      longitude: result["longitude"])
+                  : Location(latitude: 0, longitude: 0));
+
+          await PassengerTripService().createPassengerTrip(
+              startLocation: startLocation,
+              endLocation: endLocation,
+              tripId: event.tripId);
+          emit(RideReserveSuccess());
+        } catch (error) {
+          emit(RideReserveError());
+        }
       }
     });
   }

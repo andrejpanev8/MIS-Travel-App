@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
+import 'package:travel_app/data/DTO/PassengerTripDTO.dart';
+import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
@@ -24,6 +28,7 @@ class ReserveRideScreen extends StatefulWidget {
 class _ReserveRideScreenState extends State<ReserveRideScreen> {
   Trip? trip;
   UserModel? driver;
+  List<PassengerTripDTO>? passengerTripDTO;
 
   final TextEditingController fromAddressController = TextEditingController();
   final TextEditingController toAddressController = TextEditingController();
@@ -124,7 +129,13 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
                         text: AppStrings.confirmReservation,
                         fontSize: 16,
                         iconSize: 16,
-                        verticalPadding: 10)),
+                        verticalPadding: 10,
+                        onPressed: () {
+                          Functions.emitUserEvent(
+                              context: context,
+                              event: ReserveRide(fromAddressController.text,
+                                  toAddressController.text, trip!.id));
+                        })),
               ],
             )
           ]),
@@ -162,9 +173,32 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
         trip = state.trip;
         driver = state.driver;
       }
+      if (state is ClientUpcomingTripsLoaded) {
+        passengerTripDTO = state.clientTrips;
+        var authState = context.read<AuthBloc>().state;
+        UserModel? client = authState is UserIsLoggedIn ? authState.user : null;
+        PassengerTripDTO? passengerTripClientDTO;
+
+        if (client != null && passengerTripDTO != null) {
+          passengerTripClientDTO = passengerTripDTO!
+              .where((item) => item.passengerTrip!.user.id == client.id)
+              .firstOrNull;
+
+          if (passengerTripClientDTO != null) {
+            _setAddressFields(passengerTripClientDTO);
+          }
+        }
+      }
       return Padding(
           padding: EdgeInsets.symmetric(vertical: 16.0),
           child: rideGeneralInfo(trip, driver));
     });
+  }
+
+  void _setAddressFields(PassengerTripDTO passengerTripClientDTO) async {
+    fromAddressController.text =
+        await passengerTripClientDTO.passengerTrip!.startLocationAddress ?? '';
+    toAddressController.text =
+        await passengerTripClientDTO.passengerTrip!.endLocationAddress ?? '';
   }
 }

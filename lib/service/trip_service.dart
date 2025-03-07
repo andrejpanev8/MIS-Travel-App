@@ -153,7 +153,9 @@ class TripService {
     if (currentUser == null) {
       throw Exception("No user is logged in");
     }
-    if (currentUser.role == UserRole.ADMIN || currentUser.id == trip.driverId) {
+    if (currentUser.role == UserRole.ADMIN ||
+        currentUser.id == trip.driverId ||
+        currentUser.role == UserRole.CLIENT) {
       List<PassengerTrip?> passengerTrips = await Future.wait(
         trip.passengerTrips.map((passengerTripId) =>
             passengerTripService.findPassengerTripById(passengerTripId)),

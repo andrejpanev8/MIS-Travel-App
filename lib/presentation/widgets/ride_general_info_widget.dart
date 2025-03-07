@@ -27,9 +27,7 @@ Widget rideGeneralInfo(Trip? trip, UserModel? driver) {
             SizedBox(height: 6),
             _buildRow(
                 icon: Icons.badge_outlined,
-                text: driver != null
-                    ? "${driver.firstName} ${driver.lastName}"
-                    : ""),
+                text: "${driver.firstName} ${driver.lastName}"),
             SizedBox(height: 6),
             _buildRow(
                 icon: Icons.people_alt_outlined,

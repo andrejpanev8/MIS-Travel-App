@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:travel_app/data/models/location.dart';
 
-import '../../service/filter_service.dart';
+import '../../service/interface/HasFilterProperties.dart';
 import '../enums/trip_status.dart';
 
 class Trip implements HasFilterProperties {

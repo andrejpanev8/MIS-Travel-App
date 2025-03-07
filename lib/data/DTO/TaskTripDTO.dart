@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 
-import '../../service/filter_service.dart';
+import '../../service/interface/HasFilterProperties.dart';
 import '../models/task_trip.dart';
 import '../models/trip.dart';
 
