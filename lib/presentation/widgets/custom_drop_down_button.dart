@@ -35,19 +35,21 @@ class DropdownCustomButton<T> extends StatelessWidget {
             hintText,
             style: TextStyle(fontSize: 12, color: greyColor),
           ),
-          value: selectedValue,
+          value: items.contains(selectedValue) ? selectedValue : null,
           isExpanded: true,
           icon: suffixIcon ?? Icon(Icons.arrow_drop_down, color: greyColor),
-          items: items.map((T item) {
-            return DropdownMenuItem<T>(
-              value: item,
-              child: Text(
-                item.toString(),
-                style: TextStyle(color: blackColor),
-              ),
-            );
-          }).toList(),
-          onChanged: onChanged,
+          items: items.isNotEmpty
+              ? items.map((T item) {
+                  return DropdownMenuItem<T>(
+                    value: item,
+                    child: Text(
+                      item.toString(),
+                      style: TextStyle(color: blackColor),
+                    ),
+                  );
+                }).toList()
+              : null,
+          onChanged: items.isNotEmpty ? onChanged : null,
         ),
       ),
     );

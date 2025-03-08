@@ -146,3 +146,10 @@ class ClientUpcomingDeliveriesLoaded extends UserState {
 class RideReserveSuccess extends UserState {}
 
 class RideReserveError extends UserState {}
+
+class EditTripInfoLoaded extends UserState {
+  final Trip trip;
+  final UserModel driver;
+  final String startLocationAddress;
+  const EditTripInfoLoaded(this.trip, this.driver, this.startLocationAddress);
+}

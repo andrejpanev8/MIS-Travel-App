@@ -18,7 +18,7 @@ class PassengerWidget extends StatelessWidget {
       decoration: DecorationsCustom().silverBoxRoundedCorners(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_leftInfo(), _rightInfo(context)],
+        children: [_leftInfo(), SizedBox(width: 10), _rightInfo(context)],
       ),
     );
   }

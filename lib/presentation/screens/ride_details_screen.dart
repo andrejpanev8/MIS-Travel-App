@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_app/data/enums/user_role.dart';
 
 import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
@@ -7,6 +8,7 @@ import '../../data/models/passenger_trip.dart';
 import '../../data/models/task_trip.dart';
 import '../../data/models/trip.dart';
 import '../../data/models/user.dart';
+import '../../utils/functions.dart';
 import '../../utils/string_constants.dart';
 import '../../utils/text_styles.dart';
 import '../widgets/custom_app_bar.dart';
@@ -66,7 +68,24 @@ class RideDetailsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          rideGeneralInfo(trip!, driver),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              rideGeneralInfo(trip!, driver),
+              userRole == UserRole.ADMIN
+                  ? IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        Functions.emitUserEvent(
+                            context: context,
+                            event: EditTripEvent(trip!, driver!));
+                        Navigator.of(context).pushNamed('/addRide');
+                      },
+                    )
+                  : SizedBox.shrink(),
+            ],
+          ),
           const SizedBox(height: 16),
           _sectionTitle(AppStrings.passengers),
           _buildPassengerList(context),

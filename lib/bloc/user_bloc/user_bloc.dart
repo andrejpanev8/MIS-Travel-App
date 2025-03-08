@@ -381,6 +381,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           debugPrint(error.toString());
         }
       }
+
+      if (event is EditTripEvent) {
+        emit(ProcessStarted());
+        try {
+          String locationAddress = await MapService()
+              .getAddressFromCoordinates(event.trip.startLocation.latitude,
+                  event.trip.startLocation.longitude)
+              .then((result) => result ?? "");
+          emit(EditTripInfoLoaded(event.trip, event.driver, locationAddress));
+        } catch (error) {
+          debugPrint(error.toString());
+        }
+      }
     });
   }
 }

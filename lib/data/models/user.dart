@@ -52,6 +52,13 @@ class UserModel {
   }
 
   @override
+  bool operator ==(Object other) =>
+      identical(this, other) || (other is UserModel && other.id == id);
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
   String toString() {
     return "$firstName $lastName $phoneNumber";
   }

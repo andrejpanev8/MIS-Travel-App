@@ -142,3 +142,10 @@ class CallPhone extends UserEvent {
 
   const CallPhone(this.phoneNumber);
 }
+
+class EditTripEvent extends UserEvent {
+  final Trip trip;
+  final UserModel driver;
+
+  const EditTripEvent(this.trip, this.driver);
+}

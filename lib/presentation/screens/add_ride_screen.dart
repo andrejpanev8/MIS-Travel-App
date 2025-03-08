@@ -35,11 +35,11 @@ class _AddRideScreenState extends State<AddRideScreen> {
   DateTime? selectedStartDateTime;
   UserModel? selectedDriver;
   List<UserModel> allDrivers = [];
+  bool isEdit = false;
 
   @override
   void initState() {
     super.initState();
-
     startLocationFocusNode.addListener(() {
       if (!startLocationFocusNode.hasFocus) {
         if (startLocationController.text.isNotEmpty) {
@@ -83,27 +83,50 @@ class _AddRideScreenState extends State<AddRideScreen> {
         body: SafeArea(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildForm(),
-                SizedBox(height: 24.0),
-                Text(AppStrings.selectALocation,
-                    style: StyledText().descriptionText(
-                        fontSize: 18, fontWeight: StyledText().regular)),
-                MapStatic(uniqueKey: START_LOCATION_ADD_RIDE_SCREEN),
-                Row(
+            child: BlocBuilder<UserBloc, UserState>(
+              builder: (context, state) {
+                if (state is EditTripInfoLoaded) {
+                  departureCityController.text = state.trip.startCity;
+                  arrivalCityController.text = state.trip.endCity;
+                  startTimeController.text = state.trip.startTime.toString();
+                  startLocationController.text = state.startLocationAddress;
+                  maxCapacityController.text =
+                      state.trip.maxCapacity.toString();
+                  priceController.text = state.trip.deliveryPrice.toString();
+                  selectedDriver = state.driver;
+                  Functions.emitMapEvent(
+                    context: context,
+                    event: AddressEntryEvent(state.startLocationAddress,
+                        uniqueKey: START_LOCATION_ADD_RIDE_SCREEN),
+                  );
+                  isEdit = true;
+                }
+                if (state is AllDriversLoaded) {
+                  allDrivers = state.drivers;
+                }
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                        child: customArrowButton(
-                            text: "Save",
-                            verticalPadding: 10,
-                            onPressed: () {
-                              //TO:DO Handle Save Ride functionality
-                            })),
+                    _buildForm(),
+                    SizedBox(height: 24.0),
+                    Text(AppStrings.selectALocation,
+                        style: StyledText().descriptionText(
+                            fontSize: 18, fontWeight: StyledText().regular)),
+                    MapStatic(uniqueKey: START_LOCATION_ADD_RIDE_SCREEN),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: customArrowButton(
+                                text: "Save",
+                                verticalPadding: 10,
+                                onPressed: () {
+                                  //TO:DO Handle Save Ride functionality
+                                })),
+                      ],
+                    )
                   ],
-                )
-              ],
+                );
+              },
             ),
           ),
         ),
@@ -166,21 +189,16 @@ class _AddRideScreenState extends State<AddRideScreen> {
           //////////////////////////
           SizedBox(height: 16.0),
           _text("Driver"),
-          BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-            if (state is AllDriversLoaded) {
-              allDrivers = state.drivers;
-            }
-            return DropdownCustomButton(
-              items: allDrivers,
-              selectedValue: selectedDriver,
-              hintText: "Select a driver",
-              onChanged: (UserModel? newValue) {
-                setState(() {
-                  selectedDriver = newValue;
-                });
-              },
-            );
-          }),
+          DropdownCustomButton(
+            items: allDrivers,
+            selectedValue: selectedDriver,
+            hintText: "Select a driver",
+            onChanged: (UserModel? newValue) {
+              setState(() {
+                selectedDriver = newValue;
+              });
+            },
+          ),
         ],
       ),
     );
