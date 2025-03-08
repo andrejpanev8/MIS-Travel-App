@@ -3,8 +3,10 @@ import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
 
+import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/models/task_trip.dart';
 import '../../utils/decorations.dart';
+import '../../utils/functions.dart';
 
 class TaskTripDetailsWidget extends StatelessWidget {
   final TaskTrip taskTrip;
@@ -80,6 +82,10 @@ class TaskTripDetailsWidget extends StatelessWidget {
                       backgroundColor: silverColorLight,
                       textColor: blackColor,
                       text: taskTrip.user.phoneNumber,
+                      onPressed: () => Functions.emitUserEvent(
+                        context: context,
+                        event: CallPhone(taskTrip.user.phoneNumber),
+                      ),
                     ),
                   ),
                 ),
@@ -89,6 +95,10 @@ class TaskTripDetailsWidget extends StatelessWidget {
                     child: customArrowButton(
                       customIcon: Icons.local_phone_outlined,
                       text: taskTrip.user.phoneNumber,
+                      onPressed: () => Functions.emitUserEvent(
+                        context: context,
+                        event: CallPhone(taskTrip.user.phoneNumber),
+                      ),
                     ),
                   ),
                 ),

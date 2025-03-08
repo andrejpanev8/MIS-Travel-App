@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
+import 'package:travel_app/presentation/widgets/marquee_widget.dart';
+import 'package:travel_app/utils/functions.dart';
 
+import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/models/passenger_trip.dart';
 import '../../utils/decorations.dart';
 
@@ -15,7 +18,7 @@ class PassengerWidget extends StatelessWidget {
       decoration: DecorationsCustom().silverBoxRoundedCorners(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_leftInfo(), _rightInfo()],
+        children: [_leftInfo(), _rightInfo(context)],
       ),
     );
   }
@@ -40,11 +43,7 @@ class PassengerWidget extends StatelessWidget {
             children: [
               const Icon(Icons.location_on_outlined),
               const SizedBox(width: 8),
-              //TO:DO Change with resolved location
-              Text(
-                "${passenger.startLocation}",
-                style: const TextStyle(fontSize: 14),
-              ),
+              Expanded(child: _futureBuilder(passenger.startLocationAddress)),
             ],
           ),
           const SizedBox(height: 8),
@@ -52,11 +51,7 @@ class PassengerWidget extends StatelessWidget {
             children: [
               const Icon(Icons.location_on_outlined),
               const SizedBox(width: 8),
-              //TO:DO Change with resolved location
-              Text(
-                "${passenger.endLocation}",
-                style: const TextStyle(fontSize: 14),
-              ),
+              Expanded(child: _futureBuilder(passenger.endLocationAddress)),
             ],
           ),
         ],
@@ -64,10 +59,29 @@ class PassengerWidget extends StatelessWidget {
     );
   }
 
-  Widget _rightInfo() {
+  Widget _rightInfo(BuildContext context) {
     return customArrowButton(
       text: passenger.user.phoneNumber,
       customIcon: Icons.local_phone_outlined,
+      onPressed: () => Functions.emitUserEvent(
+        context: context,
+        event: CallPhone(passenger.user.phoneNumber),
+      ),
     );
+  }
+
+  // Method needed to asynchronously fetch the address from the coordinates
+  Widget _futureBuilder(Future<String?> address) {
+    return FutureBuilder<String?>(
+        future: address,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Text("Fetching address...");
+          } else if (snapshot.hasError || snapshot.data == null) {
+            return const Text("Address not available");
+          }
+          return marqueeCustom(
+              text: snapshot.data!, textStyle: TextStyle(fontSize: 14));
+        });
   }
 }
