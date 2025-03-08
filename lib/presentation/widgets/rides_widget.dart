@@ -5,6 +5,7 @@ import 'package:marquee/marquee.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
+import 'package:travel_app/presentation/widgets/marquee_widget.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
@@ -52,33 +53,7 @@ class RidesWidget extends StatelessWidget {
                   semanticLabel: AppStrings.locationIconTooltip),
               const SizedBox(width: 4),
               Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final isOverflowing = Functions.isTextOverflowing(
-                      text,
-                      textStyle,
-                      constraints.maxWidth,
-                    );
-                    return SizedBox(
-                      height: 24,
-                      child: isOverflowing
-                          ? Marquee(
-                              text: text,
-                              style: textStyle,
-                              pauseAfterRound: Durations.medium1,
-                              startAfter: Durations.medium1,
-                              blankSpace: 20,
-                              velocity: 30,
-                            )
-                          : Text(
-                              text,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: textStyle,
-                            ),
-                    );
-                  },
-                ),
+                child: marqueeCustom(text: text, textStyle: textStyle),
               ),
             ],
           ),

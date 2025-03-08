@@ -136,3 +136,9 @@ class ReserveRide extends UserEvent {
 
   const ReserveRide(this.startLocation, this.endLocation, this.tripId);
 }
+
+class CallPhone extends UserEvent {
+  final String phoneNumber;
+
+  const CallPhone(this.phoneNumber);
+}

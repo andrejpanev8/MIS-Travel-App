@@ -28,6 +28,8 @@ dependencies:
   flutter_email_sender: ^7.0.0
   flutter_dotenv: ^5.1.0
   mailer: ^6.0.1
+  url_launcher_android: ^6.3.15
+  url_launcher_platform_interface: ^2.3.2
 
 
 

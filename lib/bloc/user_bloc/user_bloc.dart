@@ -13,6 +13,7 @@ import 'package:travel_app/service/email_service.dart';
 import 'package:travel_app/service/auth_service.dart';
 import 'package:travel_app/service/invitation_service.dart';
 import 'package:travel_app/service/passenger_trip_service.dart';
+import 'package:travel_app/service/phone_service.dart';
 import 'package:travel_app/service/task_trip_service.dart';
 import 'package:travel_app/service/trip_service.dart';
 import 'package:travel_app/service/user_service.dart';
@@ -369,6 +370,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(RideReserveSuccess());
         } catch (error) {
           emit(RideReserveError());
+        }
+      }
+
+      if (event is CallPhone) {
+        emit(ProcessStarted());
+        try {
+          await PhoneService().makePhoneCall(event.phoneNumber);
+        } catch (error) {
+          debugPrint(error.toString());
         }
       }
     });

@@ -48,9 +48,12 @@ class RideDetailsScreen extends StatelessWidget {
                     driver = state.driver!;
                     passengerTrips = state.passengerTrips;
                     taskTrips = state.taskTrips;
-                    return _buildContent(context);
                   }
-                  return Center(child: CircularProgressIndicator());
+                  return driver != null &&
+                          passengerTrips != null &&
+                          taskTrips != null
+                      ? _buildContent(context)
+                      : Center(child: CircularProgressIndicator());
                 },
               );
             })));

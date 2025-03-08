@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
+import 'package:travel_app/presentation/widgets/marquee_widget.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
@@ -43,33 +44,7 @@ class TaskTripWidget extends StatelessWidget {
               const Icon(Icons.location_on_outlined),
               const SizedBox(width: 4),
               Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final isOverflowing = Functions.isTextOverflowing(
-                      text,
-                      textStyle,
-                      constraints.maxWidth,
-                    );
-                    return SizedBox(
-                      height: 24,
-                      child: isOverflowing
-                          ? Marquee(
-                              text: text,
-                              style: textStyle,
-                              pauseAfterRound: Durations.medium1,
-                              startAfter: Durations.medium1,
-                              blankSpace: 20,
-                              velocity: 30,
-                            )
-                          : Text(
-                              text,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: textStyle,
-                            ),
-                    );
-                  },
-                ),
+                child: marqueeCustom(text: text, textStyle: textStyle),
               ),
             ],
           ),
