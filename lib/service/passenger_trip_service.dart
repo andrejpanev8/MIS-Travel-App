@@ -44,11 +44,16 @@ class PassengerTripService {
     if (!trip.isSeatAvailable()) {
       throw Exception("Capacity is full. No more seats available.");
     }
-    List<UserModel?> passengers =
-        await tripService.getPassengerUsersByTrip(tripId);
-    if (passengers.map((passenger) => passenger?.id).contains(user.id)) {
+
+    List<PassengerTripDTO> userTrips = await getUpcomingTripsForUser();
+    bool alreadyHasReservation = userTrips
+        .map((userTrip) => userTrip.trip.id)
+        .contains((t) => t == trip.id);
+
+    if (alreadyHasReservation) {
       throw Exception("You have already reserved a seat for this trip.");
     }
+
     String tripIdGenerated = _firestore.collection('passenger_trips').doc().id;
 
     PassengerTrip newTrip = PassengerTrip(
@@ -86,10 +91,10 @@ class PassengerTripService {
 
       for (var doc in passengerTripSnapshot.docs) {
         PassengerTrip taskTrip =
-        PassengerTrip.fromJson(doc.data() as Map<String, dynamic>);
+            PassengerTrip.fromJson(doc.data() as Map<String, dynamic>);
 
         DocumentSnapshot tripDoc =
-        await _firestore.collection('trips').doc(taskTrip.tripId).get();
+            await _firestore.collection('trips').doc(taskTrip.tripId).get();
 
         if (tripDoc.exists) {
           Trip trip = Trip.fromJson(tripDoc.data() as Map<String, dynamic>);
