@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/marquee_widget.dart';
 import 'package:travel_app/utils/color_constants.dart';
@@ -8,7 +7,6 @@ import 'package:travel_app/utils/text_styles.dart';
 
 import '../../data/DTO/TaskTripDTO.dart';
 import '../../utils/decorations.dart';
-import '../../utils/functions.dart';
 
 class TaskTripWidget extends StatelessWidget {
   BuildContext context;
@@ -56,7 +54,9 @@ class TaskTripWidget extends StatelessWidget {
               const SizedBox(width: 5),
               Expanded(
                 child: Text(
-                  task.taskTrip!.description,
+                  task.taskTrip!.description.isNotEmpty
+                      ? task.taskTrip!.description
+                      : AppStrings.noDescription,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   style: StyledText().descriptionText(

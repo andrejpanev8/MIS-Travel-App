@@ -24,6 +24,8 @@ class AppStrings {
   static const String numberOfPassengers = "No. Passengers";
   static const String numberOfPackages = "No. Packages";
   static const String errorLoadingImage = "Error loading image";
+  static const String departureCity = "Departure City";
+  static const String arrivalCity = "Arrival City";
   static const String rides = "Rides";
   static const String deliveries = "Deliveries";
   static const String fromWhere = "From where?";
@@ -54,6 +56,7 @@ class AppStrings {
   static const String haveRegistrationCode = "Have a registration code?";
   static const String locationIconTooltip = "Location";
   static const String timeIconTooltip = "Time";
+  static const String startTime = "Start Time";
   static const String phoneIconTooltip = "Phone";
   static const String emailIconTooltip = "Email";
   static const String infoTooltip = "Info";
@@ -63,7 +66,12 @@ class AppStrings {
   static const String confirmReservation = "Confirm Reservation";
   static const String sendPackage = "SendPackage";
   static const String rideDetails = "Ride Details";
+  static const String price = "Price";
   static const String selectALocation = "Select a location";
+  static const String pickUpLocation = "Pick up Location";
+  static const String pickUpPhoneNumber = "Pick up Phone Number";
+  static const String dropOffLocation = "Drop off Location";
+  static const String dropOffPhoneNumber = "Drop off Phone Number";
   static const String description = "Description";
   static String noDescription = "No description";
   static const String noItemsAvailable = "No items available";

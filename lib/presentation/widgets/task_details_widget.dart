@@ -15,7 +15,7 @@ class TaskTripDetailsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.only(top: 8),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: DecorationsCustom().silverBoxRoundedCorners(),
@@ -81,10 +81,10 @@ class TaskTripDetailsWidget extends StatelessWidget {
                       border: const BorderSide(color: blueDeepColor),
                       backgroundColor: silverColorLight,
                       textColor: blackColor,
-                      text: taskTrip.user.phoneNumber,
+                      text: taskTrip.pickUpPhoneNumber,
                       onPressed: () => Functions.emitUserEvent(
                         context: context,
-                        event: CallPhone(taskTrip.user.phoneNumber),
+                        event: CallPhone(taskTrip.pickUpPhoneNumber),
                       ),
                     ),
                   ),
@@ -94,10 +94,10 @@ class TaskTripDetailsWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: customArrowButton(
                       customIcon: Icons.local_phone_outlined,
-                      text: taskTrip.user.phoneNumber,
+                      text: taskTrip.dropOffPhoneNumber,
                       onPressed: () => Functions.emitUserEvent(
                         context: context,
-                        event: CallPhone(taskTrip.user.phoneNumber),
+                        event: CallPhone(taskTrip.dropOffPhoneNumber),
                       ),
                     ),
                   ),

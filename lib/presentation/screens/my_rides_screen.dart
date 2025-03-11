@@ -185,30 +185,36 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
         children: [
           const SizedBox(height: 30),
           infoText(AppStrings.upcomingRides),
-          widgetBuilder(
-              context: context,
-              items: clientTrips,
-              itemBuilder: (context, ride) =>
-                  RidesWidget(context: context, ride: ride.trip),
-              onRefresh: () => Functions.emitUserEvent(
-                    context: context,
-                    event: GetClientUpcomingRides(forceRefresh: true),
-                  ),
-              emptyWidget: emptyListIndicator(AppStrings.noUpcomingRides),
-              scrollPhysics: NeverScrollableScrollPhysics()),
+          Padding(
+              padding: EdgeInsets.only(left: 10, right: 10),
+              child: widgetBuilder(
+                  context: context,
+                  items: clientTrips,
+                  itemBuilder: (context, ride) =>
+                      RidesWidget(context: context, ride: ride.trip),
+                  onRefresh: () => Functions.emitUserEvent(
+                        context: context,
+                        event: GetClientUpcomingRides(forceRefresh: true),
+                      ),
+                  emptyWidget: emptyListIndicator(AppStrings.noUpcomingRides),
+                  scrollPhysics: NeverScrollableScrollPhysics())),
           SizedBox(height: 25),
           infoText(AppStrings.upcomingDeliveries),
-          widgetBuilder(
-              context: context,
-              items: clientDeliveries,
-              itemBuilder: (context, task) =>
-                  TaskTripWidget(context: context, task: task),
-              onRefresh: () => Functions.emitUserEvent(
-                    context: context,
-                    event: GetClientUpcomingDeliveries(forceRefresh: true),
-                  ),
-              emptyWidget: emptyListIndicator(AppStrings.noUpcomingDeliveries),
-              scrollPhysics: NeverScrollableScrollPhysics()),
+          Padding(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            child: widgetBuilder(
+                context: context,
+                items: clientDeliveries,
+                itemBuilder: (context, task) =>
+                    TaskTripWidget(context: context, task: task),
+                onRefresh: () => Functions.emitUserEvent(
+                      context: context,
+                      event: GetClientUpcomingDeliveries(forceRefresh: true),
+                    ),
+                emptyWidget:
+                    emptyListIndicator(AppStrings.noUpcomingDeliveries),
+                scrollPhysics: NeverScrollableScrollPhysics()),
+          )
         ],
       ),
     );

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/data/DTO/PassengerTripDTO.dart';
-import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
@@ -89,6 +87,7 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
 
   @override
   Widget build(BuildContext context) {
+    trip = ModalRoute.of(context)!.settings.arguments as Trip;
     return SafeArea(
         child: Scaffold(
       appBar: customAppBar(context: context, arrowBack: true),
