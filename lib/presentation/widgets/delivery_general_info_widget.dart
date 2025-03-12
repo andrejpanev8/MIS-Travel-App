@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/presentation/widgets/map_static.dart';
 import 'package:travel_app/utils/map_unique_keys.dart';
 
 import '../../data/models/trip.dart';
-import '../../data/models/user.dart';
 import '../../utils/color_constants.dart';
-import '../../utils/image_constants.dart';
 import '../../utils/string_constants.dart';
 import '../../utils/text_styles.dart';
 
 Widget deliveryGeneralInfo(Trip? trip, TaskTrip? taskTrip) {
   return (trip != null && taskTrip != null)
-      ? SafeArea(
-          child: Column(
+      ? Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -42,8 +38,11 @@ Widget deliveryGeneralInfo(Trip? trip, TaskTrip? taskTrip) {
                 text:
                     "${AppStrings.pickUpPhoneNumber}: ${taskTrip.pickUpPhoneNumber}",
                 icon: Icons.phone_callback),
-            MapStatic(uniqueKey: START_LOCATION_DELIVERY_DETAILS_SCREEN,),
             SizedBox(height: 6),
+            MapStatic(
+              uniqueKey: START_LOCATION_DELIVERY_DETAILS_SCREEN,
+            ),
+            SizedBox(height: 15),
             _buildRow(
                 text: "${AppStrings.dropOffLocation}: ${taskTrip.endLocation}",
                 icon: Icons.location_on),
@@ -52,9 +51,10 @@ Widget deliveryGeneralInfo(Trip? trip, TaskTrip? taskTrip) {
                 text:
                     "${AppStrings.dropOffPhoneNumber}: ${taskTrip.dropOffPhoneNumber}",
                 icon: Icons.phone_forwarded),
+            SizedBox(height: 6),
             MapStatic(uniqueKey: END_LOCATION_DELIVERY_DETAILS_SCREEN),
           ],
-        ))
+        )
       : SizedBox.shrink();
 }
 
