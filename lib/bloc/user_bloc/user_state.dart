@@ -145,11 +145,19 @@ class ClientUpcomingDeliveriesLoaded extends UserState {
 
 class RideReserveSuccess extends UserState {}
 
-class RideReserveError extends UserState {}
+class RideReserveError extends UserState {
+  String title;
+  String message;
+  RideReserveError(this.title, this.message);
+}
 
 class TripSaveSuccess extends UserState {}
 
-class TripSaveError extends UserState {}
+class TripSaveError extends UserState {
+  String title;
+  String message;
+  TripSaveError(this.title, this.message);
+}
 
 class EditTripInfoLoaded extends UserState {
   final Trip trip;

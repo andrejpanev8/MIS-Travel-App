@@ -5,12 +5,12 @@ import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/data/DTO/PassengerTripDTO.dart';
-import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
 import 'package:travel_app/presentation/widgets/map_static.dart';
 import 'package:travel_app/presentation/widgets/ride_general_info_widget.dart';
+import 'package:travel_app/utils/success_handler.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
 import '../../data/models/trip.dart';
@@ -113,32 +113,74 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
                 toAddressController.text = state.toAddress
               }
           },
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            _generalInfo(),
-            _buildForm(),
-            SizedBox(height: 32.0),
-            Text(AppStrings.selectALocation,
-                style: StyledText().descriptionText()),
-            MapStatic(multipleSelection: true),
-            SizedBox(height: 32.0),
-            Row(
-              children: [
-                Expanded(
-                    child: customArrowButton(
-                        text: AppStrings.confirmReservation,
-                        fontSize: 16,
-                        iconSize: 16,
-                        verticalPadding: 10,
-                        onPressed: () {
-                          Functions.emitUserEvent(
-                              context: context,
-                              event: ReserveRide(fromAddressController.text,
-                                  toAddressController.text, trip!.id));
-                        })),
-              ],
-            )
-          ]),
+          child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+            if (state is TripInfoLoaded) {
+              trip = state.trip;
+              driver = state.driver;
+            }
+            if (state is ClientUpcomingTripsLoaded) {
+              passengerTripDTO = state.clientTrips;
+              var authState = context.read<AuthBloc>().state;
+              UserModel? client =
+                  authState is UserIsLoggedIn ? authState.user : null;
+              PassengerTripDTO? passengerTripClientDTO;
+
+              if (client != null && passengerTripDTO != null) {
+                passengerTripClientDTO = passengerTripDTO!
+                    .where((item) => item.passengerTrip!.user.id == client.id)
+                    .firstOrNull;
+
+                if (passengerTripClientDTO != null) {
+                  _setAddressFields(passengerTripClientDTO);
+                }
+              }
+            }
+            if (state is RideReserveSuccess) {
+              showSuccessDialog(
+                  context,
+                  AppStrings.rideReservedSuccessfullyTitle,
+                  AppStrings.rideReservedSuccessfullyMessage,
+                  () => Navigator.pushNamedAndRemoveUntil(
+                      context, "/home", (route) => false));
+            }
+            if (state is RideReserveError) {
+              showSuccessDialog(
+                  context,
+                  AppStrings.rideReservedFailedTitle,
+                  AppStrings.rideReservedFailedMessage,
+                  () => Navigator.pushNamedAndRemoveUntil(
+                      context, "/home", (route) => false));
+            }
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _generalInfo(),
+                  _buildForm(),
+                  SizedBox(height: 32.0),
+                  Text(AppStrings.selectALocation,
+                      style: StyledText().descriptionText()),
+                  MapStatic(multipleSelection: true),
+                  SizedBox(height: 32.0),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: customArrowButton(
+                              text: AppStrings.confirmReservation,
+                              fontSize: 16,
+                              iconSize: 16,
+                              verticalPadding: 10,
+                              onPressed: () {
+                                Functions.emitUserEvent(
+                                    context: context,
+                                    event: ReserveRide(
+                                        fromAddressController.text,
+                                        toAddressController.text,
+                                        trip!.id));
+                              })),
+                    ],
+                  )
+                ]);
+          }),
         ),
       ),
     ));
@@ -168,31 +210,9 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
   }
 
   Widget _generalInfo() {
-    return BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-      if (state is TripInfoLoaded) {
-        trip = state.trip;
-        driver = state.driver;
-      }
-      if (state is ClientUpcomingTripsLoaded) {
-        passengerTripDTO = state.clientTrips;
-        var authState = context.read<AuthBloc>().state;
-        UserModel? client = authState is UserIsLoggedIn ? authState.user : null;
-        PassengerTripDTO? passengerTripClientDTO;
-
-        if (client != null && passengerTripDTO != null) {
-          passengerTripClientDTO = passengerTripDTO!
-              .where((item) => item.passengerTrip!.user.id == client.id)
-              .firstOrNull;
-
-          if (passengerTripClientDTO != null) {
-            _setAddressFields(passengerTripClientDTO);
-          }
-        }
-      }
-      return Padding(
-          padding: EdgeInsets.symmetric(vertical: 16.0),
-          child: rideGeneralInfo(trip, driver));
-    });
+    return Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        child: rideGeneralInfo(trip, driver));
   }
 
   void _setAddressFields(PassengerTripDTO passengerTripClientDTO) async {

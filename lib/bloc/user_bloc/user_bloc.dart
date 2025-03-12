@@ -26,6 +26,7 @@ import '../../data/models/trip.dart';
 import '../../service/filter_service.dart';
 import '../../service/interface/HasFilterProperties.dart';
 import '../../service/map_service.dart';
+import '../../utils/string_constants.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
@@ -369,7 +370,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               tripId: event.tripId);
           emit(RideReserveSuccess());
         } catch (error) {
-          emit(RideReserveError());
+          emit(RideReserveError(
+              AppStrings.rideReservedFailedTitle, error.toString()));
         }
       }
 
@@ -401,7 +403,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           await TripService().createTrip(trip: event.trip);
           emit(TripSaveSuccess());
         } catch (error) {
-          emit(TripSaveError());
+          emit(
+              TripSaveError(AppStrings.rideSavedFailedTitle, error.toString()));
         }
       }
     });

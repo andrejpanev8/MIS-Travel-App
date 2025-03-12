@@ -87,6 +87,12 @@ class AppStrings {
       "You have saved the ride successfully";
   static const String rideSavedFailedTitle = "Ride save failed";
   static const String rideSavedFailedMessage = "Failed to save the ride";
+  static const String rideReservedSuccessfullyTitle =
+      "Ride reserved successfully";
+  static const String rideReservedSuccessfullyMessage =
+      "You have reserved the ride successfully";
+  static const String rideReservedFailedTitle = "Ride reserve failed";
+  static const String rideReservedFailedMessage = "Failed to reserve the ride";
 }
 
 const String FromWhereString = "fromWhere";
