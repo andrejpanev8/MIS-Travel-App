@@ -43,6 +43,12 @@ class GetTripDetails extends UserEvent {
   const GetTripDetails({required this.driverId, required this.tripId});
 }
 
+class GetDeliveryDetails extends UserEvent {
+  final String tripId;
+
+  const GetDeliveryDetails({required this.tripId});
+}
+
 class UpdateUserInfo extends UserEvent {
   final String userId;
   final String firstName;

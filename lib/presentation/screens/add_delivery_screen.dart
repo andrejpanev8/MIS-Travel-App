@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
+import 'package:travel_app/data/DTO/ReserveAdhocDeliveryDTO.dart';
 import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/location.dart';
 import 'package:travel_app/data/models/trip.dart';
 import 'package:travel_app/data/models/user.dart';
-import 'package:travel_app/service/task_trip_service.dart';
 import 'package:travel_app/service/trip_service.dart';
 import 'package:travel_app/service/user_service.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
@@ -157,84 +158,104 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
       return;
     }
 
-    try {
-      await TaskTripService().createTaskTripWithAdhocUser(
-          pickUpPhoneNumber: pickUpPhoneController.text,
-          startLocation: startLocation!,
-          dropOffPhoneNumber: dropOffPhoneController.text,
-          endLocation: endLocation!,
-          tripId: selectedTrip!.id,
-          clientId: selectedClient?.id,
-          firstName: firstNameController.text.isNotEmpty
-              ? firstNameController.text
-              : "Unknown",
-          lastName: lastNameController.text.isNotEmpty
-              ? lastNameController.text
-              : "Unknown",
-          description: descriptionController.text);
-      showSuccessDialog(
-        context,
-        "Success",
-        "Delivery successfully created!",
-        () {
-          Navigator.of(context).pop();
-        }
-      );
-    } catch (error) {
-      showErrorDialog(
-          context, "Error", "Error occurred while creating a delivery");
-    }
+    Functions.emitUserEvent(
+        context: context,
+        event: CreateAdhocUserDelivery(ReserveAdhocDeliveryDTO(
+            pickUpPhoneNumber: pickUpPhoneController.text,
+            startLocation: startLocation!,
+            dropOffPhoneNumber: dropOffPhoneController.text,
+            endLocation: endLocation!,
+            tripId: selectedTrip!.id,
+            clientId: selectedClient?.id,
+            firstName: firstNameController.text.isNotEmpty
+                ? firstNameController.text
+                : "Unknown",
+            lastName: lastNameController.text.isNotEmpty
+                ? lastNameController.text
+                : "Unknown",
+            description: descriptionController.text)));
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<MapBloc, MapState>(
-      listener: (context, state) => {
-        if (state is MapSingleSelectionLoaded)
-          {
-            if (state.uniqueKey == START_LOCATION_ADD_DELIVERY_SCREEN)
-              {
-                setState(() {
-                  startLocationController.text = state.address;
-                  startLocation = Location.fromLatLng(state.location);
-                })
-              }
-            else if (state.uniqueKey == END_LOCATION_ADD_DELIVERY_SCREEN)
-              {
-                setState(() {
-                  endLocationController.text = state.address;
-                  endLocation = Location.fromLatLng(state.location);
-                })
-              }
+        listener: (context, state) => {
+              if (state is MapSingleSelectionLoaded)
+                {
+                  if (state.uniqueKey == START_LOCATION_ADD_DELIVERY_SCREEN)
+                    {
+                      setState(() {
+                        startLocationController.text = state.address;
+                        startLocation = Location.fromLatLng(state.location);
+                      })
+                    }
+                  else if (state.uniqueKey == END_LOCATION_ADD_DELIVERY_SCREEN)
+                    {
+                      setState(() {
+                        endLocationController.text = state.address;
+                        endLocation = Location.fromLatLng(state.location);
+                      })
+                    }
+                  else if (state is DeliveryCreateSuccess)
+                    {
+                      showSuccessDialog(
+                          context, "Success", "Delivery successfully created!",
+                          () {
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, "/home", (route) => false);
+                      })
+                    }
+                  else if (state is DeliveryCreateError)
+                    {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        showErrorDialog(context, "Error",
+                            "Error occurred while creating a delivery");
+                      })
+                    }
+                }
+            },
+        child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+          if (state is DeliveryCreateSuccess) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              showSuccessDialog(
+                  context, "Success", "Delivery successfully created!", () {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "/home", (route) => false);
+              });
+            });
+          } else if (state is DeliveryCreateError) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              showErrorDialog(
+                  context, "Error", "Error occurred while creating a delivery");
+            });
           }
-      },
-      child: Scaffold(
-        appBar: customAppBar(context: context, arrowBack: true),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildForm(),
-                SizedBox(height: 40.0),
-                Row(
+          return Scaffold(
+            appBar: customAppBar(context: context, arrowBack: true),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                        child: customArrowButton(
-                            text: "Save",
-                            fontSize: 16,
-                            iconSize: 16,
-                            verticalPadding: 10,
-                            onPressed: _saveDelivery)),
+                    _buildForm(),
+                    SizedBox(height: 40.0),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: customArrowButton(
+                                text: "Save",
+                                fontSize: 16,
+                                iconSize: 16,
+                                verticalPadding: 10,
+                                onPressed: _saveDelivery)),
+                      ],
+                    )
                   ],
-                )
-              ],
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
+        }));
   }
 
   Widget _buildForm() {
@@ -359,8 +380,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
               context: context,
               controller: descriptionController,
               maxLines: 4,
-              hintText: "Enter description..."
-          ),
+              hintText: "Enter description..."),
         ],
       ),
     );
