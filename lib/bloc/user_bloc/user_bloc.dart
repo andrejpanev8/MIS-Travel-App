@@ -394,6 +394,16 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           debugPrint(error.toString());
         }
       }
+
+      if (event is SaveTripEvent) {
+        emit(ProcessStarted());
+        try {
+          await TripService().createTrip(trip: event.trip);
+          emit(TripSaveSuccess());
+        } catch (error) {
+          emit(TripSaveError());
+        }
+      }
     });
   }
 }

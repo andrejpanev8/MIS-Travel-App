@@ -13,8 +13,10 @@ class AppStrings {
   static const String upcomingDeliveries = "Upcoming Deliveries";
   static const String loginRequiredMessage =
       "You have to login to view your data";
-  static const String loginRequiredMessage1 = "You have to login to reserve a ride";
-  static const String loginRequiredMessage2 = "You have to login to reserve a delivery";
+  static const String loginRequiredMessage1 =
+      "You have to login to reserve a ride";
+  static const String loginRequiredMessage2 =
+      "You have to login to reserve a delivery";
   static const String noUpcomingRides = "No upcoming rides available";
   static const String noUpcomingDeliveries = "No upcoming deliveries available";
   static const String passengers = "Passengers";
@@ -80,7 +82,11 @@ class AppStrings {
       "You have sent the invitation successfully";
   static const String emailSentFailedTitle = "Email sent failed";
   static const String emailSentFailedMessage = "Failed to send invitations";
-
+  static const String rideSavedSuccessfullyTitle = "Ride saved successfully";
+  static const String rideSavedSuccessfullyMessage =
+      "You have saved the ride successfully";
+  static const String rideSavedFailedTitle = "Ride save failed";
+  static const String rideSavedFailedMessage = "Failed to save the ride";
 }
 
 const String FromWhereString = "fromWhere";

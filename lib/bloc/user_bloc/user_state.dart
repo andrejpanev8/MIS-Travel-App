@@ -147,6 +147,10 @@ class RideReserveSuccess extends UserState {}
 
 class RideReserveError extends UserState {}
 
+class TripSaveSuccess extends UserState {}
+
+class TripSaveError extends UserState {}
+
 class EditTripInfoLoaded extends UserState {
   final Trip trip;
   final UserModel driver;

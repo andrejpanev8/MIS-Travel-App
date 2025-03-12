@@ -9,7 +9,6 @@ import 'package:travel_app/service/task_trip_service.dart';
 import 'package:travel_app/service/user_service.dart';
 
 import '../data/enums/trip_status.dart';
-import '../data/models/location.dart';
 import '../data/models/trip.dart';
 
 class TripService {
@@ -27,15 +26,7 @@ class TripService {
     taskTripService = service;
   }
 
-  Future<String?> createTrip(
-      {required String startCity,
-      required String endCity,
-      required DateTime startTime,
-      required Location startLocation,
-      required int ridePrice,
-      required int deliveryPrice,
-      required int maxCapacity,
-      required String driverId}) async {
+  Future<String?> createTrip({required Trip trip}) async {
     UserModel? currentUser = await authService.getCurrentUser();
     if (currentUser == null) {
       throw Exception("No user is logged in");
@@ -46,21 +37,11 @@ class TripService {
 
     DocumentReference tripRef = _firestore.collection('trips').doc();
 
-    Trip newTrip = Trip(
-      id: tripRef.id,
-      startCity: startCity,
-      endCity: endCity,
-      startTime: startTime,
-      startLocation: startLocation,
-      ridePrice: ridePrice,
-      deliveryPrice: deliveryPrice,
-      maxCapacity: maxCapacity,
-      driverId: driverId,
-      passengerTrips: [],
-      taskTrips: [],
-    );
+    trip.id = tripRef.id;
+    trip.passengerTrips = [];
+    trip.taskTrips = [];
 
-    await tripRef.set(newTrip.toJson());
+    await tripRef.set(trip.toJson());
 
     return tripRef.id;
   }

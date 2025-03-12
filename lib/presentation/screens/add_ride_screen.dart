@@ -5,8 +5,11 @@ import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/custom_drop_down_button.dart';
+import 'package:travel_app/utils/success_handler.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
+import '../../data/models/location.dart';
+import '../../data/models/trip.dart';
 import '../../data/models/user.dart';
 import '../../utils/functions.dart';
 import '../../utils/map_unique_keys.dart';
@@ -32,6 +35,7 @@ class _AddRideScreenState extends State<AddRideScreen> {
   final TextEditingController driverController = TextEditingController();
 
   final FocusNode startLocationFocusNode = FocusNode();
+  Location? startLocation;
   DateTime? selectedStartDateTime;
   UserModel? selectedDriver;
   List<UserModel> allDrivers = [];
@@ -75,6 +79,9 @@ class _AddRideScreenState extends State<AddRideScreen> {
           {
             setState(() {
               startLocationController.text = state.address;
+              startLocation = Location(
+                  latitude: state.location.latitude,
+                  longitude: state.location.longitude);
             })
           }
       },
@@ -104,6 +111,15 @@ class _AddRideScreenState extends State<AddRideScreen> {
                 if (state is AllDriversLoaded) {
                   allDrivers = state.drivers;
                 }
+                if (state is TripSaveSuccess) {
+                  showSuccessDialog(
+                      context,
+                      AppStrings.rideSavedSuccessfullyTitle,
+                      AppStrings.rideSavedSuccessfullyMessage,
+                      () => Navigator.pushNamedAndRemoveUntil(
+                          context, "/home", (route) => false));
+                }
+                if (state is TripSaveError) {}
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -120,7 +136,9 @@ class _AddRideScreenState extends State<AddRideScreen> {
                                 text: "Save",
                                 verticalPadding: 10,
                                 onPressed: () {
-                                  //TO:DO Handle Save Ride functionality
+                                  Functions.emitUserEvent(
+                                      context: context,
+                                      event: SaveTripEvent(createTrip()));
                                 })),
                       ],
                     )
@@ -132,6 +150,21 @@ class _AddRideScreenState extends State<AddRideScreen> {
         ),
       ),
     );
+  }
+
+  Trip createTrip() {
+    Trip newTrip = Trip(
+      startCity: departureCityController.text,
+      endCity: arrivalCityController.text,
+      startTime: selectedStartDateTime!,
+      startLocation: startLocation!,
+      ridePrice: int.parse(priceController.text),
+      deliveryPrice: int.parse(priceController.text),
+      maxCapacity: int.parse(maxCapacityController.text),
+      driverId: selectedDriver!.id,
+    );
+
+    return newTrip;
   }
 
   Widget _buildForm() {
