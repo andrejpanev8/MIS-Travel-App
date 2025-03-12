@@ -53,10 +53,11 @@ class TripDetailsLoaded extends UserState {
 
 class DeliveryDetailsLoaded extends UserState {
   final Trip trip;
-  final TaskTrip taskTrip;
 
-  const DeliveryDetailsLoaded(this.trip, this.taskTrip);
+  const DeliveryDetailsLoaded(this.trip);
 }
+
+class DeliveryDetailsNotFound extends UserState {}
 
 class UserValidationFailed extends UserState {
   final Map<String, String> errors;

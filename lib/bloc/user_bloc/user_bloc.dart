@@ -177,6 +177,17 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(TripDetailsLoaded(user, passengerTrips, taskTrips));
       }
 
+      if (event is GetDeliveryDetails) {
+        emit(ProcessStarted());
+        try {
+          Trip? trip = await TripService().findTripById(event.tripId);
+          emit(DeliveryDetailsLoaded(trip!));
+        }
+        catch(err) {
+          emit(DeliveryDetailsNotFound());
+        }
+      }
+
       if (event is UpdateUserInfo) {
         emit(ProcessStarted());
         Map<String, String> errors = {};

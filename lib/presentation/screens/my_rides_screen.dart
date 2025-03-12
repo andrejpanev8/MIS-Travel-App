@@ -128,7 +128,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
               context: context,
               items: taskTrips,
               itemBuilder: (context, task) =>
-                  TaskTripWidget(context: context, task: task),
+                  TaskTripWidget(context: context, taskTrip: task),
               onRefresh: () => Functions.emitUserEvent(
                     context: context,
                     event: GetDriverUpcomingDeliveries(forceRefresh: true),
@@ -206,7 +206,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                 context: context,
                 items: clientDeliveries,
                 itemBuilder: (context, task) =>
-                    TaskTripWidget(context: context, task: task),
+                    TaskTripWidget(context: context, taskTrip: task),
                 onRefresh: () => Functions.emitUserEvent(
                       context: context,
                       event: GetClientUpcomingDeliveries(forceRefresh: true),

@@ -49,8 +49,10 @@ class RidesWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.location_on_outlined,
-                  semanticLabel: AppStrings.locationIconTooltip),
+              const Icon(
+                  Icons.location_on_outlined,
+                  semanticLabel: AppStrings.locationIconTooltip,
+                  size: 22),
               const SizedBox(width: 4),
               Expanded(
                 child: marqueeCustom(text: text, textStyle: textStyle),
@@ -109,7 +111,7 @@ class RidesWidget extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    "${ride.deliveryPrice}",
+                    "${ride.deliveryPrice} ${AppStrings.denars}",
                     style: StyledText().descriptionText(fontSize: 12),
                   ),
                   const SizedBox(width: 10),
@@ -142,7 +144,7 @@ class RidesWidget extends StatelessWidget {
                           arguments: trip)
                     }
                   : Navigator.pushNamed(context,
-                      isRidesScreen ? "/rideDetails" : "/deliveryDetails",
+                      "/rideDetails",
                       arguments: trip);
             },
           );

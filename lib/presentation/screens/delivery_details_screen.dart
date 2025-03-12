@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travel_app/data/mock/mock_task_trips.dart';
-import 'package:travel_app/data/mock/mock_trips.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/utils/map_unique_keys.dart';
 
@@ -17,18 +15,20 @@ import '../widgets/delivery_general_info_widget.dart';
 import '../widgets/infoText_widget.dart';
 
 class DeliveryDetailsScreen extends StatelessWidget {
-  Trip? trip = mockTrips[0];
-  TaskTrip? taskTrip = mockTaskTrips[0];
+  TaskTrip? taskTrip;
+  Trip? trip;
 
   dynamic userRole;
 
   @override
   Widget build(BuildContext context) {
+    taskTrip = ModalRoute.of(context)?.settings.arguments as TaskTrip?;
+
     return SafeArea(
         child: Scaffold(
             appBar: customAppBar(context: context, arrowBack: true),
             body: SingleChildScrollView(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(0),
                 child: BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, authState) {
                   if (authState is UserIsLoggedIn) {
@@ -40,20 +40,23 @@ class DeliveryDetailsScreen extends StatelessWidget {
                         return Center(
                             child: infoText(AppStrings.loginRequiredMessage2));
                       }
-                      if (state is DeliveryDetailsLoaded) {
+
+                      if(state is DeliveryDetailsLoaded) {
                         trip = state.trip;
-                        taskTrip = state.taskTrip;
+                      }
+                      else if (state is DeliveryDetailsNotFound) {
+                        return Center(
+                            child: infoText(AppStrings.deliveryNotFound));
                       }
 
-                      return _buildClientDeliveryDetails(context);
-
-                      // if (state is TripDetailsLoaded) {
-                      //   driver = state.driver!;
-                      //   passengerTrips = state.passengerTrips;
-                      //   taskTrips = state.taskTrips;
-                      //   return _buildContent(context);
-                      // }
-                      return Center(child: CircularProgressIndicator());
+                      return taskTrip != null &&
+                          trip != null
+                      ? _buildClientDeliveryDetails(context)
+                      : SizedBox.expand(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
                     },
                   );
                 }))));

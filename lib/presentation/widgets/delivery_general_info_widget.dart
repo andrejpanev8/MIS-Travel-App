@@ -25,37 +25,49 @@ Widget deliveryGeneralInfo(Trip? trip, TaskTrip? taskTrip) {
             SizedBox(height: 20),
             _buildRow(
                 icon: Icons.access_time, text: trip.formattedStartDateTime),
-            SizedBox(height: 6),
+            SizedBox(height: 10),
             _buildRow(
-                text: "${AppStrings.price}: ${trip.deliveryPrice}",
+                text: "${trip.deliveryPrice} ${AppStrings.denars}",
                 icon: Icons.monetization_on),
+            SizedBox(height: 10),
+            _text(AppStrings.pickUpLocation),
             SizedBox(height: 6),
             _buildRow(
-                text: "${AppStrings.pickUpLocation}: ${taskTrip.startLocation}",
+                text: "${taskTrip.startLocation}",
                 icon: Icons.location_on),
+            SizedBox(height: 10),
+            _text(AppStrings.pickUpPhoneNumber),
             SizedBox(height: 6),
             _buildRow(
                 text:
-                    "${AppStrings.pickUpPhoneNumber}: ${taskTrip.pickUpPhoneNumber}",
+                    taskTrip.pickUpPhoneNumber,
                 icon: Icons.phone_callback),
             SizedBox(height: 6),
             MapStatic(
               uniqueKey: START_LOCATION_DELIVERY_DETAILS_SCREEN,
             ),
             SizedBox(height: 15),
+            _text(AppStrings.dropOffLocation),
+            SizedBox(height: 6),
             _buildRow(
-                text: "${AppStrings.dropOffLocation}: ${taskTrip.endLocation}",
+                text: "${taskTrip.endLocation}",
                 icon: Icons.location_on),
+            SizedBox(height: 10),
+            _text(AppStrings.dropOffPhoneNumber),
             SizedBox(height: 6),
             _buildRow(
                 text:
-                    "${AppStrings.dropOffPhoneNumber}: ${taskTrip.dropOffPhoneNumber}",
+                    taskTrip.dropOffPhoneNumber,
                 icon: Icons.phone_forwarded),
             SizedBox(height: 6),
             MapStatic(uniqueKey: END_LOCATION_DELIVERY_DETAILS_SCREEN),
           ],
         )
       : SizedBox.shrink();
+}
+
+Widget _text(String text) {
+  return Text(text, style: StyledText().descriptionText());
 }
 
 Widget _buildRow({IconData? icon, String text = "", String? assetIcon}) {
