@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
@@ -87,15 +86,6 @@ class DriversWidget extends StatelessWidget {
   Widget _rightInfo() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        customArrowButton(
-          text: AppStrings.viewDetails,
-          fontSize: 12,
-          onPressed: () {
-            // TODO: Add user profile screen?
-          },
-        ),
-      ],
     );
   }
 }

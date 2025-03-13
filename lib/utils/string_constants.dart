@@ -67,7 +67,7 @@ class AppStrings {
   static const String viewDetails = "View details";
   static const String reserve = "Reserve";
   static const String confirmReservation = "Confirm Reservation";
-  static const String sendPackage = "SendPackage";
+  static const String sendPackage = "Send Package";
   static const String rideDetails = "Ride Details";
   static const String price = "Price";
   static const String denars = "den.";

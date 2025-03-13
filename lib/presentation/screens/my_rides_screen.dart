@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart' as auth_bloc;
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/data/DTO/PassengerTripDTO.dart';
+import 'package:travel_app/data/enums/screen_type.dart';
 import 'package:travel_app/data/models/invitation.dart';
 import 'package:travel_app/presentation/widgets/drivers_widget.dart';
 import 'package:travel_app/presentation/widgets/invitation_widget.dart';
@@ -145,8 +146,10 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                 : widgetBuilder(
                     context: context,
                     items: trips,
-                    itemBuilder: (context, ride) =>
-                        RidesWidget(context: context, ride: ride),
+                    itemBuilder: (context, ride) => RidesWidget(
+                        context: context,
+                        ride: ride,
+                        screenType: ScreenType.MY_RIDES_SCREEN),
                     onRefresh: () => Functions.emitUserEvent(
                           context: context,
                           event: GetDriverUpcomingRides(forceRefresh: true),
@@ -240,8 +243,10 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                   : widgetBuilder(
                       context: context,
                       items: clientTrips,
-                      itemBuilder: (context, ride) =>
-                          RidesWidget(context: context, ride: ride.trip),
+                      itemBuilder: (context, ride) => RidesWidget(
+                          context: context,
+                          ride: ride.trip,
+                          screenType: ScreenType.MY_RIDES_SCREEN),
                       onRefresh: () => Functions.emitUserEvent(
                             context: context,
                             event: GetClientUpcomingRides(forceRefresh: true),

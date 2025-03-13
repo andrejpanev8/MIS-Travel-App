@@ -8,6 +8,7 @@ import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/screens/add_delivery_screen.dart';
 import 'package:travel_app/presentation/screens/add_ride_screen.dart';
+import 'package:travel_app/presentation/screens/client_ride_details_screen.dart';
 import 'package:travel_app/presentation/screens/delivery_details_screen.dart';
 import 'package:travel_app/presentation/screens/login_screen.dart';
 import 'package:travel_app/presentation/screens/my_rides_screen.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/home": (context) => const MyHomePage(),
         "/rideDetails": (context) => RideDetailsScreen(),
+        "/clientRideDetails": (context) => ClientRideDetailsScreen(),
         //TODO change to delivery details screen
         "/deliveryDetails": (context) => DeliveryDetailsScreen(),
         "/reserveRide": (context) => ReserveRideScreen(),

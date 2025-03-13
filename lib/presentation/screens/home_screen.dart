@@ -11,6 +11,7 @@ import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../bloc/home_screen_bloc/home_screen_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/DTO/TaskTripDTO.dart';
+import '../../data/enums/screen_type.dart';
 import '../../data/models/trip.dart';
 import '../widgets/date_time_picker_widget.dart';
 import '../widgets/expanded_wrapper_widget.dart';
@@ -167,16 +168,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildBody({var userState}) {
     var state = context.watch<HomeScreenBloc>().state;
+    bool isRidesActive = state is RidesActive;
+
     return widgetBuilder(
+      context: context,
+      items: rides,
+      itemBuilder: (context, rides) => RidesWidget(
         context: context,
-        items: rides,
-        itemBuilder: (context, ride) => RidesWidget(
-            context: context, ride: ride, isRidesScreen: state is RidesActive),
-        onRefresh: () => Functions.emitUserEvent(
-            context: context, event: GetUpcomingRides(forceRefresh: true)),
-        emptyWidget: emptyListIndicator(state is RidesActive
+        ride: rides,
+        screenType: isRidesActive
+            ? ScreenType.HOME_RIDES_SCREEN
+            : ScreenType.HOME_DELIVERIES_SCREEN,
+      ),
+      onRefresh: () => Functions.emitUserEvent(
+        context: context,
+        event: GetUpcomingRides(forceRefresh: true),
+      ),
+      emptyWidget: emptyListIndicator(
+        isRidesActive
             ? AppStrings.noUpcomingRides
-            : AppStrings.noUpcomingDeliveries));
+            : AppStrings.noUpcomingDeliveries,
+      ),
+    );
   }
 
   Widget _buildSearchSection(BuildContext context, bool? showRides) {

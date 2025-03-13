@@ -24,8 +24,7 @@ class InvitationWidget extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: DecorationsCustom().silverBoxRoundedCorners(),
         child: Row(
-          mainAxisAlignment:
-              MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _leftInfo(),
             _rightInfo(),
@@ -41,15 +40,20 @@ class InvitationWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(width: 5),
               const Icon(Icons.email_outlined,
                   size: 14, semanticLabel: AppStrings.emailIconTooltip),
               const SizedBox(width: 4),
-              Text(
-                invitation.email,
-                style: StyledText()
-                    .descriptionText(color: blackColor, fontSize: 16),
+              Expanded(
+                child: Text(
+                  invitation.email,
+                  style: StyledText()
+                      .descriptionText(color: blackColor, fontSize: 16),
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
+                ),
               ),
             ],
           ),
@@ -60,12 +64,15 @@ class InvitationWidget extends StatelessWidget {
               const Icon(Icons.access_time_outlined,
                   size: 14, semanticLabel: AppStrings.timeIconTooltip),
               const SizedBox(width: 4),
-              Text(
-                "Expires on: ${invitation.getFormattedExpirationDate()}",
-                style: StyledText().descriptionText(
-                    color: blackColor,
-                    fontSize: 12,
-                    fontWeight: StyledText().regular),
+              Expanded(
+                child: Text(
+                  "Expires on: ${invitation.getFormattedExpirationDate()}",
+                  style: StyledText().descriptionText(
+                      color: blackColor,
+                      fontSize: 12,
+                      fontWeight: StyledText().regular),
+                  softWrap: true,
+                ),
               ),
             ],
           ),
@@ -89,9 +96,12 @@ class InvitationWidget extends StatelessWidget {
               Text(
                 invitation.getStatus(),
                 style: StyledText().descriptionText(
-                    color: blackColor,
-                    fontSize: 12,
-                    fontWeight: StyledText().regular),
+                  color: blackColor,
+                  fontSize: 12,
+                  fontWeight: StyledText().regular,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ],
           ),

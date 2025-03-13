@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:marquee/marquee.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
@@ -9,6 +8,7 @@ import 'package:travel_app/presentation/widgets/marquee_widget.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
 import 'package:travel_app/utils/text_styles.dart';
+import 'package:travel_app/data/enums/screen_type.dart';
 
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/models/trip.dart';
@@ -18,13 +18,13 @@ import '../../utils/functions.dart';
 class RidesWidget extends StatelessWidget {
   final BuildContext context;
   final Trip ride;
-  final bool isRidesScreen;
+  final ScreenType screenType;
 
   const RidesWidget(
       {super.key,
       required this.context,
       required this.ride,
-      this.isRidesScreen = false});
+      required this.screenType});
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +49,8 @@ class RidesWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(
-                  Icons.location_on_outlined,
-                  semanticLabel: AppStrings.locationIconTooltip,
-                  size: 22),
+              const Icon(Icons.location_on_outlined,
+                  semanticLabel: AppStrings.locationIconTooltip, size: 22),
               const SizedBox(width: 4),
               Expanded(
                 child: marqueeCustom(text: text, textStyle: textStyle),
@@ -88,7 +86,7 @@ class RidesWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        isRidesScreen
+        screenType == ScreenType.HOME_RIDES_SCREEN
             ? Row(
                 children: [
                   const Icon(
@@ -123,9 +121,7 @@ class RidesWidget extends StatelessWidget {
             userRole = state.user.role;
           }
           return customArrowButton(
-            text: userRole == UserRole.CLIENT
-                ? (isRidesScreen ? AppStrings.reserve : "Send Package")
-                : AppStrings.viewDetails,
+            text: _getButtonText(userRole),
             fontSize: 12,
             horizontalPadding: 20,
             onPressed: () {
@@ -135,21 +131,36 @@ class RidesWidget extends StatelessWidget {
                       ? GetTripInfo(trip.id)
                       : GetTripDetails(
                           driverId: trip.driverId, tripId: trip.id));
-              userRole == UserRole.CLIENT
-                  ? {
-                      Functions.emitUserEvent(
-                          context: context, event: GetClientUpcomingRides()),
-                      Navigator.pushNamed(context,
-                          isRidesScreen ? "/reserveRide" : "/reserveDelivery",
-                          arguments: trip)
-                    }
-                  : Navigator.pushNamed(context,
-                      "/rideDetails",
-                      arguments: trip);
+              Functions.emitUserEvent(
+                  context: context, event: GetClientUpcomingRides());
+              Navigator.pushNamed(context, _getUrl(userRole), arguments: trip);
             },
           );
         }),
       ],
     );
+  }
+
+  String _getButtonText(UserRole? userRole) {
+    if (screenType == ScreenType.HOME_RIDES_SCREEN &&
+        userRole == UserRole.CLIENT) {
+      return AppStrings.reserve;
+    } else if (screenType == ScreenType.HOME_DELIVERIES_SCREEN &&
+        userRole == UserRole.CLIENT) {
+      return AppStrings.sendPackage;
+    }
+    return AppStrings.viewDetails;
+  }
+
+  String _getUrl(UserRole? userRole) {
+    if (userRole == UserRole.CLIENT) {
+      if (screenType == ScreenType.HOME_RIDES_SCREEN) {
+        return "/reserveRide";
+      } else if (screenType == ScreenType.HOME_RIDES_SCREEN) {
+        return "/reserveDelivery";
+      }
+      return "/clientRideDetails";
+    }
+    return "/rideDetails";
   }
 }
