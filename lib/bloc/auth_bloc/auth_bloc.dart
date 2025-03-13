@@ -38,6 +38,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       }
 
+      if (event is ResetAuthState) {
+        emit(AuthInitial());
+      }
+
       if (event is LogOutEvent) {
         emit(ProcessStarted());
         AuthService().logoutUser();

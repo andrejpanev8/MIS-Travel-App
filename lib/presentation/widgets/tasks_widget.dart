@@ -89,9 +89,7 @@ class TaskTripWidget extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Text(
-              // "${task.price.toStringAsFixed(0)} ден",
-              // TO:DO price missing in TaskTrip model
-              "200 ден",
+              "${taskTrip.trip?.deliveryPrice} ${AppStrings.denars}",
               style: StyledText().descriptionText(fontSize: 12),
             ),
           ],

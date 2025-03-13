@@ -40,20 +40,37 @@ class _LoginFormState extends State<LoginForm> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 35),
-      child: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          if (state is LoginFail) {
-            showErrorDialog(context, state.errorTitle, state.errorMessage);
-          } else if (state is UserIsLoggedIn) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, "/home", (route) => false);
-            });
-          } else if (state is ProcessStarted) {
-            return Center(child: CircularProgressIndicator());
-          }
-          return _initialLoginState(context);
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<AuthBloc, AuthState>(
+            listenWhen: (previous, current) => current is LoginFail,
+            listener: (context, state) {
+              if (state is LoginFail) {
+                showErrorDialog(context, state.errorTitle, state.errorMessage);
+                context.read<AuthBloc>().add(ResetAuthState());
+              }
+            },
+          ),
+          BlocListener<AuthBloc, AuthState>(
+            listenWhen: (previous, current) => current is UserIsLoggedIn,
+            listener: (context, state) {
+              if (state is UserIsLoggedIn) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, "/home", (route) => false);
+                });
+              }
+            },
+          ),
+        ],
+        child: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is ProcessStarted) {
+              return Center(child: CircularProgressIndicator());
+            }
+            return _initialLoginState(context);
+          },
+        ),
       ),
     );
   }
