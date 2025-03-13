@@ -156,7 +156,7 @@ class RidesWidget extends StatelessWidget {
     if (userRole == UserRole.CLIENT) {
       if (screenType == ScreenType.HOME_RIDES_SCREEN) {
         return "/reserveRide";
-      } else if (screenType == ScreenType.HOME_RIDES_SCREEN) {
+      } else if (screenType == ScreenType.HOME_DELIVERIES_SCREEN) {
         return "/reserveDelivery";
       }
       return "/clientRideDetails";
