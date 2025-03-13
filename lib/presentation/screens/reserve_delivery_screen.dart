@@ -142,24 +142,12 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
                     {
                       setState(() {
                         endLocationController.text = state.address;
-                        endLocation = Location.fromLatLng(state.location);
+                        endLocation = Location(
+                            latitude: state.location.latitude,
+                            longitude: state.location.longitude,
+                            address: state.address);
                       })
                     }
-                }
-              else if (state is DeliveryCreateSuccess)
-                {
-                  showSuccessDialog(
-                      context, "Success", "Delivery successfully created!", () {
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "/home", (route) => false);
-                  })
-                }
-              else if (state is DeliveryCreateError)
-                {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    showErrorDialog(context, "Error",
-                        "Error occurred while creating a delivery");
-                  })
                 }
             },
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {

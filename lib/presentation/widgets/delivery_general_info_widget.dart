@@ -48,7 +48,7 @@ Widget deliveryGeneralInfo(
             _text(AppStrings.pickUpLocation),
             SizedBox(height: 6),
             _buildRow(
-                text: "${taskTrip.startLocation}", icon: Icons.location_on),
+                text: taskTrip.startLocation.address ?? "No Location Provided", icon: Icons.location_on),
             SizedBox(height: 10),
             _text(AppStrings.pickUpPhoneNumber),
             SizedBox(height: 6),
@@ -61,7 +61,7 @@ Widget deliveryGeneralInfo(
             SizedBox(height: 15),
             _text(AppStrings.dropOffLocation),
             SizedBox(height: 6),
-            _buildRow(text: "${taskTrip.endLocation}", icon: Icons.location_on),
+            _buildRow(text: taskTrip.endLocation.address ?? "No Location provided", icon: Icons.location_on),
             SizedBox(height: 10),
             _text(AppStrings.dropOffPhoneNumber),
             SizedBox(height: 6),
@@ -93,7 +93,13 @@ Widget _buildRow({IconData? icon, String text = "", String? assetIcon}) {
                 )
               : SizedBox(width: 25),
       SizedBox(width: 10),
-      Text(text, style: StyledText().descriptionText())
+      Expanded(
+        child: Text(
+          text,
+          style: StyledText().descriptionText(),
+          softWrap: true, // Allow wrapping
+        ),
+      ),
     ],
   );
 }

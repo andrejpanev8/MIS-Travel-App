@@ -9,6 +9,7 @@ import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
 import 'package:travel_app/presentation/widgets/map_static.dart';
 import 'package:travel_app/presentation/widgets/ride_general_info_widget.dart';
+import 'package:travel_app/utils/error_handler.dart';
 import 'package:travel_app/utils/success_handler.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
@@ -144,12 +145,10 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
                       context, "/home", (route) => false));
             }
             if (state is RideReserveError) {
-              showSuccessDialog(
+              showErrorDialog(
                   context,
                   AppStrings.rideReservedFailedTitle,
-                  AppStrings.rideReservedFailedMessage,
-                  () => Navigator.pushNamedAndRemoveUntil(
-                      context, "/home", (route) => false));
+                  AppStrings.rideReservedFailedMessage);
             }
             return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

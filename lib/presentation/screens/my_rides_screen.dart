@@ -37,6 +37,19 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
   bool isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -48,6 +61,16 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
             return BlocBuilder<UserBloc, UserState>(
               builder: (context, state) {
                 isLoading = state is ProcessStarted;
+
+                if (isLoading) {
+                  Future.delayed(Duration(seconds: 10), () {
+                    if (mounted) {
+                      setState(() {
+                        isLoading = false;
+                      });
+                    }
+                  });
+                }
 
                 if (state is DriverDataLoaded) {
                   trips = state.driverTrips;
