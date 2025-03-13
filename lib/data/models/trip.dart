@@ -5,7 +5,7 @@ import '../../service/interface/HasFilterProperties.dart';
 import '../enums/trip_status.dart';
 
 class Trip implements HasFilterProperties {
-  final String id;
+  String id;
   @override
   final String startCity;
   @override

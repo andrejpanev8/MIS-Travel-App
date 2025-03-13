@@ -5,8 +5,11 @@ import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/custom_drop_down_button.dart';
+import 'package:travel_app/utils/success_handler.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
+import '../../data/models/location.dart';
+import '../../data/models/trip.dart';
 import '../../data/models/user.dart';
 import '../../utils/functions.dart';
 import '../../utils/map_unique_keys.dart';
@@ -32,6 +35,7 @@ class _AddRideScreenState extends State<AddRideScreen> {
   final TextEditingController driverController = TextEditingController();
 
   final FocusNode startLocationFocusNode = FocusNode();
+  Location? startLocation;
   DateTime? selectedStartDateTime;
   UserModel? selectedDriver;
   List<UserModel> allDrivers = [];
@@ -68,70 +72,97 @@ class _AddRideScreenState extends State<AddRideScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MapBloc, MapState>(
-      listener: (context, state) => {
-        if (state is MapSingleSelectionLoaded &&
-            state.uniqueKey == START_LOCATION_ADD_RIDE_SCREEN)
-          {
-            setState(() {
-              startLocationController.text = state.address;
-            })
-          }
-      },
-      child: Scaffold(
-        appBar: customAppBar(context: context, arrowBack: true),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
-            child: BlocBuilder<UserBloc, UserState>(
-              builder: (context, state) {
-                if (state is EditTripInfoLoaded) {
-                  departureCityController.text = state.trip.startCity;
-                  arrivalCityController.text = state.trip.endCity;
-                  startTimeController.text = state.trip.startTime.toString();
-                  startLocationController.text = state.startLocationAddress;
-                  maxCapacityController.text =
-                      state.trip.maxCapacity.toString();
-                  priceController.text = state.trip.deliveryPrice.toString();
-                  selectedDriver = state.driver;
-                  Functions.emitMapEvent(
-                    context: context,
-                    event: AddressEntryEvent(state.startLocationAddress,
-                        uniqueKey: START_LOCATION_ADD_RIDE_SCREEN),
-                  );
-                  isEdit = true;
-                }
-                if (state is AllDriversLoaded) {
-                  allDrivers = state.drivers;
-                }
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildForm(),
-                    SizedBox(height: 24.0),
-                    Text(AppStrings.selectALocation,
-                        style: StyledText().descriptionText(
-                            fontSize: 18, fontWeight: StyledText().regular)),
-                    MapStatic(uniqueKey: START_LOCATION_ADD_RIDE_SCREEN),
-                    Row(
-                      children: [
-                        Expanded(
-                            child: customArrowButton(
-                                text: "Save",
-                                verticalPadding: 10,
-                                onPressed: () {
-                                  //TO:DO Handle Save Ride functionality
-                                })),
-                      ],
-                    )
-                  ],
+    var state = context.watch<MapBloc>().state;
+    if (state is MapSingleSelectionLoaded &&
+        state.uniqueKey == START_LOCATION_ADD_RIDE_SCREEN) {
+      setState(() {
+        startLocationController.text = state.address;
+        startLocation = Location(
+            latitude: state.location.latitude,
+            longitude: state.location.longitude,
+            address: state.address);
+      });
+    }
+    return Scaffold(
+      appBar: customAppBar(context: context, arrowBack: true),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
+          child: BlocBuilder<UserBloc, UserState>(
+            builder: (context, state) {
+              if (state is AllDriversLoaded) {
+                allDrivers = state.drivers;
+              }
+              if (state is EditTripInfoLoaded) {
+                departureCityController.text = state.trip.startCity;
+                arrivalCityController.text = state.trip.endCity;
+                startTimeController.text = state.trip.startTime.toString();
+                startLocationController.text = state.startLocationAddress;
+                maxCapacityController.text = state.trip.maxCapacity.toString();
+                priceController.text = state.trip.deliveryPrice.toString();
+                startLocation = state.trip.startLocation;
+                selectedStartDateTime = state.trip.startTime;
+                selectedDriver = state.driver;
+                Functions.emitMapEvent(
+                  context: context,
+                  event: AddressEntryEvent(state.startLocationAddress,
+                      uniqueKey: START_LOCATION_ADD_RIDE_SCREEN),
                 );
-              },
-            ),
+                isEdit = true;
+              }
+              if (state is TripSaveSuccess) {
+                showSuccessDialog(
+                    context,
+                    AppStrings.rideSavedSuccessfullyTitle,
+                    AppStrings.rideSavedSuccessfullyMessage,
+                    () => Navigator.pushNamedAndRemoveUntil(
+                        context, "/home", (route) => false));
+              }
+              if (state is TripSaveError) {}
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildForm(),
+                  SizedBox(height: 24.0),
+                  Text(AppStrings.selectALocation,
+                      style: StyledText().descriptionText(
+                          fontSize: 18, fontWeight: StyledText().regular)),
+                  MapStatic(uniqueKey: START_LOCATION_ADD_RIDE_SCREEN),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: customArrowButton(
+                              text: "Save",
+                              verticalPadding: 10,
+                              onPressed: () {
+                                Functions.emitUserEvent(
+                                    context: context,
+                                    event: SaveTripEvent(createTrip()));
+                              })),
+                    ],
+                  )
+                ],
+              );
+            },
           ),
         ),
       ),
     );
+  }
+
+  Trip createTrip() {
+    Trip newTrip = Trip(
+      startCity: departureCityController.text,
+      endCity: arrivalCityController.text,
+      startTime: selectedStartDateTime!,
+      startLocation: startLocation!,
+      ridePrice: int.parse(priceController.text),
+      deliveryPrice: int.parse(priceController.text),
+      maxCapacity: int.parse(maxCapacityController.text),
+      driverId: selectedDriver!.id,
+    );
+
+    return newTrip;
   }
 
   Widget _buildForm() {

@@ -155,3 +155,16 @@ class EditTripEvent extends UserEvent {
 
   const EditTripEvent(this.trip, this.driver);
 }
+
+class SaveTripEvent extends UserEvent {
+  final Trip trip;
+
+  const SaveTripEvent(this.trip);
+}
+
+class EditDeliveryEvent extends UserEvent {
+  final TaskTrip taskTrip;
+  final Trip trip;
+
+  const EditDeliveryEvent(this.taskTrip, this.trip);
+}

@@ -9,7 +9,6 @@ import 'package:travel_app/service/task_trip_service.dart';
 import 'package:travel_app/service/user_service.dart';
 
 import '../data/enums/trip_status.dart';
-import '../data/models/location.dart';
 import '../data/models/trip.dart';
 
 class TripService {
@@ -27,15 +26,7 @@ class TripService {
     taskTripService = service;
   }
 
-  Future<String?> createTrip(
-      {required String startCity,
-      required String endCity,
-      required DateTime startTime,
-      required Location startLocation,
-      required int ridePrice,
-      required int deliveryPrice,
-      required int maxCapacity,
-      required String driverId}) async {
+  Future<String?> createTrip({required Trip trip}) async {
     UserModel? currentUser = await authService.getCurrentUser();
     if (currentUser == null) {
       throw Exception("No user is logged in");
@@ -46,21 +37,11 @@ class TripService {
 
     DocumentReference tripRef = _firestore.collection('trips').doc();
 
-    Trip newTrip = Trip(
-      id: tripRef.id,
-      startCity: startCity,
-      endCity: endCity,
-      startTime: startTime,
-      startLocation: startLocation,
-      ridePrice: ridePrice,
-      deliveryPrice: deliveryPrice,
-      maxCapacity: maxCapacity,
-      driverId: driverId,
-      passengerTrips: [],
-      taskTrips: [],
-    );
+    trip.id = tripRef.id;
+    trip.passengerTrips = [];
+    trip.taskTrips = [];
 
-    await tripRef.set(newTrip.toJson());
+    await tripRef.set(trip.toJson());
 
     return tripRef.id;
   }
@@ -198,53 +179,6 @@ class TripService {
           .toList();
     }
     throw Exception("You do not have permission to view task users by trip.");
-  }
-
-  Future<List<Trip>> filterUpcomingTripsContainingStartCity(
-      String startCity) async {
-    List<Trip> upcomingTrips = await getAllUpcomingTrips();
-    if (upcomingTrips.isEmpty) {
-      return [];
-    }
-    return upcomingTrips
-        .where((trip) =>
-            trip.startCity.toLowerCase().contains(startCity.toLowerCase()))
-        .toList();
-  }
-
-  Future<List<Trip>> filterUpcomingTripsContainingEndCity(
-      String endCity) async {
-    List<Trip> upcomingTrips = await getAllUpcomingTrips();
-    if (upcomingTrips.isEmpty) {
-      return [];
-    }
-    return upcomingTrips
-        .where((trip) =>
-            trip.endCity.toLowerCase().contains(endCity.toLowerCase()))
-        .toList();
-  }
-
-  Future<List<Trip>> filterUpcomingTripsByDate(DateTime date) async {
-    String selectedDate = "${date.year.toString().padLeft(4, '0')}-"
-        "${date.month.toString().padLeft(2, '0')}-"
-        "${date.day.toString().padLeft(2, '0')}";
-
-    QuerySnapshot querySnapshot = await _firestore
-        .collection('trips')
-        .where('tripStatus', isEqualTo: TripStatus.IN_PROGRESS.index)
-        .where('startTime', isGreaterThanOrEqualTo: selectedDate)
-        .where('startTime', isLessThan: "${selectedDate}T23:59:59.999999")
-        .get();
-
-    if (querySnapshot.docs.isEmpty) {
-      return [];
-    }
-
-    List<Trip> trips = querySnapshot.docs.map((doc) {
-      return Trip.fromJson(doc.data() as Map<String, dynamic>);
-    }).toList();
-
-    return trips;
   }
 
   Future<bool> setTripStatus(String tripId, TripStatus newStatus) async {

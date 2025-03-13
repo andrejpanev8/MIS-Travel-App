@@ -3,7 +3,7 @@ import 'package:travel_app/data/models/location.dart';
 import 'package:travel_app/data/models/user.dart';
 
 class TaskTrip {
-  final String id;
+  String id;
   final String pickUpPhoneNumber;
   final Location startLocation;
   final String dropOffPhoneNumber;

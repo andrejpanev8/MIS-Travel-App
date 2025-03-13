@@ -41,22 +41,18 @@ class DeliveryDetailsScreen extends StatelessWidget {
                             child: infoText(AppStrings.loginRequiredMessage2));
                       }
 
-                      if(state is DeliveryDetailsLoaded) {
+                      if (state is DeliveryDetailsLoaded) {
                         trip = state.trip;
-                      }
-                      else if (state is DeliveryDetailsNotFound) {
+                      } else if (state is DeliveryDetailsNotFound) {
                         return Center(
                             child: infoText(AppStrings.deliveryNotFound));
                       }
 
-                      return taskTrip != null &&
-                          trip != null
-                      ? _buildClientDeliveryDetails(context)
-                      : SizedBox.expand(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
+                      return taskTrip != null && trip != null
+                          ? _buildClientDeliveryDetails(context)
+                          : Center(
+                              child: CircularProgressIndicator(),
+                            );
                     },
                   );
                 }))));
@@ -78,7 +74,7 @@ class DeliveryDetailsScreen extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.only(top: 20.0, right: 10, bottom: 16, left: 10),
-      child: deliveryGeneralInfo(trip, taskTrip),
+      child: deliveryGeneralInfo(context, trip, taskTrip, userRole),
     );
   }
 }
