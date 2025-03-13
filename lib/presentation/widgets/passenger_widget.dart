@@ -43,7 +43,10 @@ class PassengerWidget extends StatelessWidget {
             children: [
               const Icon(Icons.location_on_outlined),
               const SizedBox(width: 8),
-              Expanded(child: _futureBuilder(passenger.startLocationAddress)),
+              Expanded(
+                  child: marqueeCustom(
+                      text: passenger.startLocation.address ?? "",
+                      textStyle: TextStyle(fontSize: 14))),
             ],
           ),
           const SizedBox(height: 8),
@@ -51,7 +54,10 @@ class PassengerWidget extends StatelessWidget {
             children: [
               const Icon(Icons.location_on_outlined),
               const SizedBox(width: 8),
-              Expanded(child: _futureBuilder(passenger.endLocationAddress)),
+              Expanded(
+                  child: marqueeCustom(
+                      text: passenger.endLocation.address ?? "",
+                      textStyle: TextStyle(fontSize: 14))),
             ],
           ),
         ],
@@ -68,20 +74,5 @@ class PassengerWidget extends StatelessWidget {
         event: CallPhone(passenger.user.phoneNumber),
       ),
     );
-  }
-
-  // Method needed to asynchronously fetch the address from the coordinates
-  Widget _futureBuilder(Future<String?> address) {
-    return FutureBuilder<String?>(
-        future: address,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Fetching address...");
-          } else if (snapshot.hasError || snapshot.data == null) {
-            return const Text("Address not available");
-          }
-          return marqueeCustom(
-              text: snapshot.data!, textStyle: TextStyle(fontSize: 14));
-        });
   }
 }

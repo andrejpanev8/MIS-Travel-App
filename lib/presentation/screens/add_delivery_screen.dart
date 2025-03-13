@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
@@ -186,7 +188,10 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
                     {
                       setState(() {
                         startLocationController.text = state.address;
-                        startLocation = Location.fromLatLng(state.location);
+                        startLocation = Location(
+                            latitude: state.location.latitude,
+                            longitude: state.location.longitude,
+                            address: state.address);
                       })
                     }
                   else if (state.uniqueKey == END_LOCATION_ADD_DELIVERY_SCREEN)
@@ -228,6 +233,19 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
               showErrorDialog(
                   context, "Error", "Error occurred while creating a delivery");
             });
+          }
+          if (state is DeliveryInfoLoaded) {
+            selectedTrip = state.trip;
+            selectedClient = state.taskTrip.user;
+            pickUpPhoneController.text = state.taskTrip.pickUpPhoneNumber;
+            startLocationController.text =
+                state.taskTrip.startLocation.address ?? "";
+            startLocation = state.taskTrip.startLocation;
+            dropOffPhoneController.text = state.taskTrip.dropOffPhoneNumber;
+            endLocationController.text =
+                state.taskTrip.endLocation.address ?? "";
+            endLocation = state.taskTrip.endLocation;
+            descriptionController.text = state.taskTrip.description;
           }
           return Scaffold(
             appBar: customAppBar(context: context, arrowBack: true),

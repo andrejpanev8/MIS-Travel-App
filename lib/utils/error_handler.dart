@@ -4,7 +4,6 @@ void showErrorDialog(BuildContext context, String title, String message) {
   WidgetsBinding.instance.addPostFrameCallback((_) {
     showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           shape:

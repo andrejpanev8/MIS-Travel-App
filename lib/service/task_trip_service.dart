@@ -35,8 +35,9 @@ class TaskTripService {
       required String dropOffPhoneNumber,
       required Location endLocation,
       required String tripId,
+      UserModel? user,
       String description = ""}) async {
-    UserModel? user = await authService.getCurrentUser();
+    user ?? await authService.getCurrentUser();
     if (user == null) {
       throw Exception("No authenticated user found.");
     }

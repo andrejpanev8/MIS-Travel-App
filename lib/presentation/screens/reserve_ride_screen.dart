@@ -217,8 +217,8 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
 
   void _setAddressFields(PassengerTripDTO passengerTripClientDTO) async {
     fromAddressController.text =
-        await passengerTripClientDTO.passengerTrip!.startLocationAddress ?? '';
+        await passengerTripClientDTO.passengerTrip!.startLocation.address ?? '';
     toAddressController.text =
-        await passengerTripClientDTO.passengerTrip!.endLocationAddress ?? '';
+        await passengerTripClientDTO.passengerTrip!.endLocation.address ?? '';
   }
 }

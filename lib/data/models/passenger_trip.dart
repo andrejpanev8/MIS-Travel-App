@@ -1,11 +1,9 @@
 import 'package:travel_app/data/enums/trip_status_for_client.dart';
 import 'package:travel_app/data/models/user.dart';
-import 'package:travel_app/service/map_service.dart';
 
-import '../../service/interface/LocationToAddress.dart';
 import 'location.dart';
 
-class PassengerTrip implements LocationToAddress {
+class PassengerTrip {
   final String id;
   final Location startLocation;
   final Location endLocation;
@@ -20,18 +18,6 @@ class PassengerTrip implements LocationToAddress {
       this.tripStatus = ClientTripStatus.RESERVED,
       required this.user,
       required this.tripId});
-
-  @override
-  Future<String?> get startLocationAddress async {
-    return await MapService().getAddressFromCoordinates(
-        startLocation.latitude, startLocation.longitude);
-  }
-
-  @override
-  Future<String?> get endLocationAddress async {
-    return await MapService()
-        .getAddressFromCoordinates(endLocation.latitude, endLocation.longitude);
-  }
 
   PassengerTrip.fromJson(Map<String, dynamic> data)
       : id = data['id'],

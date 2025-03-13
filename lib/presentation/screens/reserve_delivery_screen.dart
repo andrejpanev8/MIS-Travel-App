@@ -131,7 +131,10 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
                     {
                       setState(() {
                         startLocationController.text = state.address;
-                        startLocation = Location.fromLatLng(state.location);
+                        startLocation = Location(
+                            latitude: state.location.latitude,
+                            longitude: state.location.longitude,
+                            address: state.address);
                       })
                     }
                   else if (state.uniqueKey ==

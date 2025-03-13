@@ -60,13 +60,12 @@ class MapService {
     }
   }
 
-  Future<Map<String, dynamic>?> getCoordinatesFromAddress(
-      String address) async {
+  Future<Map<String, dynamic>> getCoordinatesFromAddress(String address) async {
     final url = Uri.parse(
         'https://nominatim.openstreetmap.org/search?format=json&q=$address');
 
     final response = await http.get(url, headers: {
-      'User-Agent': 'QuickRide/1.0 (pigirod652@jarars.com)',
+      'User-Agent': 'Miner/1.0 (londer@fahari.com)',
     });
 
     if (response.statusCode == 200) {
@@ -78,7 +77,10 @@ class MapService {
         };
       }
     }
-    return null;
+    return {
+      "latitude": 0.0,
+      "longitude": 0.0,
+    };
   }
 
   Future<String?> getAddressFromCoordinates(double lat, double lon) async {
@@ -86,7 +88,7 @@ class MapService {
         'https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon');
 
     final response = await http.get(url, headers: {
-      'User-Agent': 'QuickRide/1.0 (pigirod652@jarars.com)',
+      'User-Agent': 'SlowRider/1.0 (zamber@jkarandi.com)',
     });
 
     if (response.statusCode == 200) {

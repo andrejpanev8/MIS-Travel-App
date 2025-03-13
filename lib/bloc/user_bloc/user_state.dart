@@ -167,6 +167,16 @@ class TripSaveError extends UserState {
   TripSaveError(this.title, this.message);
 }
 
+class DeliveryInfoLoaded extends UserState {
+  final TaskTrip taskTrip;
+  final Trip trip;
+  final UserModel client;
+  final String startLocationAddress;
+  final String endLocationAddress;
+  const DeliveryInfoLoaded(this.taskTrip, this.trip, this.client,
+      this.startLocationAddress, this.endLocationAddress);
+}
+
 class EditTripInfoLoaded extends UserState {
   final Trip trip;
   final UserModel driver;

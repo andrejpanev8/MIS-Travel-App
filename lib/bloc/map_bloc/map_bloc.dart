@@ -36,7 +36,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         emit(ProcessStarted());
         LatLng location = await MapService()
             .getCoordinatesFromAddress(event.address!)
-            .then((result) => LatLng(result!["latitude"], result["longitude"]));
+            .then((result) => LatLng(result["latitude"], result["longitude"]));
 
         String mapStaticLink = "";
 

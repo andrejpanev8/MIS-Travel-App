@@ -183,8 +183,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         try {
           Trip? trip = await TripService().findTripById(event.tripId);
           emit(DeliveryDetailsLoaded(trip!));
-        }
-        catch(err) {
+        } catch (err) {
           emit(DeliveryDetailsNotFound());
         }
       }
@@ -386,16 +385,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               .then((result) => result != null
                   ? Location(
                       latitude: result["latitude"],
-                      longitude: result["longitude"])
-                  : Location(latitude: 0, longitude: 0));
+                      longitude: result["longitude"],
+                      address: event.startLocation)
+                  : Location(latitude: 0, longitude: 0, address: ""));
 
           Location endLocation = await MapService()
               .getCoordinatesFromAddress(event.endLocation)
               .then((result) => result != null
                   ? Location(
                       latitude: result["latitude"],
-                      longitude: result["longitude"])
-                  : Location(latitude: 0, longitude: 0));
+                      longitude: result["longitude"],
+                      address: event.endLocation)
+                  : Location(latitude: 0, longitude: 0, address: ""));
 
           await PassengerTripService().createPassengerTrip(
               startLocation: startLocation,
@@ -420,10 +421,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (event is EditTripEvent) {
         emit(ProcessStarted());
         try {
-          String locationAddress = await MapService()
-              .getAddressFromCoordinates(event.trip.startLocation.latitude,
-                  event.trip.startLocation.longitude)
-              .then((result) => result ?? "");
+          String locationAddress = event.trip.startLocation.address ?? "";
           emit(EditTripInfoLoaded(event.trip, event.driver, locationAddress));
         } catch (error) {
           debugPrint(error.toString());
@@ -438,6 +436,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         } catch (error) {
           emit(
               TripSaveError(AppStrings.rideSavedFailedTitle, error.toString()));
+        }
+      }
+
+      if (event is EditDeliveryEvent) {
+        emit(ProcessStarted());
+        try {
+          String startAddress = event.taskTrip.startLocation.address ?? "";
+          String endAddress = event.taskTrip.endLocation.address ?? "";
+
+          emit(DeliveryInfoLoaded(event.taskTrip, event.trip,
+              event.taskTrip.user, startAddress, endAddress));
+        } catch (error) {
+          emit(ProcessFailed());
         }
       }
     });
