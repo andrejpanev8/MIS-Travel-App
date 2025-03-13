@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
+import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/marquee_widget.dart';
 import 'package:travel_app/utils/color_constants.dart';
@@ -12,9 +12,9 @@ import '../../utils/functions.dart';
 
 class TaskTripWidget extends StatelessWidget {
   BuildContext context;
-  TaskTripDTO task;
+  TaskTripDTO taskTrip;
 
-  TaskTripWidget({super.key, required this.context, required this.task});
+  TaskTripWidget({super.key, required this.context, required this.taskTrip});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class TaskTripWidget extends StatelessWidget {
   }
 
   Widget _leftInfo() {
-    final text = "${task.trip!.startCity} - ${task.trip!.endCity}";
+    final text = "${taskTrip.trip!.startCity} - ${taskTrip.trip!.endCity}";
     final textStyle = StyledText().descriptionText();
 
     return Expanded(
@@ -41,7 +41,8 @@ class TaskTripWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.location_on_outlined),
+              const Icon(Icons.location_on_outlined,
+                  semanticLabel: AppStrings.locationIconTooltip, size: 22),
               const SizedBox(width: 4),
               Expanded(
                 child: marqueeCustom(text: text, textStyle: textStyle),
@@ -56,7 +57,9 @@ class TaskTripWidget extends StatelessWidget {
               const SizedBox(width: 5),
               Expanded(
                 child: Text(
-                  task.taskTrip!.description,
+                  taskTrip.taskTrip!.description.isNotEmpty
+                      ? taskTrip.taskTrip!.description
+                      : AppStrings.noDescription,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   style: StyledText().descriptionText(
@@ -94,15 +97,16 @@ class TaskTripWidget extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
-        // TO:DO implement a possible pop-up here,
-        // Main goal: viewing entire description with bigger letters,
-        // Possible additions: view location on map or smth
         customArrowButton(
-          text: AppStrings.viewDetails,
-          fontSize: 12,
-          //TO:DO add screen nav and proper event emit
-          onPressed: () => Navigator.pop,
-        ),
+            text: AppStrings.viewDetails,
+            fontSize: 12,
+            onPressed: () => {
+                  Functions.emitUserEvent(
+                      context: context,
+                      event: GetDeliveryDetails(tripId: taskTrip.trip!.id)),
+                  Navigator.pushNamed(context, "/deliveryDetails",
+                      arguments: taskTrip.taskTrip)
+                }),
       ],
     );
   }

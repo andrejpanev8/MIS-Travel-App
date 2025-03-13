@@ -30,7 +30,8 @@ class _MapStaticState extends State<MapStatic> {
           widget.uniqueKey ?? ""),
       child: BlocBuilder<MapBloc, MapState>(
         builder: (context, state) {
-          if (state is MapSingleSelectionLoaded) {
+          if (state is MapSingleSelectionLoaded &&
+              state.uniqueKey == widget.uniqueKey) {
             currentMapLink = state.mapStaticLink;
           }
           if (state is MapDoubleSelectionLoaded) {

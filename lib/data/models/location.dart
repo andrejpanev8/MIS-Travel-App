@@ -17,4 +17,7 @@ class Location {
       : latitude = loc.latitude,
         longitude = loc.longitude;
 
+  LatLng get toLatLng {
+    return LatLng(latitude, longitude);
+  }
 }

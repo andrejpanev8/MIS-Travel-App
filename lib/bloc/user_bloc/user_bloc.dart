@@ -1,8 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:travel_app/data/DTO/AddDeliveryDTO.dart';
+import 'package:travel_app/data/DTO/ReserveAdhocDeliveryDTO.dart';
 import 'package:travel_app/data/DTO/ReserveDeliveryDTO.dart';
 import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/data/models/location.dart';
@@ -179,6 +178,17 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(TripDetailsLoaded(user, passengerTrips, taskTrips));
       }
 
+      if (event is GetDeliveryDetails) {
+        emit(ProcessStarted());
+        try {
+          Trip? trip = await TripService().findTripById(event.tripId);
+          emit(DeliveryDetailsLoaded(trip!));
+        }
+        catch(err) {
+          emit(DeliveryDetailsNotFound());
+        }
+      }
+
       if (event is UpdateUserInfo) {
         emit(ProcessStarted());
         Map<String, String> errors = {};
@@ -250,6 +260,29 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               dropOffPhoneNumber: event.delivery.dropOffPhoneNumber,
               endLocation: event.delivery.endLocation,
               tripId: event.delivery.tripId,
+              description: event.delivery.description);
+          emit(DeliveryCreateSuccess());
+        } catch (error) {
+          emit(DeliveryCreateError());
+        }
+      }
+
+      if (event is CreateAdhocUserDelivery) {
+        emit(ProcessStarted());
+        try {
+          await TaskTripService().createTaskTripWithAdhocUser(
+              pickUpPhoneNumber: event.delivery.pickUpPhoneNumber,
+              startLocation: event.delivery.startLocation,
+              dropOffPhoneNumber: event.delivery.dropOffPhoneNumber,
+              endLocation: event.delivery.endLocation,
+              tripId: event.delivery.tripId,
+              clientId: event.delivery.clientId,
+              firstName: event.delivery.firstName.isNotEmpty
+                  ? event.delivery.firstName
+                  : "Unknown",
+              lastName: event.delivery.lastName.isNotEmpty
+                  ? event.delivery.lastName
+                  : "Unknown",
               description: event.delivery.description);
           emit(DeliveryCreateSuccess());
         } catch (error) {

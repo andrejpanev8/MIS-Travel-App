@@ -51,6 +51,14 @@ class TripDetailsLoaded extends UserState {
   const TripDetailsLoaded(this.driver, this.passengerTrips, this.taskTrips);
 }
 
+class DeliveryDetailsLoaded extends UserState {
+  final Trip trip;
+
+  const DeliveryDetailsLoaded(this.trip);
+}
+
+class DeliveryDetailsNotFound extends UserState {}
+
 class UserValidationFailed extends UserState {
   final Map<String, String> errors;
 
