@@ -52,7 +52,6 @@ class MyApp extends StatelessWidget {
         "/home": (context) => const MyHomePage(),
         "/rideDetails": (context) => RideDetailsScreen(),
         "/clientRideDetails": (context) => ClientRideDetailsScreen(),
-        //TODO change to delivery details screen
         "/deliveryDetails": (context) => DeliveryDetailsScreen(),
         "/reserveRide": (context) => ReserveRideScreen(),
         "/reserveDelivery": (context) => ReserveDeliveryScreen(),

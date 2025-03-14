@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
+import 'package:travel_app/presentation/widgets/marquee_widget.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
 
@@ -46,10 +47,11 @@ class TaskTripDetailsWidget extends StatelessWidget {
                   children: [
                     const Icon(Icons.location_on_outlined),
                     const SizedBox(width: 8),
-                    //TO:DO Change with resolved location
                     Expanded(
-                      child: Text(taskTrip.startLocation.toString(),
-                          style: const TextStyle(fontSize: 14)),
+                      child: marqueeCustom(
+                        text: taskTrip.startLocation.address ?? "",
+                        textStyle: const TextStyle(fontSize: 14),
+                      ),
                     ),
                   ],
                 ),
@@ -58,10 +60,11 @@ class TaskTripDetailsWidget extends StatelessWidget {
                   children: [
                     const Icon(Icons.location_on_outlined),
                     const SizedBox(width: 8),
-                    //TO:DO Change with resolved location
                     Expanded(
-                      child: Text(taskTrip.endLocation.toString(),
-                          style: const TextStyle(fontSize: 14)),
+                      child: marqueeCustom(
+                        text: taskTrip.endLocation.address ?? "",
+                        textStyle: const TextStyle(fontSize: 14),
+                      ),
                     ),
                   ],
                 ),
