@@ -44,7 +44,7 @@ class _MapStaticState extends State<MapStatic> {
                       width: 50,
                       height: 50,
                       child: const CircularProgressIndicator()),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => _errorWidget(),
                   width: double.infinity,
                   height: 250,
                   fit: BoxFit.contain,
@@ -60,6 +60,29 @@ class _MapStaticState extends State<MapStatic> {
                   ),
                 );
         },
+      ),
+    );
+  }
+
+  Widget _errorWidget() {
+    return GestureDetector(
+      onTap: () => MapService().openMap(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  MapScreen(isSelectingRoute: widget.multipleSelection)),
+          widget.uniqueKey ?? ""),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.error, color: Colors.red, size: 40),
+          SizedBox(height: 8),
+          Text(
+            'Failed to load map',
+            style: TextStyle(color: Colors.red, fontSize: 14),
+          )
+        ],
       ),
     );
   }

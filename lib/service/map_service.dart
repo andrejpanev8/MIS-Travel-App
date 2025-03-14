@@ -25,14 +25,19 @@ class MapService {
     double maxLng =
         routePoints.map((p) => p.longitude).reduce((a, b) => a > b ? a : b);
 
+    double latSpan = maxLat - minLat;
+    double lngSpan = maxLng - minLng;
+
     String polyline =
         routePoints.map((p) => '${p.longitude},${p.latitude}').join(',');
 
-    return 'https://static-maps.yandex.ru/1.x/?size=600,400&l=map'
-        '&bbox=$minLng,$minLat~$maxLng,$maxLat' // Auto-fit the zoom level
+    var response = 'https://static-maps.yandex.ru/1.x/?size=600,400&l=map'
+        '&ll=${(minLng + maxLng) / 2},${(minLat + maxLat) / 2}'
+        '&spn=$lngSpan,$latSpan'
         '&pt=${routePoints.first.longitude},${routePoints.first.latitude},pm2rdm~'
         '${routePoints.last.longitude},${routePoints.last.latitude},pm2rdm'
         '&pl=c:0000FF,w:5,$polyline';
+    return response;
   }
 
   Future<LatLng?> openMap(

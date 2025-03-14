@@ -40,21 +40,18 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _setLocationFromAddress(String address, bool isFromField) async {
     final coordinates = await _mapService.getCoordinatesFromAddress(address);
-    if (coordinates != null) {
-      setState(() {
-        if (isFromField) {
-          _fromLocation =
-              LatLng(coordinates['latitude'], coordinates['longitude']);
-        } else {
-          _toLocation =
-              LatLng(coordinates['latitude'], coordinates['longitude']);
-        }
+    setState(() {
+      if (isFromField) {
+        _fromLocation =
+            LatLng(coordinates['latitude'], coordinates['longitude']);
+      } else {
+        _toLocation = LatLng(coordinates['latitude'], coordinates['longitude']);
+      }
 
-        if (_fromLocation != null && _toLocation != null) {
-          _updateRoute();
-        }
-      });
-    }
+      if (_fromLocation != null && _toLocation != null) {
+        _updateRoute();
+      }
+    });
   }
 
   @override
