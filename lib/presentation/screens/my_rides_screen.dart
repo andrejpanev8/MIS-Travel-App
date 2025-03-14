@@ -35,19 +35,10 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
   List<TaskTripDTO> clientDeliveries = [];
 
   dynamic userRole;
-  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-
-    Future.delayed(Duration(seconds: 5), () {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    });
   }
 
   @override
@@ -61,18 +52,6 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
             }
             return BlocBuilder<UserBloc, UserState>(
               builder: (context, state) {
-                isLoading = state is ProcessStarted;
-
-                if (isLoading) {
-                  Future.delayed(Duration(seconds: 10), () {
-                    if (mounted) {
-                      setState(() {
-                        isLoading = false;
-                      });
-                    }
-                  });
-                }
-
                 if (state is DriverDataLoaded) {
                   trips = state.driverTrips;
                   taskTrips = state.driverDeliveries;
@@ -141,41 +120,36 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
           infoText(AppStrings.upcomingRides),
           Padding(
             padding: EdgeInsets.only(left: 10, right: 10),
-            child: isLoading
-                ? Center(child: CircularProgressIndicator())
-                : widgetBuilder(
+            child: widgetBuilder(
+                context: context,
+                items: trips,
+                itemBuilder: (context, ride) => RidesWidget(
                     context: context,
-                    items: trips,
-                    itemBuilder: (context, ride) => RidesWidget(
-                        context: context,
-                        ride: ride,
-                        screenType: ScreenType.MY_RIDES_SCREEN),
-                    onRefresh: () => Functions.emitUserEvent(
-                          context: context,
-                          event: GetDriverUpcomingRides(forceRefresh: true),
-                        ),
-                    emptyWidget: emptyListIndicator(AppStrings.noUpcomingRides),
-                    scrollPhysics: NeverScrollableScrollPhysics()),
+                    ride: ride,
+                    screenType: ScreenType.MY_RIDES_SCREEN),
+                onRefresh: () => Functions.emitUserEvent(
+                      context: context,
+                      event: GetDriverUpcomingRides(forceRefresh: true),
+                    ),
+                emptyWidget: emptyListIndicator(AppStrings.noUpcomingRides),
+                scrollPhysics: NeverScrollableScrollPhysics()),
           ),
           SizedBox(height: 25),
           infoText(AppStrings.upcomingDeliveries),
           Padding(
             padding: EdgeInsets.only(left: 10, right: 10),
-            child: isLoading
-                ? Center(child: CircularProgressIndicator())
-                : widgetBuilder(
-                    context: context,
-                    items: taskTrips,
-                    itemBuilder: (context, task) =>
-                        TaskTripWidget(context: context, taskTrip: task),
-                    onRefresh: () => Functions.emitUserEvent(
-                          context: context,
-                          event:
-                              GetDriverUpcomingDeliveries(forceRefresh: true),
-                        ),
-                    emptyWidget:
-                        emptyListIndicator(AppStrings.noUpcomingDeliveries),
-                    scrollPhysics: NeverScrollableScrollPhysics()),
+            child: widgetBuilder(
+                context: context,
+                items: taskTrips,
+                itemBuilder: (context, task) =>
+                    TaskTripWidget(context: context, taskTrip: task),
+                onRefresh: () => Functions.emitUserEvent(
+                      context: context,
+                      event: GetDriverUpcomingDeliveries(forceRefresh: true),
+                    ),
+                emptyWidget:
+                    emptyListIndicator(AppStrings.noUpcomingDeliveries),
+                scrollPhysics: NeverScrollableScrollPhysics()),
           )
         ],
       ),
@@ -192,37 +166,33 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
           infoText(AppStrings.driversTitle),
           Padding(
             padding: EdgeInsets.only(left: 10, right: 10),
-            child: isLoading
-                ? Center(child: CircularProgressIndicator())
-                : widgetBuilder(
-                    context: context,
-                    items: drivers,
-                    itemBuilder: (context, driver) =>
-                        DriversWidget(context: context, driver: driver),
-                    onRefresh: () => Functions.emitUserEvent(
-                          context: context,
-                          event: GetAllDrivers(forceRefresh: true),
-                        ),
-                    emptyWidget: emptyListIndicator(AppStrings.noDrivers),
-                    scrollPhysics: NeverScrollableScrollPhysics()),
+            child: widgetBuilder(
+                context: context,
+                items: drivers,
+                itemBuilder: (context, driver) =>
+                    DriversWidget(context: context, driver: driver),
+                onRefresh: () => Functions.emitUserEvent(
+                      context: context,
+                      event: GetAllDrivers(forceRefresh: true),
+                    ),
+                emptyWidget: emptyListIndicator(AppStrings.noDrivers),
+                scrollPhysics: NeverScrollableScrollPhysics()),
           ),
           const SizedBox(height: 30),
           infoText(AppStrings.invitationsTitle),
           Padding(
               padding: EdgeInsets.only(left: 10, right: 10),
-              child: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : widgetBuilder(
-                      context: context,
-                      items: invitations,
-                      itemBuilder: (context, invitation) => InvitationWidget(
-                          context: context, invitation: invitation),
-                      onRefresh: () => Functions.emitUserEvent(
-                            context: context,
-                            event: GetAllInvitations(forceRefresh: true),
-                          ),
-                      emptyWidget: emptyListIndicator(AppStrings.noInvitations),
-                      scrollPhysics: NeverScrollableScrollPhysics()))
+              child: widgetBuilder(
+                  context: context,
+                  items: invitations,
+                  itemBuilder: (context, invitation) => InvitationWidget(
+                      context: context, invitation: invitation),
+                  onRefresh: () => Functions.emitUserEvent(
+                        context: context,
+                        event: GetAllInvitations(forceRefresh: true),
+                      ),
+                  emptyWidget: emptyListIndicator(AppStrings.noInvitations),
+                  scrollPhysics: NeverScrollableScrollPhysics()))
         ],
       ),
     );
@@ -238,41 +208,35 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
           infoText(AppStrings.upcomingRides),
           Padding(
               padding: EdgeInsets.only(left: 10, right: 10),
-              child: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : widgetBuilder(
+              child: widgetBuilder(
+                  context: context,
+                  items: clientTrips,
+                  itemBuilder: (context, ride) => RidesWidget(
                       context: context,
-                      items: clientTrips,
-                      itemBuilder: (context, ride) => RidesWidget(
-                          context: context,
-                          ride: ride.trip,
-                          screenType: ScreenType.MY_RIDES_SCREEN),
-                      onRefresh: () => Functions.emitUserEvent(
-                            context: context,
-                            event: GetClientUpcomingRides(forceRefresh: true),
-                          ),
-                      emptyWidget:
-                          emptyListIndicator(AppStrings.noUpcomingRides),
-                      scrollPhysics: NeverScrollableScrollPhysics())),
+                      ride: ride.trip,
+                      screenType: ScreenType.MY_RIDES_SCREEN),
+                  onRefresh: () => Functions.emitUserEvent(
+                        context: context,
+                        event: GetClientUpcomingRides(forceRefresh: true),
+                      ),
+                  emptyWidget: emptyListIndicator(AppStrings.noUpcomingRides),
+                  scrollPhysics: NeverScrollableScrollPhysics())),
           SizedBox(height: 25),
           infoText(AppStrings.upcomingDeliveries),
           Padding(
             padding: EdgeInsets.only(left: 10, right: 10),
-            child: isLoading
-                ? Center(child: CircularProgressIndicator())
-                : widgetBuilder(
-                    context: context,
-                    items: clientDeliveries,
-                    itemBuilder: (context, task) =>
-                        TaskTripWidget(context: context, taskTrip: task),
-                    onRefresh: () => Functions.emitUserEvent(
-                          context: context,
-                          event:
-                              GetClientUpcomingDeliveries(forceRefresh: true),
-                        ),
-                    emptyWidget:
-                        emptyListIndicator(AppStrings.noUpcomingDeliveries),
-                    scrollPhysics: NeverScrollableScrollPhysics()),
+            child: widgetBuilder(
+                context: context,
+                items: clientDeliveries,
+                itemBuilder: (context, task) =>
+                    TaskTripWidget(context: context, taskTrip: task),
+                onRefresh: () => Functions.emitUserEvent(
+                      context: context,
+                      event: GetClientUpcomingDeliveries(forceRefresh: true),
+                    ),
+                emptyWidget:
+                    emptyListIndicator(AppStrings.noUpcomingDeliveries),
+                scrollPhysics: NeverScrollableScrollPhysics()),
           )
         ],
       ),
