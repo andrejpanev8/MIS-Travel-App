@@ -78,9 +78,12 @@ class InvitationService {
       return [];
     }
 
-    List<Invitation> invitations = querySnapshot.docs.map((doc) {
-      return Invitation.fromJson(doc.data() as Map<String, dynamic>);
-    }).toList();
+    List<Invitation> invitations = querySnapshot.docs
+        .map((doc) => Invitation.fromJson(doc.data() as Map<String, dynamic>))
+        .toList()
+      ..sort((a, b) => b.expirationDate.compareTo(a.expirationDate));
+
+    invitations = invitations.take(15).toList();
 
     return invitations;
   }
