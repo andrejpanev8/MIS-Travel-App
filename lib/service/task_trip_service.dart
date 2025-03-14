@@ -152,6 +152,41 @@ class TaskTripService {
     }
   }
 
+  Future<List<TaskTripDTO>> getAllUpcomingDeliveriesForDriver() async {
+    try {
+      final driver = await authService.getCurrentUser();
+      if (driver == null) {
+        throw Exception("User is not authenticated.");
+      }
+
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('trips')
+          .where('driverId', isEqualTo: driver.id)
+          .get();
+
+      List<Trip> trips = querySnapshot.docs.map((doc) {
+        return Trip.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      List<String> tripIds = trips.map((trip) => trip.id).toList();
+
+      List<TaskTrip> taskTrips = await getAllTaskTripsForTripIds(tripIds);
+
+      Map<String, Trip> tripMap = {for (var trip in trips) trip.id: trip};
+
+      List<TaskTripDTO> taskTripDTOs = taskTrips
+          .map((taskTrip) => TaskTripDTO(
+                trip: tripMap[taskTrip.tripId]!,
+                taskTrip: taskTrip,
+              ))
+          .toList();
+
+      return taskTripDTOs;
+    } catch (e) {
+      return [];
+    }
+  }
+
   Future<List<TaskTripDTO>> getAllUpcomingDeliveries() async {
     try {
       final currentUser = await authService.getCurrentUser();
@@ -201,5 +236,24 @@ class TaskTripService {
       return resolvedTrips.whereType<TaskTrip>().toList();
     }
     return [];
+  }
+
+  Future<List<TaskTrip>> getAllTaskTripsForTripIds(List<String> tripIds) async {
+    if (tripIds.isEmpty) return [];
+
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('task_trips')
+          .where('tripId', whereIn: tripIds)
+          .get();
+
+      List<TaskTrip> taskTrips = querySnapshot.docs
+          .map((doc) => TaskTrip.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+
+      return taskTrips;
+    } catch (e) {
+      return [];
+    }
   }
 }

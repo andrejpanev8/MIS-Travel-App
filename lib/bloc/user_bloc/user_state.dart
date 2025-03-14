@@ -11,6 +11,8 @@ final class UserInitial extends UserState {}
 
 class ProcessStarted extends UserState {}
 
+class ProcessFinished extends UserState {}
+
 class ProcessFailed extends UserState {}
 
 class UpcomingRidesLoaded extends UserState {

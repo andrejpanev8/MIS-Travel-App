@@ -26,22 +26,25 @@ class TripService {
     taskTripService = service;
   }
 
-  Future<String?> createTrip({required Trip trip}) async {
+  Future<String?> createOrUpdateTrip({required Trip trip}) async {
     UserModel? currentUser = await authService.getCurrentUser();
     if (currentUser == null) {
       throw Exception("No user is logged in");
     }
     if (currentUser.role != UserRole.ADMIN) {
-      throw Exception("You do not have permission to create a trip.");
+      throw Exception("You do not have permission to create or update a trip.");
     }
 
-    DocumentReference tripRef = _firestore.collection('trips').doc();
+    DocumentReference tripRef;
 
-    trip.id = tripRef.id;
-    trip.passengerTrips = [];
-    trip.taskTrips = [];
+    if (trip.id.isNotEmpty) {
+      tripRef = _firestore.collection('trips').doc(trip.id);
+    } else {
+      tripRef = _firestore.collection('trips').doc();
+      trip.id = tripRef.id;
+    }
 
-    await tripRef.set(trip.toJson());
+    await tripRef.set(trip.toJson(), SetOptions(merge: true));
 
     return tripRef.id;
   }

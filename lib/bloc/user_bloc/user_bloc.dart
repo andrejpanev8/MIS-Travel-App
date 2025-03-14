@@ -96,7 +96,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
         List<TaskTripDTO> driverDeliveries = [];
         driverDeliveries =
-            await TaskTripService().getUpcomingDeliveriesForUser();
+            await TaskTripService().getAllUpcomingDeliveriesForDriver();
         _cachedDriverDeliveries = driverDeliveries;
         emit(DriverUpcomingDeliveriesLoaded(driverDeliveries));
       }
@@ -114,7 +114,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         List<TaskTripDTO> driverDeliveries = [];
         driverTrips = await TripService().getTripsByDriver(currentUser!.id);
         driverDeliveries =
-            await TaskTripService().getUpcomingDeliveriesForUser();
+            await TaskTripService().getAllUpcomingDeliveriesForDriver();
 
         _cachedDriverTrips = driverTrips;
         _cachedDriverDeliveries = driverDeliveries;
@@ -228,6 +228,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(TripInfoLoaded(trip, driver));
         } catch (e) {
           debugPrint(e.toString());
+          emit(ProcessFailed());
         }
       }
       if (event is CheckEmailExists) {
@@ -413,8 +414,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(ProcessStarted());
         try {
           await PhoneService().makePhoneCall(event.phoneNumber);
+          emit(ProcessFinished());
         } catch (error) {
           debugPrint(error.toString());
+          emit(ProcessFailed());
         }
       }
 
@@ -425,13 +428,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           emit(EditTripInfoLoaded(event.trip, event.driver, locationAddress));
         } catch (error) {
           debugPrint(error.toString());
+          emit(ProcessFailed());
         }
       }
 
-      if (event is SaveTripEvent) {
+      if (event is SaveOrUpdateTripEvent) {
         emit(ProcessStarted());
         try {
-          await TripService().createTrip(trip: event.trip);
+          await TripService().createOrUpdateTrip(trip: event.trip);
           emit(TripSaveSuccess());
         } catch (error) {
           emit(
