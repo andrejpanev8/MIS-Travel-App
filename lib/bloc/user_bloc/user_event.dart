@@ -112,10 +112,10 @@ class CreateDelivery extends UserEvent {
   const CreateDelivery(this.delivery);
 }
 
-class CreateAdhocUserDelivery extends UserEvent {
+class CreateOrUpdateAdhocUserDelivery extends UserEvent {
   final ReserveAdhocDeliveryDTO delivery;
 
-  const CreateAdhocUserDelivery(this.delivery);
+  const CreateOrUpdateAdhocUserDelivery(this.delivery);
 }
 
 class LoadClientTripsDeliveries extends UserEvent {

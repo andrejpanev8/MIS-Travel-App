@@ -65,7 +65,8 @@ class TaskTripService {
     return taskTripIdGenerated;
   }
 
-  Future<String?> createTaskTripWithAdhocUser({
+  Future<String?> createOrUpdateTaskTripWithAdhocUser({
+    String? taskTripId,
     required String pickUpPhoneNumber,
     required Location startLocation,
     required String dropOffPhoneNumber,
@@ -77,6 +78,7 @@ class TaskTripService {
     String description = "",
   }) async {
     UserModel? adhocUser;
+
     if (clientId != null) {
       adhocUser = await userService.getUserById(clientId);
     } else {
@@ -89,10 +91,11 @@ class TaskTripService {
       );
     }
 
-    String taskTripIdGenerated = _firestore.collection('task_trips').doc().id;
+    String finalTaskTripId = taskTripId ?? _firestore.collection('task_trips').doc().id;
+    DocumentReference taskTripRef = _firestore.collection('task_trips').doc(finalTaskTripId);
 
     TaskTrip newTrip = TaskTrip(
-      id: taskTripIdGenerated,
+      id: finalTaskTripId,
       pickUpPhoneNumber: pickUpPhoneNumber,
       startLocation: startLocation,
       dropOffPhoneNumber: dropOffPhoneNumber,
@@ -102,16 +105,15 @@ class TaskTripService {
       tripId: tripId,
     );
 
-    await _firestore
-        .collection('task_trips')
-        .doc(taskTripIdGenerated)
-        .set(newTrip.toJson());
+    await taskTripRef.set(newTrip.toJson(), SetOptions(merge: true));
 
-    await _firestore.collection('trips').doc(tripId).update({
-      "taskTrips": FieldValue.arrayUnion([taskTripIdGenerated])
-    });
+    if (taskTripId == null) {
+      await _firestore.collection('trips').doc(tripId).update({
+        "taskTrips": FieldValue.arrayUnion([finalTaskTripId])
+      });
+    }
 
-    return taskTripIdGenerated;
+    return finalTaskTripId;
   }
 
   Future<List<TaskTripDTO>> getUpcomingDeliveriesForUser() async {

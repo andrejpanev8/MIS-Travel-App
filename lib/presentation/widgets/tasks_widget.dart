@@ -98,6 +98,7 @@ class TaskTripWidget extends StatelessWidget {
         customArrowButton(
             text: AppStrings.viewDetails,
             fontSize: 12,
+            horizontalPadding: 20,
             onPressed: () => {
                   Functions.emitUserEvent(
                       context: context,

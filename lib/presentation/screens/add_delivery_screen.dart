@@ -46,6 +46,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
   final FocusNode startLocationFocusNode = FocusNode();
   final FocusNode endLocationFocusNode = FocusNode();
 
+  String taskTripId = "";
   List<UserModel> clients = [];
   UserModel? selectedClient;
   List<Trip> trips = [];
@@ -162,7 +163,8 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
 
     Functions.emitUserEvent(
         context: context,
-        event: CreateAdhocUserDelivery(ReserveAdhocDeliveryDTO(
+        event: CreateOrUpdateAdhocUserDelivery(ReserveAdhocDeliveryDTO(
+            taskTripId: taskTripId,
             pickUpPhoneNumber: pickUpPhoneController.text,
             startLocation: startLocation!,
             dropOffPhoneNumber: dropOffPhoneController.text,
@@ -239,6 +241,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
             });
           }
           if (state is DeliveryInfoLoaded) {
+            taskTripId = state.taskTrip.id;
             selectedTrip = state.trip;
             selectedClient = state.taskTrip.user;
             pickUpPhoneController.text = state.taskTrip.pickUpPhoneNumber;

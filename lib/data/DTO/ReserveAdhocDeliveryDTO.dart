@@ -1,6 +1,7 @@
 import '../models/location.dart';
 
 class ReserveAdhocDeliveryDTO {
+  String taskTripId;
   final String pickUpPhoneNumber;
   final Location startLocation;
   final String dropOffPhoneNumber;
@@ -12,6 +13,7 @@ class ReserveAdhocDeliveryDTO {
   final String description;
 
   ReserveAdhocDeliveryDTO({
+    this.taskTripId = "",
     required this.pickUpPhoneNumber,
     required this.startLocation,
     required this.dropOffPhoneNumber,
@@ -25,6 +27,7 @@ class ReserveAdhocDeliveryDTO {
 
   Map<String, dynamic> toJson() {
     return {
+      "taskTripId": taskTripId ?? "",
       "pickUpPhoneNumber": pickUpPhoneNumber,
       "startLocation": startLocation.toJson(),
       "dropOffPhoneNumber": dropOffPhoneNumber,

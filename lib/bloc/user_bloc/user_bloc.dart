@@ -267,10 +267,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       }
 
-      if (event is CreateAdhocUserDelivery) {
+      if (event is CreateOrUpdateAdhocUserDelivery) {
         emit(ProcessStarted());
         try {
-          await TaskTripService().createTaskTripWithAdhocUser(
+          await TaskTripService().createOrUpdateTaskTripWithAdhocUser(
+              taskTripId: event.delivery.taskTripId,
               pickUpPhoneNumber: event.delivery.pickUpPhoneNumber,
               startLocation: event.delivery.startLocation,
               dropOffPhoneNumber: event.delivery.dropOffPhoneNumber,
