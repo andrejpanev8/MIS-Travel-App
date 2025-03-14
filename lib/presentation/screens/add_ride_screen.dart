@@ -31,7 +31,8 @@ class _AddRideScreenState extends State<AddRideScreen> {
   final TextEditingController startTimeController = TextEditingController();
   final TextEditingController startLocationController = TextEditingController();
   final TextEditingController maxCapacityController = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
+  final TextEditingController ridePriceController = TextEditingController();
+  final TextEditingController deliveryPriceController = TextEditingController();
   final TextEditingController driverController = TextEditingController();
 
   final FocusNode startLocationFocusNode = FocusNode();
@@ -39,6 +40,7 @@ class _AddRideScreenState extends State<AddRideScreen> {
   DateTime? selectedStartDateTime;
   UserModel? selectedDriver;
   List<UserModel> allDrivers = [];
+  String tripId = "";
   bool isEdit = false;
 
   @override
@@ -64,7 +66,8 @@ class _AddRideScreenState extends State<AddRideScreen> {
     startTimeController.dispose();
     startLocationController.dispose();
     maxCapacityController.dispose();
-    priceController.dispose();
+    ridePriceController.dispose();
+    deliveryPriceController.dispose();
     driverController.dispose();
     startLocationFocusNode.dispose();
     super.dispose();
@@ -94,15 +97,18 @@ class _AddRideScreenState extends State<AddRideScreen> {
                 allDrivers = state.drivers;
               }
               if (state is EditTripInfoLoaded) {
+                tripId = state.trip.id;
                 departureCityController.text = state.trip.startCity;
                 arrivalCityController.text = state.trip.endCity;
                 startTimeController.text = state.trip.startTime.toString();
                 startLocationController.text = state.startLocationAddress;
                 maxCapacityController.text = state.trip.maxCapacity.toString();
-                priceController.text = state.trip.deliveryPrice.toString();
+                ridePriceController.text = state.trip.ridePrice.toString();
+                deliveryPriceController.text = state.trip.deliveryPrice.toString();
                 startLocation = state.trip.startLocation;
                 selectedStartDateTime = state.trip.startTime;
                 selectedDriver = state.driver;
+
                 Functions.emitMapEvent(
                   context: context,
                   event: AddressEntryEvent(state.startLocationAddress,
@@ -111,6 +117,10 @@ class _AddRideScreenState extends State<AddRideScreen> {
                 isEdit = true;
               }
               if (state is TripSaveSuccess) {
+                Functions.emitUserEvent(
+                  context: context,
+                  event: GetUpcomingRides(forceRefresh: true),
+                );
                 showSuccessDialog(
                     context,
                     AppStrings.rideSavedSuccessfullyTitle,
@@ -137,7 +147,7 @@ class _AddRideScreenState extends State<AddRideScreen> {
                               onPressed: () {
                                 Functions.emitUserEvent(
                                     context: context,
-                                    event: SaveTripEvent(createTrip()));
+                                    event: SaveOrUpdateTripEvent(createTrip()));
                               })),
                     ],
                   )
@@ -152,12 +162,13 @@ class _AddRideScreenState extends State<AddRideScreen> {
 
   Trip createTrip() {
     Trip newTrip = Trip(
+      id: tripId,
       startCity: departureCityController.text,
       endCity: arrivalCityController.text,
       startTime: selectedStartDateTime!,
       startLocation: startLocation!,
-      ridePrice: int.parse(priceController.text),
-      deliveryPrice: int.parse(priceController.text),
+      ridePrice: int.parse(ridePriceController.text),
+      deliveryPrice: int.parse(deliveryPriceController.text),
       maxCapacity: int.parse(maxCapacityController.text),
       driverId: selectedDriver!.id,
     );
@@ -211,11 +222,19 @@ class _AddRideScreenState extends State<AddRideScreen> {
               suffixIcon: Icon(Icons.person_outline)),
           //////////////////////////
           SizedBox(height: 16.0),
-          _text("Price"),
+          _text("Ride Price"),
           inputTextFieldCustom(
               context: context,
               keyboardType: TextInputType.numberWithOptions(),
-              controller: priceController,
+              controller: ridePriceController,
+              suffixIcon: Icon(Icons.monetization_on_outlined)),
+          //////////////////////////
+          SizedBox(height: 16.0),
+          _text("Delivery Price"),
+          inputTextFieldCustom(
+              context: context,
+              keyboardType: TextInputType.numberWithOptions(),
+              controller: deliveryPriceController,
               suffixIcon: Icon(Icons.monetization_on_outlined)),
           //////////////////////////
           SizedBox(height: 16.0),

@@ -152,6 +152,10 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
             },
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
           if (state is DeliveryCreateSuccess) {
+            Functions.emitUserEvent(
+                context: context,
+                event: GetClientUpcomingDeliveries(forceRefresh: true)
+            );
             WidgetsBinding.instance.addPostFrameCallback((_) {
               showSuccessDialog(
                   context, "Success", "Delivery successfully created!", () {

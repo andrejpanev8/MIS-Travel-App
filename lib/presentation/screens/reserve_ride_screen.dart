@@ -137,6 +137,10 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
               }
             }
             if (state is RideReserveSuccess) {
+              Functions.emitUserEvent(
+                  context: context,
+                  event: GetClientUpcomingRides(forceRefresh: true)
+              );
               showSuccessDialog(
                   context,
                   AppStrings.rideReservedSuccessfullyTitle,

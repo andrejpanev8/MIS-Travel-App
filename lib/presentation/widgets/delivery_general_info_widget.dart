@@ -106,7 +106,7 @@ Widget _buildRow({IconData? icon, String text = "", String? assetIcon}) {
         child: Text(
           text,
           style: StyledText().descriptionText(),
-          softWrap: true, // Allow wrapping
+          softWrap: true,
         ),
       ),
     ],

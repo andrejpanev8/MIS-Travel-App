@@ -203,6 +203,10 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
                     }
                   else if (state is DeliveryCreateSuccess)
                     {
+                      Functions.emitUserEvent(
+                        context: context,
+                        event: GetUpcomingDeliveries(forceRefresh: true),
+                      ),
                       showSuccessDialog(
                           context, "Success", "Delivery successfully created!",
                           () {
