@@ -66,6 +66,13 @@ class Trip implements HasFilterProperties {
         'tripStatus': tripStatus.index
       };
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || (other is Trip && other.id == id);
+
+  @override
+  int get hashCode => id.hashCode;
+
   int currentCapacity() {
     return maxCapacity - passengerTrips.length;
   }

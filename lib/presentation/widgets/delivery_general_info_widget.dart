@@ -19,11 +19,17 @@ Widget deliveryGeneralInfo(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(Icons.location_on_outlined, size: 22),
-                SizedBox(width: 10),
-                Text("${trip.startCity} - ${trip.endCity}",
-                    style: StyledText().appBarText().copyWith(fontSize: 20)),
+                Row(
+                  children: [
+                    Icon(Icons.location_on_outlined, size: 22),
+                    SizedBox(width: 10),
+                    Text("${trip.startCity} - ${trip.endCity}",
+                        style:
+                            StyledText().appBarText().copyWith(fontSize: 20)),
+                  ],
+                ),
                 userRole == UserRole.ADMIN
                     ? IconButton(
                         icon: const Icon(Icons.edit),
@@ -48,7 +54,8 @@ Widget deliveryGeneralInfo(
             _text(AppStrings.pickUpLocation),
             SizedBox(height: 6),
             _buildRow(
-                text: taskTrip.startLocation.address ?? "No Location Provided", icon: Icons.location_on),
+                text: taskTrip.startLocation.address ?? "No Location Provided",
+                icon: Icons.location_on),
             SizedBox(height: 10),
             _text(AppStrings.pickUpPhoneNumber),
             SizedBox(height: 6),
@@ -61,7 +68,9 @@ Widget deliveryGeneralInfo(
             SizedBox(height: 15),
             _text(AppStrings.dropOffLocation),
             SizedBox(height: 6),
-            _buildRow(text: taskTrip.endLocation.address ?? "No Location provided", icon: Icons.location_on),
+            _buildRow(
+                text: taskTrip.endLocation.address ?? "No Location provided",
+                icon: Icons.location_on),
             SizedBox(height: 10),
             _text(AppStrings.dropOffPhoneNumber),
             SizedBox(height: 6),
