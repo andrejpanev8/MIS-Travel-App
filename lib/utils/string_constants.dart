@@ -20,6 +20,7 @@ class AppStrings {
   static const String noUpcomingRides = "No upcoming rides available";
   static const String noUpcomingDeliveries = "No upcoming deliveries available";
   static const String deliveryNotFound = "Delivery Not Found";
+  static const String rideNotFound = "Ride Not Found";
   static const String passengers = "Passengers";
   static const String packages = "Packages";
   static const String yourRoute = "Your route";
@@ -103,6 +104,9 @@ class AppStrings {
       "You have reserved the ride successfully";
   static const String rideReservedFailedTitle = "Ride reserve failed";
   static const String rideReservedFailedMessage = "Failed to reserve the ride";
+  static const String startLocation = "Start location";
+  static const String endLocation = "End location";
+
 }
 
 const String FromWhereString = "fromWhere";

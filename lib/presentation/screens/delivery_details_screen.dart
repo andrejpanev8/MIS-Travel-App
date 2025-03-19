@@ -28,7 +28,6 @@ class DeliveryDetailsScreen extends StatelessWidget {
         child: Scaffold(
             appBar: customAppBar(context: context, arrowBack: true),
             body: SingleChildScrollView(
-                padding: EdgeInsets.all(0),
                 child: BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, authState) {
                   if (authState is UserIsLoggedIn) {
