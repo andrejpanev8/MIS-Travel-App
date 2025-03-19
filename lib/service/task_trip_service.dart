@@ -91,7 +91,9 @@ class TaskTripService {
       );
     }
 
-    String finalTaskTripId = taskTripId ?? _firestore.collection('task_trips').doc().id;
+    String finalTaskTripId = (taskTripId != null && taskTripId.isNotEmpty)
+        ? taskTripId
+        : _firestore.collection('task_trips').doc().id;
     DocumentReference taskTripRef = _firestore.collection('task_trips').doc(finalTaskTripId);
 
     TaskTrip newTrip = TaskTrip(
