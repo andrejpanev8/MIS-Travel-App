@@ -94,7 +94,10 @@ class RideDetailsScreen extends StatelessWidget {
           _buildTaskList(context),
           const SizedBox(height: 20),
           _sectionTitle(AppStrings.yourRoute),
-          const MapStatic(),
+          //TODO: GET TRIP FOR ENTIRE ROUTE
+          const MapStatic(
+            uniqueKey: "TO:DO GET TRIP ENTIRE ROUTE",
+          ),
         ],
       ),
     );

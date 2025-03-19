@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/presentation/widgets/map_static.dart';
 import 'package:travel_app/utils/map_unique_keys.dart';
@@ -37,6 +38,23 @@ Widget deliveryGeneralInfo(
                           Functions.emitUserEvent(
                               context: context,
                               event: EditDeliveryEvent(taskTrip, trip));
+                          // Functions.emitMapEvent(
+                          //     context: context,
+                          //     event: AddressEntryEvent(
+                          //         taskTrip.startLocation.address,
+                          //         uniqueKey:
+                          //             START_LOCATION_ADD_DELIVERY_SCREEN));
+                          // Functions.emitMapEvent(
+                          //     context: context,
+                          //     event: AddressEntryEvent(
+                          //         taskTrip.endLocation.address,
+                          //         uniqueKey: END_LOCATION_ADD_DELIVERY_SCREEN));
+                          Functions.emitMapEvent(
+                              context: context,
+                              event: AddressDoubleEntryEvent(
+                                  taskTrip.startLocation.address,
+                                  taskTrip.endLocation.address,
+                                  uniqueKey: "TODO key"));
                           Navigator.of(context).pushNamed("/addDelivery");
                         },
                       )

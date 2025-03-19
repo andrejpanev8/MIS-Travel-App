@@ -17,19 +17,28 @@ class MapSelectionEvent extends MapEvent {
 class MapDoubleSelectionEvent extends MapEvent {
   final LatLng fromSelectedLocation;
   final LatLng toSelectedLocation;
+  final String uniqueKey;
   const MapDoubleSelectionEvent(
-      {required this.fromSelectedLocation, required this.toSelectedLocation});
+      {required this.fromSelectedLocation,
+      required this.toSelectedLocation,
+      required this.uniqueKey});
 }
 
 class AddressEntryEvent extends MapEvent {
   final String? address;
-  final String? uniqueKey;
-  const AddressEntryEvent(this.address, {this.uniqueKey});
+  final String uniqueKey;
+  const AddressEntryEvent(this.address, {required this.uniqueKey});
 }
 
 class AddressDoubleEntryEvent extends MapEvent {
   final String? fromAddress;
   final String? toAddress;
+  final String uniqueKey;
 
-  const AddressDoubleEntryEvent(this.fromAddress, this.toAddress);
+  const AddressDoubleEntryEvent(this.fromAddress, this.toAddress,
+      {required this.uniqueKey});
+}
+
+class ClearMapEvent extends MapEvent {
+  const ClearMapEvent();
 }

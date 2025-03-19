@@ -114,6 +114,8 @@ class _MyHomePageState extends State<MyHomePage> {
           context.read<UserBloc>().add(LoadClientTripsDeliveries());
         }
       }
+    } else if (index == 0) {
+      context.read<MapBloc>().add(ClearMapEvent());
     }
   }
 }

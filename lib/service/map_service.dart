@@ -40,8 +40,7 @@ class MapService {
     return response;
   }
 
-  Future<LatLng?> openMap(
-      BuildContext context, Route route, String uniqueKey) async {
+  void openMap(BuildContext context, Route route, String uniqueKey) async {
     final result = await Navigator.push(
       context,
       route,
@@ -59,9 +58,9 @@ class MapService {
             context: context,
             event: MapDoubleSelectionEvent(
                 fromSelectedLocation: result["from"] as LatLng,
-                toSelectedLocation: result["to"] as LatLng));
+                toSelectedLocation: result["to"] as LatLng,
+                uniqueKey: uniqueKey));
       }
-      return null;
     }
   }
 

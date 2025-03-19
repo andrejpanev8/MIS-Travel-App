@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
@@ -200,27 +198,10 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
                     {
                       setState(() {
                         endLocationController.text = state.address;
-                        endLocation = Location.fromLatLng(state.location);
-                      })
-                    }
-                  else if (state is DeliveryCreateSuccess)
-                    {
-                      Functions.emitUserEvent(
-                        context: context,
-                        event: GetUpcomingDeliveries(forceRefresh: true),
-                      ),
-                      showSuccessDialog(
-                          context, "Success", "Delivery successfully created!",
-                          () {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, "/home", (route) => false);
-                      })
-                    }
-                  else if (state is DeliveryCreateError)
-                    {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        showErrorDialog(context, "Error",
-                            "Error occurred while creating a delivery");
+                        endLocation = Location(
+                            latitude: state.location.latitude,
+                            longitude: state.location.longitude,
+                            address: state.address);
                       })
                     }
                 }

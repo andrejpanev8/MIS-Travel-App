@@ -9,8 +9,9 @@ import '../screens/map_screen.dart';
 
 class MapStatic extends StatefulWidget {
   final bool multipleSelection;
-  final String? uniqueKey;
-  const MapStatic({super.key, this.uniqueKey, this.multipleSelection = false});
+  final String uniqueKey;
+  const MapStatic(
+      {super.key, required this.uniqueKey, this.multipleSelection = false});
 
   @override
   State<MapStatic> createState() => _MapStaticState();
@@ -27,7 +28,7 @@ class _MapStaticState extends State<MapStatic> {
           MaterialPageRoute(
               builder: (context) =>
                   MapScreen(isSelectingRoute: widget.multipleSelection)),
-          widget.uniqueKey ?? ""),
+          widget.uniqueKey),
       child: BlocBuilder<MapBloc, MapState>(
         builder: (context, state) {
           if (state is MapSingleSelectionLoaded &&
@@ -35,7 +36,15 @@ class _MapStaticState extends State<MapStatic> {
             currentMapLink = state.mapStaticLink;
           }
           if (state is MapDoubleSelectionLoaded) {
-            currentMapLink = state.mapStaticLink;
+            if (!widget.multipleSelection && state.mapLinks != null) {
+              currentMapLink = widget.uniqueKey.contains("START")
+                  ? state.mapLinks!["from"]
+                  : state.mapLinks!["to"];
+            } else {
+              currentMapLink = state.mapStaticLink;
+            }
+          } else {
+            currentMapLink = null;
           }
           return currentMapLink != null
               ? CachedNetworkImage(

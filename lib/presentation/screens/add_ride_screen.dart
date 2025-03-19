@@ -5,6 +5,7 @@ import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/custom_drop_down_button.dart';
+import 'package:travel_app/utils/error_handler.dart';
 import 'package:travel_app/utils/success_handler.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
@@ -41,7 +42,6 @@ class _AddRideScreenState extends State<AddRideScreen> {
   UserModel? selectedDriver;
   List<UserModel> allDrivers = [];
   String tripId = "";
-  bool isEdit = false;
 
   @override
   void initState() {
@@ -104,7 +104,8 @@ class _AddRideScreenState extends State<AddRideScreen> {
                 startLocationController.text = state.startLocationAddress;
                 maxCapacityController.text = state.trip.maxCapacity.toString();
                 ridePriceController.text = state.trip.ridePrice.toString();
-                deliveryPriceController.text = state.trip.deliveryPrice.toString();
+                deliveryPriceController.text =
+                    state.trip.deliveryPrice.toString();
                 startLocation = state.trip.startLocation;
                 selectedStartDateTime = state.trip.startTime;
                 selectedDriver = state.driver;
@@ -114,7 +115,6 @@ class _AddRideScreenState extends State<AddRideScreen> {
                   event: AddressEntryEvent(state.startLocationAddress,
                       uniqueKey: START_LOCATION_ADD_RIDE_SCREEN),
                 );
-                isEdit = true;
               }
               if (state is TripSaveSuccess) {
                 Functions.emitUserEvent(
@@ -128,7 +128,10 @@ class _AddRideScreenState extends State<AddRideScreen> {
                     () => Navigator.pushNamedAndRemoveUntil(
                         context, "/home", (route) => false));
               }
-              if (state is TripSaveError) {}
+              if (state is TripSaveError) {
+                showErrorDialog(context, AppStrings.rideSavedFailedTitle,
+                    AppStrings.rideSavedFailedMessage);
+              }
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

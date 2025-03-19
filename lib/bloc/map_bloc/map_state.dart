@@ -28,7 +28,9 @@ class MapDoubleSelectionLoaded extends MapState {
   final String fromAddress;
   final String toAddress;
   final String mapStaticLink;
+  final HashMap<String, String>? mapLinks;
 
   const MapDoubleSelectionLoaded(this.fromLocation, this.toLocation,
-      this.fromAddress, this.toAddress, this.mapStaticLink);
+      this.fromAddress, this.toAddress, this.mapStaticLink,
+      {this.mapLinks});
 }

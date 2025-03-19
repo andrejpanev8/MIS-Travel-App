@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/utils/color_constants.dart';
 import 'package:travel_app/utils/string_constants.dart';
@@ -46,7 +47,10 @@ PreferredSizeWidget customAppBar({
         ? IconButton(
             icon: const Icon(Icons.arrow_back),
             color: whiteColor,
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              Navigator.pop(context);
+              Functions.emitMapEvent(context: context, event: ClearMapEvent());
+            },
           )
         : null,
     automaticallyImplyLeading: false,

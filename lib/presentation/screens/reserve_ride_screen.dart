@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
 import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
-import 'package:travel_app/data/DTO/PassengerTripDTO.dart';
+// import 'package:travel_app/data/DTO/PassengerTripDTO.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
 import 'package:travel_app/presentation/widgets/map_static.dart';
 import 'package:travel_app/presentation/widgets/ride_general_info_widget.dart';
 import 'package:travel_app/utils/error_handler.dart';
+import 'package:travel_app/utils/map_unique_keys.dart';
 import 'package:travel_app/utils/success_handler.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
@@ -28,7 +28,7 @@ class ReserveRideScreen extends StatefulWidget {
 class _ReserveRideScreenState extends State<ReserveRideScreen> {
   Trip? trip;
   UserModel? driver;
-  List<PassengerTripDTO>? passengerTripDTO;
+  // List<PassengerTripDTO>? passengerTripDTO;
 
   final TextEditingController fromAddressController = TextEditingController();
   final TextEditingController toAddressController = TextEditingController();
@@ -49,8 +49,8 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
       if (fromAddressController.text.isNotEmpty) {
         Functions.emitMapEvent(
           context: context,
-          event:
-              AddressEntryEvent(fromAddressController.text, uniqueKey: "from"),
+          event: AddressEntryEvent(fromAddressController.text,
+              uniqueKey: START_LOCATION_RESERVE_RIDE_SCREEN),
         );
       }
     }
@@ -59,7 +59,8 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
       if (toAddressController.text.isNotEmpty) {
         Functions.emitMapEvent(
           context: context,
-          event: AddressEntryEvent(toAddressController.text, uniqueKey: "to"),
+          event: AddressEntryEvent(toAddressController.text,
+              uniqueKey: END_LOCATION_RESERVE_RIDE_SCREEN),
         );
       }
     }
@@ -73,6 +74,7 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
         event: AddressDoubleEntryEvent(
           fromAddressController.text,
           toAddressController.text,
+          uniqueKey: RESERVE_RIDE_SCREEN,
         ),
       );
     }
@@ -99,14 +101,11 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
           listener: (context, state) => {
             if (state is MapSingleSelectionLoaded)
               {
-                if (state.uniqueKey != null)
-                  {
-                    setState(() {
-                      state.uniqueKey == "from"
-                          ? fromAddressController.text = state.address
-                          : toAddressController.text = state.address;
-                    })
-                  }
+                setState(() {
+                  state.uniqueKey == START_LOCATION_RESERVE_RIDE_SCREEN
+                      ? fromAddressController.text = state.address
+                      : toAddressController.text = state.address;
+                })
               },
             if (state is MapDoubleSelectionLoaded)
               {
@@ -119,28 +118,27 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
               trip = state.trip;
               driver = state.driver;
             }
-            if (state is ClientUpcomingTripsLoaded) {
-              passengerTripDTO = state.clientTrips;
-              var authState = context.read<AuthBloc>().state;
-              UserModel? client =
-                  authState is UserIsLoggedIn ? authState.user : null;
-              PassengerTripDTO? passengerTripClientDTO;
+            // if (state is ClientUpcomingTripsLoaded) {
+            //   passengerTripDTO = state.clientTrips;
+            //   var authState = context.read<AuthBloc>().state;
+            //   UserModel? client =
+            //       authState is UserIsLoggedIn ? authState.user : null;
+            //   PassengerTripDTO? passengerTripClientDTO;
 
-              if (client != null && passengerTripDTO != null) {
-                passengerTripClientDTO = passengerTripDTO!
-                    .where((item) => item.passengerTrip!.user.id == client.id)
-                    .firstOrNull;
+            //   if (client != null && passengerTripDTO != null) {
+            //     passengerTripClientDTO = passengerTripDTO!
+            //         .where((item) => item.passengerTrip!.user.id == client.id)
+            //         .firstOrNull;
 
-                if (passengerTripClientDTO != null) {
-                  _setAddressFields(passengerTripClientDTO);
-                }
-              }
-            }
+            //     if (passengerTripClientDTO != null) {
+            //       _setAddressFields(passengerTripClientDTO);
+            //     }
+            //   }
+            // }
             if (state is RideReserveSuccess) {
               Functions.emitUserEvent(
                   context: context,
-                  event: GetClientUpcomingRides(forceRefresh: true)
-              );
+                  event: GetClientUpcomingRides(forceRefresh: true));
               showSuccessDialog(
                   context,
                   AppStrings.rideReservedSuccessfullyTitle,
@@ -149,9 +147,7 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
                       context, "/home", (route) => false));
             }
             if (state is RideReserveError) {
-              showErrorDialog(
-                  context,
-                  AppStrings.rideReservedFailedTitle,
+              showErrorDialog(context, AppStrings.rideReservedFailedTitle,
                   AppStrings.rideReservedFailedMessage);
             }
             return Column(
@@ -162,7 +158,8 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
                   SizedBox(height: 32.0),
                   Text(AppStrings.selectALocation,
                       style: StyledText().descriptionText()),
-                  MapStatic(multipleSelection: true),
+                  MapStatic(
+                      multipleSelection: true, uniqueKey: RESERVE_RIDE_SCREEN),
                   SizedBox(height: 32.0),
                   Row(
                     children: [
@@ -218,10 +215,10 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
         child: rideGeneralInfo(trip, driver));
   }
 
-  void _setAddressFields(PassengerTripDTO passengerTripClientDTO) async {
-    fromAddressController.text =
-        await passengerTripClientDTO.passengerTrip!.startLocation.address ?? '';
-    toAddressController.text =
-        await passengerTripClientDTO.passengerTrip!.endLocation.address ?? '';
-  }
+  // void _setAddressFields(PassengerTripDTO passengerTripClientDTO) async {
+  //   fromAddressController.text =
+  //       await passengerTripClientDTO.passengerTrip!.startLocation.address ?? '';
+  //   toAddressController.text =
+  //       await passengerTripClientDTO.passengerTrip!.endLocation.address ?? '';
+  // }
 }
