@@ -30,8 +30,8 @@ Widget clientRideGeneralInfo(
             onPressed: () {
               // Functions.emitUserEvent(
               //     context: context,
-              //     event: GetClientTripDetails(tripId: trip.id));
-              // Navigator.of(context).pushNamed("/clientRideDetails", arguments: passengerTrip);
+              //     event: TODO or dont(passengerTrip: passengerTrip.id));
+              // Navigator.of(context).pushNamed("/reserveRide", arguments: passengerTrip);
             },
           )
         ],

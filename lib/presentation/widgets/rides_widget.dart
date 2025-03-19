@@ -128,28 +128,34 @@ class RidesWidget extends StatelessWidget {
             fontSize: 12,
             horizontalPadding: 20,
             onPressed: () {
-              Functions.emitUserEvent(
-                context: context,
-                event: userRole == UserRole.CLIENT
-                    ? GetTripInfo(trip.id)
-                    : GetTripDetails(driverId: trip.driverId, tripId: trip.id),
-              );
 
-              final url = _getUrl(userRole);
-              if (userRole == UserRole.CLIENT) {
-                if(url == "/clientRideDetails") {
+              if(userRole == UserRole.CLIENT) {
+                if(screenType == ScreenType.MY_RIDES_SCREEN) {
                   Functions.emitUserEvent(
                       context: context,
-                      event: GetClientTripDetails(tripId: trip.id));
-                  Navigator.of(context).pushNamed("/clientRideDetails", arguments: passengerTrip);
+                      event: GetClientRideDetails(tripId: trip.id)
+                  );
+                  Navigator.pushNamed(context, '/clientRideDetails', arguments: passengerTrip);
                 }
                 else {
-                Functions.emitUserEvent(context: context, event: GetClientUpcomingRides());
-
+                  Functions.emitUserEvent(
+                      context: context,
+                      event: GetTripInfo(trip.id)
+                  );
+                  Navigator.pushNamed(
+                      context,
+                      screenType == ScreenType.HOME_RIDES_SCREEN ? '/reserveRide' : '/reserveDelivery',
+                      arguments: trip
+                  );
                 }
               }
-
-              Navigator.pushNamed(context, url, arguments: trip);
+              else if (userRole == UserRole.DRIVER || userRole == UserRole.ADMIN) {
+                Functions.emitUserEvent(
+                    context: context,
+                    event: GetTripDetails(driverId: trip.driverId, tripId: trip.id)
+                );
+                Navigator.pushNamed(context, '/rideDetails', arguments: trip);
+              }
             },
           );
         },
@@ -165,14 +171,5 @@ class RidesWidget extends StatelessWidget {
       return AppStrings.sendPackage;
     }
     return AppStrings.viewDetails;
-  }
-
-  String _getUrl(UserRole? userRole) {
-    if (userRole == UserRole.CLIENT) {
-      if (screenType == ScreenType.HOME_RIDES_SCREEN) return "/reserveRide";
-      if (screenType == ScreenType.HOME_DELIVERIES_SCREEN) return "/reserveDelivery";
-      return "/clientRideDetails";
-    }
-    return "/rideDetails";
   }
 }

@@ -22,45 +22,38 @@ class ClientRideDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context)?.settings.arguments;
-    if (args is PassengerTrip) {
-      passengerTrip = args;
-    } else {
-      // Handle the case where the argument is not of type PassengerTrip
-      print("Error: Expected PassengerTrip, but received ${args.runtimeType}");
-    }
+    passengerTrip =
+        ModalRoute.of(context)?.settings.arguments as PassengerTrip?;
 
     return SafeArea(
         child: Scaffold(
             appBar: customAppBar(context: context, arrowBack: true),
-            body: SingleChildScrollView(
-                padding: EdgeInsets.all(0),
-                child: BlocBuilder<AuthBloc, AuthState>(
-                    builder: (context, authState) {
-                  if (authState is UserIsLoggedIn) {
-                    userRole = authState.user.role;
+            body: SingleChildScrollView(child:
+                BlocBuilder<AuthBloc, AuthState>(builder: (context, authState) {
+              if (authState is UserIsLoggedIn) {
+                userRole = authState.user.role;
+              }
+              return BlocBuilder<UserBloc, UserState>(
+                builder: (context, state) {
+                  if (userRole == null) {
+                    return Center(
+                        child: infoText(AppStrings.loginRequiredMessage2));
                   }
-                  return BlocBuilder<UserBloc, UserState>(
-                    builder: (context, state) {
-                      if (userRole == null) {
-                        return Center(
-                            child: infoText(AppStrings.loginRequiredMessage2));
-                      }
 
-                      if (state is RideDetailsLoaded) {
-                        trip = state.trip;
-                      } else if (state is RideDetailsNotFound) {
-                        return Center(child: infoText(AppStrings.rideNotFound));
-                      }
+                  if (state is RideDetailsLoaded) {
+                    trip = state.trip;
+                  } else if (state is RideDetailsNotFound) {
+                    return Center(child: infoText(AppStrings.rideNotFound));
+                  }
 
-                      return passengerTrip != null && trip != null
-                          ? _buildClientRideDetails(context)
-                          : Center(
-                              child: CircularProgressIndicator(),
-                            );
-                    },
-                  );
-                }))));
+                  return passengerTrip != null && trip != null
+                      ? _buildClientRideDetails(context)
+                      : Center(
+                          child: CircularProgressIndicator(),
+                        );
+                },
+              );
+            }))));
   }
 
   Widget _buildClientRideDetails(BuildContext context) {
@@ -78,8 +71,7 @@ class ClientRideDetailsScreen extends StatelessWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.only(top: 20.0, right: 10, bottom: 16, left: 10),
-      child: clientRideGeneralInfo(context, trip, passengerTrip)
-    );
+        padding: EdgeInsets.only(top: 20.0, right: 10, bottom: 16, left: 10),
+        child: clientRideGeneralInfo(context, trip, passengerTrip));
   }
 }

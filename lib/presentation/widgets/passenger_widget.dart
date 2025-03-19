@@ -8,8 +8,8 @@ import '../../data/models/passenger_trip.dart';
 import '../../utils/decorations.dart';
 
 class PassengerWidget extends StatelessWidget {
-  final PassengerTrip passenger;
-  const PassengerWidget({super.key, required this.passenger});
+  final PassengerTrip passengerTrip;
+  const PassengerWidget({super.key, required this.passengerTrip});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +17,11 @@ class PassengerWidget extends StatelessWidget {
       onTap: () {
         Functions.emitUserEvent(
             context: context,
-            event: GetClientTripDetails(tripId: passenger.tripId));
+            event: GetClientRideDetails(tripId: passengerTrip.tripId));
         Navigator.pushNamed(
           context,
           '/clientRideDetails',
-          arguments: passenger,
+          arguments: passengerTrip,
         );
       },
       child: Container(
@@ -45,7 +45,7 @@ class PassengerWidget extends StatelessWidget {
               const Icon(Icons.person_outline),
               const SizedBox(width: 8),
               Text(
-                "${passenger.user.firstName} ${passenger.user.lastName}",
+                "${passengerTrip.user.firstName} ${passengerTrip.user.lastName}",
                 style: const TextStyle(fontSize: 16),
               ),
             ],
@@ -57,7 +57,7 @@ class PassengerWidget extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                   child: marqueeCustom(
-                      text: passenger.startLocation.address ?? "",
+                      text: passengerTrip.startLocation.address ?? "",
                       textStyle: TextStyle(fontSize: 14))),
             ],
           ),
@@ -68,7 +68,7 @@ class PassengerWidget extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                   child: marqueeCustom(
-                      text: passenger.endLocation.address ?? "",
+                      text: passengerTrip.endLocation.address ?? "",
                       textStyle: TextStyle(fontSize: 14))),
             ],
           ),
@@ -79,11 +79,11 @@ class PassengerWidget extends StatelessWidget {
 
   Widget _rightInfo(BuildContext context) {
     return customArrowButton(
-      text: passenger.user.phoneNumber,
+      text: passengerTrip.user.phoneNumber,
       customIcon: Icons.local_phone_outlined,
       onPressed: () => Functions.emitUserEvent(
         context: context,
-        event: CallPhone(passenger.user.phoneNumber),
+        event: CallPhone(passengerTrip.user.phoneNumber),
       ),
     );
   }

@@ -188,7 +188,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       }
 
-      if (event is GetClientTripDetails) {
+      if (event is GetClientRideDetails) {
         emit(ProcessStarted());
         try {
           Trip? trip = await TripService().findTripById(event.tripId);
