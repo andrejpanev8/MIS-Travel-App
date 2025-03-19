@@ -43,7 +43,8 @@ class _MapStaticState extends State<MapStatic> {
             } else {
               currentMapLink = state.mapStaticLink;
             }
-          } else {
+          }
+          if (state is MapInitial) {
             currentMapLink = null;
           }
           return currentMapLink != null
