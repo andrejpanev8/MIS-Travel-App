@@ -13,12 +13,24 @@ class PassengerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      decoration: DecorationsCustom().silverBoxRoundedCorners(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_leftInfo(), SizedBox(width: 10), _rightInfo(context)],
+    return GestureDetector(
+      onTap: () {
+        Functions.emitUserEvent(
+            context: context,
+            event: GetClientTripDetails(tripId: passenger.tripId));
+        Navigator.pushNamed(
+          context,
+          '/clientRideDetails',
+          arguments: passenger,
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: DecorationsCustom().silverBoxRoundedCorners(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [_leftInfo(), SizedBox(width: 10), _rightInfo(context)],
+        ),
       ),
     );
   }

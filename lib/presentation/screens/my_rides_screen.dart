@@ -218,13 +218,12 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                       itemBuilder: (context, ride) => RidesWidget(
                           context: context,
                           ride: ride.trip,
-                          screenType: ScreenType.MY_RIDES_SCREEN),
+                          screenType: ScreenType.MY_RIDES_SCREEN,passengerTrip: ride.passengerTrip),
                       onRefresh: () => Functions.emitUserEvent(
                             context: context,
                             event: GetClientUpcomingRides(forceRefresh: true),
                           ),
-                      emptyWidget:
-                          emptyListIndicator(AppStrings.noUpcomingRides),
+                      emptyWidget: emptyListIndicator(AppStrings.noUpcomingRides),
                       scrollPhysics: NeverScrollableScrollPhysics())),
           SizedBox(height: 25),
           infoText(AppStrings.upcomingDeliveries),

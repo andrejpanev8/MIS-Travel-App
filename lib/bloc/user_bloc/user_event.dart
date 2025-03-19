@@ -168,3 +168,9 @@ class EditDeliveryEvent extends UserEvent {
 
   const EditDeliveryEvent(this.taskTrip, this.trip);
 }
+
+class GetClientTripDetails extends UserEvent {
+  final String tripId;
+
+  const GetClientTripDetails({required this.tripId});
+}

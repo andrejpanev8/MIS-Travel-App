@@ -185,3 +185,11 @@ class EditTripInfoLoaded extends UserState {
   final String startLocationAddress;
   const EditTripInfoLoaded(this.trip, this.driver, this.startLocationAddress);
 }
+
+class RideDetailsLoaded extends UserState {
+  final Trip trip;
+
+  const RideDetailsLoaded(this.trip);
+}
+
+class RideDetailsNotFound extends UserState {}
