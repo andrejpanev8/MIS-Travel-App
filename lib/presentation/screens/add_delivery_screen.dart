@@ -208,6 +208,9 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
             },
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
           if (state is DeliveryCreateSuccess) {
+            Functions.emitUserEvent(
+                context: context,
+                event: GetUpcomingDeliveries(forceRefresh: true));
             WidgetsBinding.instance.addPostFrameCallback((_) {
               showSuccessDialog(
                   context, "Success", "Delivery successfully created!", () {

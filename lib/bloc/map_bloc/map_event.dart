@@ -33,10 +33,10 @@ class AddressEntryEvent extends MapEvent {
 class AddressDoubleEntryEvent extends MapEvent {
   final String? fromAddress;
   final String? toAddress;
-  final String uniqueKey;
+  final String? uniqueKey;
 
   const AddressDoubleEntryEvent(this.fromAddress, this.toAddress,
-      {required this.uniqueKey});
+      {this.uniqueKey});
 }
 
 class ClearMapEvent extends MapEvent {

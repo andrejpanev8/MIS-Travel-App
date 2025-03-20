@@ -5,6 +5,7 @@ import 'package:travel_app/service/trip_service.dart';
 import 'package:travel_app/service/user_service.dart';
 
 import '../data/DTO/PassengerTripDTO.dart';
+import '../data/enums/user_role.dart';
 import '../data/models/location.dart';
 import '../data/models/trip.dart';
 import 'auth_service.dart';
@@ -125,5 +126,41 @@ class PassengerTripService {
       return resolvedTrips.whereType<PassengerTrip>().toList();
     }
     return [];
+  }
+
+  Future<void> deletePassengerTrip(String passengerTripId) async {
+    try {
+      UserModel? currentUser = await authService.getCurrentUser();
+      if (currentUser == null) {
+        throw Exception("No authenticated user found.");
+      }
+
+      PassengerTrip? passengerTrip =
+          await findPassengerTripById(passengerTripId);
+      if (passengerTrip == null) {
+        throw Exception("Passenger trip not found.");
+      }
+
+      Trip? trip = await tripService.findTripById(passengerTrip.tripId);
+      if (trip == null) {
+        throw Exception("Associated trip not found.");
+      }
+
+      if (currentUser.role != UserRole.ADMIN &&
+          currentUser.id != passengerTrip.user.id) {
+        throw Exception("You do not have permission to delete this trip.");
+      }
+
+      await _firestore
+          .collection('passenger_trips')
+          .doc(passengerTripId)
+          .delete();
+
+      await _firestore.collection('trips').doc(passengerTrip.tripId).update({
+        "passengerTrips": FieldValue.arrayRemove([passengerTripId])
+      });
+    } catch (e) {
+      throw Exception("Error deleting passenger trip: $e");
+    }
   }
 }

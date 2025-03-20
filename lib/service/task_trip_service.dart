@@ -94,7 +94,8 @@ class TaskTripService {
     String finalTaskTripId = (taskTripId != null && taskTripId.isNotEmpty)
         ? taskTripId
         : _firestore.collection('task_trips').doc().id;
-    DocumentReference taskTripRef = _firestore.collection('task_trips').doc(finalTaskTripId);
+    DocumentReference taskTripRef =
+        _firestore.collection('task_trips').doc(finalTaskTripId);
 
     TaskTrip newTrip = TaskTrip(
       id: finalTaskTripId,
@@ -258,6 +259,28 @@ class TaskTripService {
       return taskTrips;
     } catch (e) {
       return [];
+    }
+  }
+
+  Future<void> deleteTaskTripById(String taskTripId) async {
+    try {
+      DocumentSnapshot taskTripDoc =
+          await _firestore.collection('task_trips').doc(taskTripId).get();
+
+      if (!taskTripDoc.exists) {
+        throw Exception("TaskTrip with ID $taskTripId not found.");
+      }
+
+      TaskTrip taskTrip =
+          TaskTrip.fromJson(taskTripDoc.data() as Map<String, dynamic>);
+
+      await _firestore.collection('trips').doc(taskTrip.tripId).update({
+        "taskTrips": FieldValue.arrayRemove([taskTripId])
+      });
+
+      await _firestore.collection('task_trips').doc(taskTripId).delete();
+    } catch (e) {
+      throw Exception("Failed to remove TaskTrip: $e");
     }
   }
 }

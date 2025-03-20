@@ -8,6 +8,7 @@ import '../../data/models/passenger_trip.dart';
 import '../../data/models/task_trip.dart';
 import '../../data/models/trip.dart';
 import '../../data/models/user.dart';
+import '../../utils/color_constants.dart';
 import '../../utils/functions.dart';
 import '../../utils/string_constants.dart';
 import '../../utils/text_styles.dart';
@@ -74,15 +75,7 @@ class RideDetailsScreen extends StatelessWidget {
             children: [
               rideGeneralInfo(trip!, driver),
               userRole == UserRole.ADMIN
-                  ? IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        Functions.emitUserEvent(
-                            context: context,
-                            event: EditTripEvent(trip!, driver!));
-                        Navigator.of(context).pushNamed('/addRide');
-                      },
-                    )
+                  ? _getButtons(context)
                   : SizedBox.shrink(),
             ],
           ),
@@ -100,6 +93,30 @@ class RideDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _getButtons(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.edit),
+          onPressed: () {
+            Functions.emitUserEvent(
+                context: context, event: EditTripEvent(trip!, driver!));
+            Navigator.of(context).pushNamed('/addRide');
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.delete, color: redColor),
+          onPressed: () {
+            Functions.emitUserEvent(
+                context: context, event: DeleteTripEvent(trip!));
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/home', (route) => false);
+          },
+        )
+      ],
     );
   }
 

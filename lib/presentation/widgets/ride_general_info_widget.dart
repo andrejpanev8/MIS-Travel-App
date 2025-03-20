@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:travel_app/presentation/widgets/marquee_widget.dart';
 
 import '../../data/models/trip.dart';
 import '../../data/models/user.dart';
@@ -10,35 +11,43 @@ import '../../utils/text_styles.dart';
 
 Widget rideGeneralInfo(Trip? trip, UserModel? driver) {
   return (trip != null && driver != null)
-      ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.location_on_outlined, size: 22),
-                SizedBox(width: 10),
-                Text("${trip.startCity} - ${trip.endCity}",
-                    style: StyledText().appBarText().copyWith(fontSize: 20))
-              ],
-            ),
-            SizedBox(height: 10),
-            _buildRow(
-                icon: Icons.access_time, text: trip.formattedStartDateTime),
-            SizedBox(height: 6),
-            _buildRow(
-                icon: Icons.badge_outlined,
-                text: "${driver.firstName} ${driver.lastName}"),
-            SizedBox(height: 6),
-            _buildRow(
-                icon: Icons.people_alt_outlined,
-                text:
-                    "${AppStrings.numberOfPassengers}: ${trip.passengerTrips.length}"),
-            SizedBox(height: 6),
-            _buildRow(
-                text:
-                    "${AppStrings.numberOfPackages}: ${trip.taskTrips.length}",
-                assetIcon: boxIcon),
-          ],
+      ? Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Icon(Icons.location_on_outlined, size: 22),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: marqueeCustom(
+                      text: "${trip.startCity} - ${trip.endCity}",
+                      textStyle:
+                          StyledText().appBarText().copyWith(fontSize: 20),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 10),
+              _buildRow(
+                  icon: Icons.access_time, text: trip.formattedStartDateTime),
+              SizedBox(height: 6),
+              _buildRow(
+                  icon: Icons.badge_outlined,
+                  text: "${driver.firstName} ${driver.lastName}"),
+              SizedBox(height: 6),
+              _buildRow(
+                  icon: Icons.people_alt_outlined,
+                  text:
+                      "${AppStrings.numberOfPassengers}: ${trip.passengerTrips.length}"),
+              SizedBox(height: 6),
+              _buildRow(
+                  text:
+                      "${AppStrings.numberOfPackages}: ${trip.taskTrips.length}",
+                  assetIcon: boxIcon),
+            ],
+          ),
         )
       : SizedBox.shrink();
 }

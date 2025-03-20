@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/data/models/task_trip.dart';
 import 'package:travel_app/presentation/widgets/map_static.dart';
+import 'package:travel_app/presentation/widgets/marquee_widget.dart';
 import 'package:travel_app/utils/map_unique_keys.dart';
 
 import '../../bloc/user_bloc/user_bloc.dart';
@@ -26,38 +27,15 @@ Widget deliveryGeneralInfo(
                   children: [
                     Icon(Icons.location_on_outlined, size: 22),
                     SizedBox(width: 10),
-                    Text("${trip.startCity} - ${trip.endCity}",
-                        style:
-                            StyledText().appBarText().copyWith(fontSize: 20)),
+                    marqueeCustom(
+                      text: "${trip.startCity} - ${trip.endCity}",
+                      textStyle:
+                          StyledText().appBarText().copyWith(fontSize: 20),
+                    ),
                   ],
                 ),
                 userRole == UserRole.ADMIN
-                    ? IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
-                          Functions.emitUserEvent(
-                              context: context,
-                              event: EditDeliveryEvent(taskTrip, trip));
-                          // Functions.emitMapEvent(
-                          //     context: context,
-                          //     event: AddressEntryEvent(
-                          //         taskTrip.startLocation.address,
-                          //         uniqueKey:
-                          //             START_LOCATION_ADD_DELIVERY_SCREEN));
-                          // Functions.emitMapEvent(
-                          //     context: context,
-                          //     event: AddressEntryEvent(
-                          //         taskTrip.endLocation.address,
-                          //         uniqueKey: END_LOCATION_ADD_DELIVERY_SCREEN));
-                          Functions.emitMapEvent(
-                              context: context,
-                              event: AddressDoubleEntryEvent(
-                                  taskTrip.startLocation.address,
-                                  taskTrip.endLocation.address,
-                                  uniqueKey: "TODO key"));
-                          Navigator.of(context).pushNamed("/addDelivery");
-                        },
-                      )
+                    ? _getButtons(context, trip, taskTrip)
                     : SizedBox.shrink(),
               ],
             ),
@@ -99,6 +77,34 @@ Widget deliveryGeneralInfo(
           ],
         )
       : SizedBox.shrink();
+}
+
+Widget _getButtons(BuildContext context, trip, taskTrip) {
+  return Row(
+    children: [
+      IconButton(
+        icon: const Icon(Icons.edit),
+        onPressed: () {
+          Functions.emitUserEvent(
+              context: context, event: EditDeliveryEvent(taskTrip, trip));
+          Functions.emitMapEvent(
+              context: context,
+              event: AddressDoubleEntryEvent(taskTrip.startLocation.address,
+                  taskTrip.endLocation.address));
+          Navigator.of(context).pushNamed("/addDelivery");
+        },
+      ),
+      IconButton(
+        icon: const Icon(Icons.delete, color: redColor),
+        onPressed: () {
+          Functions.emitUserEvent(
+              context: context, event: DeleteDeliveryEvent(taskTrip!));
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/home', (route) => false);
+        },
+      )
+    ],
+  );
 }
 
 Widget _text(String text) {

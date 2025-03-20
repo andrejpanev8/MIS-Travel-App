@@ -67,8 +67,7 @@ class DeliveryDetailsScreen extends StatelessWidget {
       Functions.emitMapEvent(
           context: context,
           event: AddressDoubleEntryEvent(
-              taskTrip!.startLocation.address, taskTrip!.endLocation.address,
-              uniqueKey: "TODO key"));
+              taskTrip!.startLocation.address, taskTrip!.endLocation.address));
     }
 
     return Padding(

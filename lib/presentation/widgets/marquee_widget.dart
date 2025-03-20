@@ -3,7 +3,8 @@ import 'package:marquee/marquee.dart';
 
 import '../../utils/functions.dart';
 
-Widget marqueeCustom({required String text, required TextStyle textStyle}) {
+Widget marqueeCustom(
+    {required String text, required TextStyle textStyle, double height = 24}) {
   return LayoutBuilder(
     builder: (context, constraints) {
       final isOverflowing = Functions.isTextOverflowing(
@@ -12,7 +13,7 @@ Widget marqueeCustom({required String text, required TextStyle textStyle}) {
         constraints.maxWidth,
       );
       return SizedBox(
-        height: 24,
+        height: height,
         child: isOverflowing
             ? Marquee(
                 text: text,

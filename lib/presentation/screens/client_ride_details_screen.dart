@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
@@ -57,21 +56,8 @@ class ClientRideDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildClientRideDetails(BuildContext context) {
-    if (passengerTrip != null) {
-      Functions.emitMapEvent(
-          context: context,
-          event: MapSelectionEvent(
-              selectedLocation: passengerTrip!.startLocation.toLatLng,
-              uniqueKey: START_LOCATION_CLIENT_RIDE_DETAILS_SCREEN));
-      Functions.emitMapEvent(
-          context: context,
-          event: MapSelectionEvent(
-              selectedLocation: passengerTrip!.endLocation.toLatLng,
-              uniqueKey: END_LOCATION_CLIENT_RIDE_DETAILS_SCREEN));
-    }
-
     return Padding(
         padding: EdgeInsets.only(top: 20.0, right: 10, bottom: 16, left: 10),
-        child: clientRideGeneralInfo(context, trip, passengerTrip));
+        child: clientRideGeneralInfo(context, trip, passengerTrip, userRole));
   }
 }

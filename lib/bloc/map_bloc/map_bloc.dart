@@ -28,8 +28,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         staticLink = MapService().generateMapUrl(
             event.selectedLocation.latitude, event.selectedLocation.longitude);
 
-        mapLinks[event.uniqueKey] = staticLink;
-
         emit(MapSingleSelectionLoaded(
             event.selectedLocation, address, staticLink,
             uniqueKey: event.uniqueKey));
@@ -45,8 +43,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
         staticLink =
             MapService().generateMapUrl(location.latitude, location.longitude);
-
-        mapLinks[event.uniqueKey] = staticLink;
 
         emit(MapSingleSelectionLoaded(location, event.address!, staticLink,
             uniqueKey: event.uniqueKey));
@@ -113,7 +109,9 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           String toStaticLink = MapService()
               .generateMapUrl(toLocation.latitude, toLocation.longitude);
 
-          mapLinks[event.uniqueKey] = staticLink;
+          event.uniqueKey != null
+              ? mapLinks[event.uniqueKey!] = staticLink
+              : null;
           mapLinks["from"] = fromStaticLink;
           mapLinks["to"] = toStaticLink;
 

@@ -28,7 +28,6 @@ class ReserveRideScreen extends StatefulWidget {
 class _ReserveRideScreenState extends State<ReserveRideScreen> {
   Trip? trip;
   UserModel? driver;
-  // List<PassengerTripDTO>? passengerTripDTO;
 
   final TextEditingController fromAddressController = TextEditingController();
   final TextEditingController toAddressController = TextEditingController();
@@ -118,23 +117,6 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
               trip = state.trip;
               driver = state.driver;
             }
-            // if (state is ClientUpcomingTripsLoaded) {
-            //   passengerTripDTO = state.clientTrips;
-            //   var authState = context.read<AuthBloc>().state;
-            //   UserModel? client =
-            //       authState is UserIsLoggedIn ? authState.user : null;
-            //   PassengerTripDTO? passengerTripClientDTO;
-
-            //   if (client != null && passengerTripDTO != null) {
-            //     passengerTripClientDTO = passengerTripDTO!
-            //         .where((item) => item.passengerTrip!.user.id == client.id)
-            //         .firstOrNull;
-
-            //     if (passengerTripClientDTO != null) {
-            //       _setAddressFields(passengerTripClientDTO);
-            //     }
-            //   }
-            // }
             if (state is RideReserveSuccess) {
               Functions.emitUserEvent(
                   context: context,
@@ -214,11 +196,4 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
         padding: EdgeInsets.symmetric(vertical: 16.0),
         child: rideGeneralInfo(trip, driver));
   }
-
-  // void _setAddressFields(PassengerTripDTO passengerTripClientDTO) async {
-  //   fromAddressController.text =
-  //       await passengerTripClientDTO.passengerTrip!.startLocation.address ?? '';
-  //   toAddressController.text =
-  //       await passengerTripClientDTO.passengerTrip!.endLocation.address ?? '';
-  // }
 }
