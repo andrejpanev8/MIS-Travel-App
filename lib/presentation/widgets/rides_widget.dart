@@ -11,6 +11,7 @@ import 'package:travel_app/utils/text_styles.dart';
 import 'package:travel_app/data/enums/screen_type.dart';
 
 import '../../bloc/user_bloc/user_bloc.dart';
+import '../../data/models/passenger_trip.dart';
 import '../../data/models/trip.dart';
 import '../../utils/decorations.dart';
 import '../../utils/functions.dart';
@@ -19,12 +20,14 @@ class RidesWidget extends StatelessWidget {
   final BuildContext context;
   final Trip ride;
   final ScreenType screenType;
+  final PassengerTrip? passengerTrip;
 
   const RidesWidget(
       {super.key,
       required this.context,
       required this.ride,
-      required this.screenType});
+      required this.screenType,
+      this.passengerTrip});
 
   @override
   Widget build(BuildContext context) {
@@ -125,42 +128,48 @@ class RidesWidget extends StatelessWidget {
             fontSize: 12,
             horizontalPadding: 20,
             onPressed: () {
-              Functions.emitUserEvent(
-                  context: context,
-                  event: userRole == UserRole.CLIENT
-                      ? GetTripInfo(trip.id)
-                      : GetTripDetails(
-                          driverId: trip.driverId, tripId: trip.id));
-              Functions.emitUserEvent(
-                  context: context, event: GetClientUpcomingRides());
-              Navigator.pushNamed(context, _getUrl(userRole), arguments: trip);
+
+              if(userRole == UserRole.CLIENT) {
+                if(screenType == ScreenType.MY_RIDES_SCREEN) {
+                  Functions.emitUserEvent(
+                      context: context,
+                      event: GetClientRideDetails(tripId: trip.id)
+                  );
+                  Navigator.pushNamed(context, '/clientRideDetails', arguments: passengerTrip);
+                }
+                else {
+                  Functions.emitUserEvent(
+                      context: context,
+                      event: GetTripInfo(trip.id)
+                  );
+                  Navigator.pushNamed(
+                      context,
+                      screenType == ScreenType.HOME_RIDES_SCREEN ? '/reserveRide' : '/reserveDelivery',
+                      arguments: trip
+                  );
+                }
+              }
+              else if (userRole == UserRole.DRIVER || userRole == UserRole.ADMIN) {
+                Functions.emitUserEvent(
+                    context: context,
+                    event: GetTripDetails(driverId: trip.driverId, tripId: trip.id)
+                );
+                Navigator.pushNamed(context, '/rideDetails', arguments: trip);
+              }
             },
           );
-        }),
+        },
+        ),
       ],
     );
   }
 
   String _getButtonText(UserRole? userRole) {
-    if (screenType == ScreenType.HOME_RIDES_SCREEN &&
-        userRole == UserRole.CLIENT) {
+    if (screenType == ScreenType.HOME_RIDES_SCREEN && userRole == UserRole.CLIENT) {
       return AppStrings.reserve;
-    } else if (screenType == ScreenType.HOME_DELIVERIES_SCREEN &&
-        userRole == UserRole.CLIENT) {
+    } else if (screenType == ScreenType.HOME_DELIVERIES_SCREEN && userRole == UserRole.CLIENT) {
       return AppStrings.sendPackage;
     }
     return AppStrings.viewDetails;
-  }
-
-  String _getUrl(UserRole? userRole) {
-    if (userRole == UserRole.CLIENT) {
-      if (screenType == ScreenType.HOME_RIDES_SCREEN) {
-        return "/reserveRide";
-      } else if (screenType == ScreenType.HOME_DELIVERIES_SCREEN) {
-        return "/reserveDelivery";
-      }
-      return "/clientRideDetails";
-    }
-    return "/rideDetails";
   }
 }

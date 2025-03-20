@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/data/models/task_trip.dart';
-import 'package:travel_app/utils/map_unique_keys.dart';
 
 import '../../bloc/auth_bloc/auth_bloc.dart';
 import '../../bloc/map_bloc/map_bloc.dart';
@@ -45,7 +44,6 @@ class DeliveryDetailsScreen extends StatelessWidget {
                               child:
                                   infoText(AppStrings.loginRequiredMessage2));
                         }
-
                         if (state is DeliveryDetailsLoaded) {
                           trip = state.trip;
                         } else if (state is DeliveryDetailsNotFound) {
@@ -66,16 +64,6 @@ class DeliveryDetailsScreen extends StatelessWidget {
 
   Widget _buildClientDeliveryDetails(BuildContext context) {
     if (taskTrip != null) {
-      // Functions.emitMapEvent(
-      //     context: context,
-      //     event: MapSelectionEvent(
-      //         selectedLocation: taskTrip!.startLocation.toLatLng,
-      //         uniqueKey: START_LOCATION_DELIVERY_DETAILS_SCREEN));
-      // Functions.emitMapEvent(
-      //     context: context,
-      //     event: MapSelectionEvent(
-      //         selectedLocation: taskTrip!.endLocation.toLatLng,
-      //         uniqueKey: END_LOCATION_DELIVERY_DETAILS_SCREEN));
       Functions.emitMapEvent(
           context: context,
           event: AddressDoubleEntryEvent(

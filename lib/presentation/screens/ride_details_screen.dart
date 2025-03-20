@@ -118,7 +118,7 @@ class RideDetailsScreen extends StatelessWidget {
       context: context,
       items: passengerTrips!,
       itemBuilder: (context, passengerTrip) =>
-          PassengerWidget(passenger: passengerTrip),
+          PassengerWidget(passengerTrip: passengerTrip),
       scrollPhysics: const NeverScrollableScrollPhysics(),
     );
   }
