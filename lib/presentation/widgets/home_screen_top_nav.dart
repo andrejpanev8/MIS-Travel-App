@@ -16,6 +16,8 @@ import '../../utils/functions.dart';
 import 'input_field.dart';
 
 class RidesDeliveriesToggle extends StatefulWidget {
+  const RidesDeliveriesToggle({super.key});
+
   @override
   State<RidesDeliveriesToggle> createState() => _RidesDeliveriesToggleState();
 }

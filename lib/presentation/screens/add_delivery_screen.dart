@@ -214,6 +214,8 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               showSuccessDialog(
                   context, "Success", "Delivery successfully created!", () {
+                Functions.emitMapEvent(
+                    context: context, event: ClearMapEvent());
                 Navigator.pushNamedAndRemoveUntil(
                     context, "/home", (route) => false);
               });

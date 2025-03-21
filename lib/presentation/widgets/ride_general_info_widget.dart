@@ -11,7 +11,8 @@ import '../../utils/text_styles.dart';
 
 Widget rideGeneralInfo(Trip? trip, UserModel? driver) {
   return (trip != null && driver != null)
-      ? Expanded(
+      ? Flexible(
+          fit: FlexFit.loose,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

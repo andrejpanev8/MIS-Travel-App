@@ -154,11 +154,12 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
           if (state is DeliveryCreateSuccess) {
             Functions.emitUserEvent(
                 context: context,
-                event: GetClientUpcomingDeliveries(forceRefresh: true)
-            );
+                event: GetClientUpcomingDeliveries(forceRefresh: true));
             WidgetsBinding.instance.addPostFrameCallback((_) {
               showSuccessDialog(
                   context, "Success", "Delivery successfully created!", () {
+                Functions.emitMapEvent(
+                    context: context, event: map_bloc.ClearMapEvent());
                 Navigator.pushNamedAndRemoveUntil(
                     context, "/home", (route) => false);
               });

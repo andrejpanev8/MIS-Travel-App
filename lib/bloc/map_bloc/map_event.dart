@@ -39,6 +39,11 @@ class AddressDoubleEntryEvent extends MapEvent {
       {this.uniqueKey});
 }
 
+class LoadWaypointsEvent extends MapEvent {
+  final Trip trip;
+  const LoadWaypointsEvent(this.trip);
+}
+
 class ClearMapEvent extends MapEvent {
   const ClearMapEvent();
 }

@@ -34,3 +34,13 @@ class MapDoubleSelectionLoaded extends MapState {
       this.fromAddress, this.toAddress, this.mapStaticLink,
       {this.mapLinks});
 }
+
+class MapMultiStopRouteLoaded extends MapState {
+  final List<LatLng> route;
+  final String mapStaticLink;
+  final List<LatLng> fromLocations;
+  final List<LatLng> toLocations;
+
+  const MapMultiStopRouteLoaded(
+      this.route, this.mapStaticLink, this.fromLocations, this.toLocations);
+}

@@ -568,6 +568,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  polyline_codec:
+    dependency: "direct main"
+    description:
+      name: polyline_codec
+      sha256: "97e72f458612ea7f384bca47580ac1432ef11781fe5b05e228b656ee0536a28d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.6"
   proj4dart:
     dependency: transitive
     description:

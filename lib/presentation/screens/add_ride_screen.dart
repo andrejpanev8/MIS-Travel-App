@@ -124,9 +124,12 @@ class _AddRideScreenState extends State<AddRideScreen> {
                 showSuccessDialog(
                     context,
                     AppStrings.rideSavedSuccessfullyTitle,
-                    AppStrings.rideSavedSuccessfullyMessage,
-                    () => Navigator.pushNamedAndRemoveUntil(
-                        context, "/home", (route) => false));
+                    AppStrings.rideSavedSuccessfullyMessage, () {
+                  Functions.emitMapEvent(
+                      context: context, event: ClearMapEvent());
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, "/home", (route) => false);
+                });
               }
               if (state is TripSaveError) {
                 showErrorDialog(context, AppStrings.rideSavedFailedTitle,

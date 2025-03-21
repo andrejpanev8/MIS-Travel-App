@@ -18,6 +18,8 @@ class DeliveryDetailsScreen extends StatelessWidget {
 
   dynamic userRole;
 
+  DeliveryDetailsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     taskTrip = ModalRoute.of(context)?.settings.arguments as TaskTrip?;

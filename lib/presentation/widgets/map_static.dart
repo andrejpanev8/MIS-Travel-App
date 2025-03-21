@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../bloc/map_bloc/map_bloc.dart';
 import '../../service/map_service.dart';
@@ -10,6 +11,7 @@ import '../screens/map_screen.dart';
 class MapStatic extends StatefulWidget {
   final bool multipleSelection;
   final String uniqueKey;
+
   const MapStatic(
       {super.key, required this.uniqueKey, this.multipleSelection = false});
 
@@ -19,16 +21,19 @@ class MapStatic extends StatefulWidget {
 
 class _MapStaticState extends State<MapStatic> {
   String? currentMapLink;
+  List<LatLng>? route;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => MapService().openMap(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  MapScreen(isSelectingRoute: widget.multipleSelection)),
-          widget.uniqueKey),
+      onTap: () {
+        MapService().openMap(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    MapScreen(isSelectingRoute: widget.multipleSelection)),
+            widget.uniqueKey);
+      },
       child: BlocBuilder<MapBloc, MapState>(
         builder: (context, state) {
           if (state is MapSingleSelectionLoaded &&
@@ -43,6 +48,10 @@ class _MapStaticState extends State<MapStatic> {
             } else {
               currentMapLink = state.mapStaticLink;
             }
+          }
+          if (state is MapMultiStopRouteLoaded) {
+            currentMapLink = state.mapStaticLink;
+            route = state.route;
           }
           if (state is MapInitial) {
             currentMapLink = null;
@@ -81,7 +90,7 @@ class _MapStaticState extends State<MapStatic> {
           MaterialPageRoute(
               builder: (context) =>
                   MapScreen(isSelectingRoute: widget.multipleSelection)),
-          widget.uniqueKey ?? ""),
+          widget.uniqueKey),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

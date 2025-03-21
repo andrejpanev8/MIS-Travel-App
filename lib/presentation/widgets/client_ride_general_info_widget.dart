@@ -4,7 +4,6 @@ import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/presentation/widgets/map_static.dart';
 import 'package:travel_app/utils/map_unique_keys.dart';
 
-import '../../bloc/map_bloc/map_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/enums/user_role.dart';
 import '../../data/models/trip.dart';

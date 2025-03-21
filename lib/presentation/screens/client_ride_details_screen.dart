@@ -19,6 +19,8 @@ class ClientRideDetailsScreen extends StatelessWidget {
 
   dynamic userRole;
 
+  ClientRideDetailsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     passengerTrip =

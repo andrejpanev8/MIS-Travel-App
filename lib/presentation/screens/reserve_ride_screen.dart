@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
-// import 'package:travel_app/data/DTO/PassengerTripDTO.dart';
 import 'package:travel_app/presentation/widgets/custom_app_bar.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/input_field.dart';
@@ -91,81 +90,89 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
   @override
   Widget build(BuildContext context) {
     trip = ModalRoute.of(context)!.settings.arguments as Trip;
-    return SafeArea(
-        child: Scaffold(
-      appBar: customAppBar(context: context, arrowBack: true),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: BlocListener<MapBloc, MapState>(
-          listener: (context, state) => {
-            if (state is MapSingleSelectionLoaded)
-              {
-                setState(() {
-                  state.uniqueKey == START_LOCATION_RESERVE_RIDE_SCREEN
-                      ? fromAddressController.text = state.address
-                      : toAddressController.text = state.address;
-                })
-              },
-            if (state is MapDoubleSelectionLoaded)
-              {
-                fromAddressController.text = state.fromAddress,
-                toAddressController.text = state.toAddress
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) =>
+          Functions.emitMapEvent(context: context, event: ClearMapEvent()),
+      child: SafeArea(
+          child: Scaffold(
+        appBar: customAppBar(context: context, arrowBack: true),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.all(16.0),
+          child: BlocListener<MapBloc, MapState>(
+            listener: (context, state) => {
+              if (state is MapSingleSelectionLoaded)
+                {
+                  setState(() {
+                    state.uniqueKey == START_LOCATION_RESERVE_RIDE_SCREEN
+                        ? fromAddressController.text = state.address
+                        : toAddressController.text = state.address;
+                  })
+                },
+              if (state is MapDoubleSelectionLoaded)
+                {
+                  fromAddressController.text = state.fromAddress,
+                  toAddressController.text = state.toAddress
+                }
+            },
+            child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+              if (state is TripInfoLoaded) {
+                trip = state.trip;
+                driver = state.driver;
               }
-          },
-          child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-            if (state is TripInfoLoaded) {
-              trip = state.trip;
-              driver = state.driver;
-            }
-            if (state is RideReserveSuccess) {
-              Functions.emitUserEvent(
-                  context: context,
-                  event: GetClientUpcomingRides(forceRefresh: true));
-              showSuccessDialog(
-                  context,
-                  AppStrings.rideReservedSuccessfullyTitle,
-                  AppStrings.rideReservedSuccessfullyMessage,
-                  () => Navigator.pushNamedAndRemoveUntil(
-                      context, "/home", (route) => false));
-            }
-            if (state is RideReserveError) {
-              showErrorDialog(context, AppStrings.rideReservedFailedTitle,
-                  AppStrings.rideReservedFailedMessage);
-            }
-            return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _generalInfo(),
-                  _buildForm(),
-                  SizedBox(height: 32.0),
-                  Text(AppStrings.selectALocation,
-                      style: StyledText().descriptionText()),
-                  MapStatic(
-                      multipleSelection: true, uniqueKey: RESERVE_RIDE_SCREEN),
-                  SizedBox(height: 32.0),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: customArrowButton(
-                              text: AppStrings.confirmReservation,
-                              fontSize: 16,
-                              iconSize: 16,
-                              verticalPadding: 10,
-                              onPressed: () {
-                                Functions.emitUserEvent(
-                                    context: context,
-                                    event: ReserveRide(
-                                        fromAddressController.text,
-                                        toAddressController.text,
-                                        trip!.id));
-                              })),
-                    ],
-                  )
-                ]);
-          }),
+              if (state is RideReserveSuccess) {
+                Functions.emitUserEvent(
+                    context: context,
+                    event: GetClientUpcomingRides(forceRefresh: true));
+                showSuccessDialog(
+                    context,
+                    AppStrings.rideReservedSuccessfullyTitle,
+                    AppStrings.rideReservedSuccessfullyMessage, () {
+                  Functions.emitMapEvent(
+                      context: context, event: ClearMapEvent());
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, "/home", (route) => false);
+                });
+              }
+              if (state is RideReserveError) {
+                showErrorDialog(context, AppStrings.rideReservedFailedTitle,
+                    AppStrings.rideReservedFailedMessage);
+              }
+              return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _generalInfo(),
+                    _buildForm(),
+                    SizedBox(height: 32.0),
+                    Text(AppStrings.selectALocation,
+                        style: StyledText().descriptionText()),
+                    MapStatic(
+                        multipleSelection: true,
+                        uniqueKey: START_LOCATION_RESERVE_DELIVERY_SCREEN),
+                    SizedBox(height: 32.0),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: customArrowButton(
+                                text: AppStrings.confirmReservation,
+                                fontSize: 16,
+                                iconSize: 16,
+                                verticalPadding: 10,
+                                onPressed: () {
+                                  Functions.emitUserEvent(
+                                      context: context,
+                                      event: ReserveRide(
+                                          fromAddressController.text,
+                                          toAddressController.text,
+                                          trip!.id));
+                                })),
+                      ],
+                    )
+                  ]);
+            }),
+          ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 
   Widget _buildForm() {

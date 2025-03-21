@@ -4,7 +4,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:travel_app/data/models/passenger_trip.dart';
+import 'package:travel_app/service/passenger_trip_service.dart';
+import 'package:travel_app/service/task_trip_service.dart';
 
+import '../../data/models/task_trip.dart';
+import '../../data/models/trip.dart';
 import '../../service/map_service.dart';
 
 part 'map_event.dart';
@@ -121,6 +126,37 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         } catch (e) {
           debugPrint(e.toString());
         }
+      }
+
+      if (event is LoadWaypointsEvent) {
+        List<LatLng> fromLocations = [];
+        List<LatLng> toLocations = [];
+
+        List<PassengerTrip> passengerTrips = await PassengerTripService()
+            .getAllPassengerTripsForTripId(event.trip.id);
+        List<TaskTrip> taskTrips =
+            await TaskTripService().getAllTaskTripsForTripId(event.trip.id);
+
+        for (var item in passengerTrips) {
+          fromLocations.add(LatLng(
+              item.startLocation.latitude, item.startLocation.longitude));
+          toLocations.add(
+              LatLng(item.endLocation.latitude, item.endLocation.longitude));
+        }
+        for (var item in taskTrips) {
+          fromLocations.add(LatLng(
+              item.startLocation.latitude, item.startLocation.longitude));
+          toLocations.add(
+              LatLng(item.endLocation.latitude, item.endLocation.longitude));
+        }
+
+        List<LatLng> route =
+            await MapService().getMultiStopRoute(fromLocations, toLocations);
+
+        String mapStaticLink = MapService().generateMapUrlWithRoute(route);
+
+        emit(MapMultiStopRouteLoaded(
+            route, mapStaticLink, fromLocations, toLocations));
       }
 
       if (event is ClearMapEvent) {
