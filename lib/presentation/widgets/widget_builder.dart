@@ -22,9 +22,15 @@ Widget widgetBuilder<T>({
                   itemBuilder(context, items[index]),
               separatorBuilder:
                   separatorBuilder ?? (context, index) => SizedBox(height: 10),
-              shrinkWrap: true,
+              shrinkWrap: false,
             )
-          : (emptyWidget ?? emptyListIndicator(AppStrings.noItemsAvailable)),
+          : SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Center(
+                child: emptyWidget ??
+                    emptyListIndicator(AppStrings.noItemsAvailable),
+              ),
+            ),
     ),
   );
 }

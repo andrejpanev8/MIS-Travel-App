@@ -43,6 +43,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(UserInitial()) {
     on<UserEvent>((event, emit) async {
       if (event is GetUpcomingRides) {
+        debugPrint("GetUpcomingRides INVOKED");
         emit(ProcessStarted());
         if (!event.forceRefresh && _cachedTrips != null) {
           emit(UpcomingRidesLoaded(_cachedTrips!));

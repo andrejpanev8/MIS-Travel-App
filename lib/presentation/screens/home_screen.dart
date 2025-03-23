@@ -173,6 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return widgetBuilder(
       context: context,
       items: rides,
+      scrollPhysics: AlwaysScrollableScrollPhysics(),
       itemBuilder: (context, rides) => RidesWidget(
         context: context,
         ride: rides,
