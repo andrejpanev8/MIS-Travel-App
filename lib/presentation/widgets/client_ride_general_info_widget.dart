@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/presentation/widgets/map_static.dart';
-import 'package:travel_app/utils/map_unique_keys.dart';
 
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/enums/user_role.dart';
@@ -58,7 +57,7 @@ Widget clientRideGeneralInfo(BuildContext context, Trip? trip,
                 icon: Icons.location_on),
             SizedBox(height: 12),
             MapStatic(
-              uniqueKey: START_LOCATION_CLIENT_RIDE_DETAILS_SCREEN,
+              uniqueKey: FROM,
             ),
             SizedBox(height: 20),
             _text(AppStrings.endLocation),
@@ -68,7 +67,7 @@ Widget clientRideGeneralInfo(BuildContext context, Trip? trip,
                     passengerTrip.endLocation.address ?? "No Location provided",
                 icon: Icons.location_on),
             SizedBox(height: 12),
-            MapStatic(uniqueKey: END_LOCATION_CLIENT_RIDE_DETAILS_SCREEN),
+            MapStatic(uniqueKey: TO),
             SizedBox(height: 10),
           ],
         )

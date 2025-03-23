@@ -6,14 +6,14 @@ import 'package:latlong2/latlong.dart';
 import '../../bloc/map_bloc/map_bloc.dart';
 import '../../service/map_service.dart';
 import '../../utils/color_constants.dart';
+import '../../utils/string_constants.dart';
 import '../screens/map_screen.dart';
 
 class MapStatic extends StatefulWidget {
   final bool multipleSelection;
-  final String uniqueKey;
+  final String? uniqueKey;
 
-  const MapStatic(
-      {super.key, required this.uniqueKey, this.multipleSelection = false});
+  const MapStatic({super.key, this.uniqueKey, this.multipleSelection = false});
 
   @override
   State<MapStatic> createState() => _MapStaticState();
@@ -36,13 +36,18 @@ class _MapStaticState extends State<MapStatic> {
       },
       child: BlocBuilder<MapBloc, MapState>(
         builder: (context, state) {
-          if (state is MapSingleSelectionLoaded &&
-              state.uniqueKey == widget.uniqueKey) {
-            currentMapLink = state.mapStaticLink;
+          if (state is MapSingleSelectionLoaded) {
+            if (widget.uniqueKey != null) {
+              if (widget.uniqueKey == state.uniqueKey) {
+                currentMapLink = state.mapStaticLink;
+              }
+            } else {
+              currentMapLink = state.mapStaticLink;
+            }
           }
           if (state is MapDoubleSelectionLoaded) {
             if (!widget.multipleSelection && state.mapLinks != null) {
-              currentMapLink = widget.uniqueKey.contains("START")
+              currentMapLink = widget.uniqueKey == FROM
                   ? state.mapLinks!["from"]
                   : state.mapLinks!["to"];
             } else {

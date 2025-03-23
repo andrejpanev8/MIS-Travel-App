@@ -135,8 +135,14 @@ class RidesWidget extends StatelessWidget {
                     Functions.emitUserEvent(
                         context: context,
                         event: GetClientRideDetails(tripId: trip.id));
+                    ////////////// emit map events here
                     Navigator.pushNamed(context, '/clientRideDetails',
                         arguments: passengerTrip);
+                    Functions.emitMapEvent(
+                        context: context,
+                        event: AddressDoubleEntryEvent(
+                            passengerTrip!.startLocation.address,
+                            passengerTrip!.endLocation.address));
                   } else {
                     Functions.emitUserEvent(
                         context: context, event: GetTripInfo(trip.id));

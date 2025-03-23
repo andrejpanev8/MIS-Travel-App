@@ -81,7 +81,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
             event.toSelectedLocation.latitude,
             event.toSelectedLocation.longitude);
 
-        mapLinks[event.uniqueKey] = staticLink;
         mapLinks["from"] = fromStaticLink;
         mapLinks["to"] = toStaticLink;
 
@@ -114,9 +113,9 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           String toStaticLink = MapService()
               .generateMapUrl(toLocation.latitude, toLocation.longitude);
 
-          event.uniqueKey != null
-              ? mapLinks[event.uniqueKey!] = staticLink
-              : null;
+          // event.uniqueKey != null
+          //     ? mapLinks[event.uniqueKey!] = staticLink
+          //     : null;
           mapLinks["from"] = fromStaticLink;
           mapLinks["to"] = toStaticLink;
 

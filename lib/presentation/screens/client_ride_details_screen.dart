@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/presentation/widgets/client_ride_general_info_widget.dart';
-import 'package:travel_app/utils/map_unique_keys.dart';
 
 import '../../bloc/auth_bloc/auth_bloc.dart';
-import '../../bloc/map_bloc/map_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/models/trip.dart';
-import '../../utils/functions.dart';
 import '../../utils/string_constants.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/infoText_widget.dart';

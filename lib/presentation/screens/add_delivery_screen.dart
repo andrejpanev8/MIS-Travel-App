@@ -18,7 +18,6 @@ import 'package:travel_app/utils/text_styles.dart';
 import 'package:travel_app/utils/validation_utils.dart';
 import '../../bloc/map_bloc/map_bloc.dart';
 import '../../utils/functions.dart';
-import '../../utils/map_unique_keys.dart';
 import '../../utils/string_constants.dart';
 import '../widgets/input_field.dart';
 import '../widgets/map_static.dart';
@@ -69,7 +68,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
           Functions.emitMapEvent(
             context: context,
             event: AddressEntryEvent(startLocationController.text,
-                uniqueKey: START_LOCATION_ADD_DELIVERY_SCREEN),
+                uniqueKey: FROM),
           );
         }
       }
@@ -80,8 +79,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
         if (endLocationController.text.isNotEmpty) {
           Functions.emitMapEvent(
             context: context,
-            event: AddressEntryEvent(endLocationController.text,
-                uniqueKey: END_LOCATION_ADD_DELIVERY_SCREEN),
+            event: AddressEntryEvent(endLocationController.text, uniqueKey: TO),
           );
         }
       }
@@ -180,93 +178,98 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MapBloc, MapState>(
-        listener: (context, state) => {
-              if (state is MapSingleSelectionLoaded)
-                {
-                  if (state.uniqueKey == START_LOCATION_ADD_DELIVERY_SCREEN)
-                    {
-                      setState(() {
-                        startLocationController.text = state.address;
-                        startLocation = Location(
-                            latitude: state.location.latitude,
-                            longitude: state.location.longitude,
-                            address: state.address);
-                      })
-                    }
-                  else if (state.uniqueKey == END_LOCATION_ADD_DELIVERY_SCREEN)
-                    {
-                      setState(() {
-                        endLocationController.text = state.address;
-                        endLocation = Location(
-                            latitude: state.location.latitude,
-                            longitude: state.location.longitude,
-                            address: state.address);
-                      })
-                    }
-                }
-            },
-        child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-          if (state is DeliveryCreateSuccess) {
-            Functions.emitUserEvent(
-                context: context,
-                event: GetUpcomingDeliveries(forceRefresh: true));
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              showSuccessDialog(
-                  context, "Success", "Delivery successfully created!", () {
-                Functions.emitMapEvent(
-                    context: context, event: ClearMapEvent());
-                Navigator.pushNamedAndRemoveUntil(
-                    context, "/home", (route) => false);
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) =>
+          Functions.emitMapEvent(context: context, event: ClearMapEvent()),
+      child: BlocListener<MapBloc, MapState>(
+          listener: (context, state) => {
+                if (state is MapSingleSelectionLoaded)
+                  {
+                    if (state.uniqueKey == FROM)
+                      {
+                        setState(() {
+                          startLocationController.text = state.address;
+                          startLocation = Location(
+                              latitude: state.location.latitude,
+                              longitude: state.location.longitude,
+                              address: state.address);
+                        })
+                      }
+                    else if (state.uniqueKey == TO)
+                      {
+                        setState(() {
+                          endLocationController.text = state.address;
+                          endLocation = Location(
+                              latitude: state.location.latitude,
+                              longitude: state.location.longitude,
+                              address: state.address);
+                        })
+                      }
+                  }
+              },
+          child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+            if (state is DeliveryCreateSuccess) {
+              Functions.emitUserEvent(
+                  context: context,
+                  event: GetUpcomingDeliveries(forceRefresh: true));
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                showSuccessDialog(
+                    context, "Success", "Delivery successfully created!", () {
+                  Functions.emitMapEvent(
+                      context: context, event: ClearMapEvent());
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, "/home", (route) => false);
+                });
               });
-            });
-          } else if (state is DeliveryCreateError) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              showErrorDialog(
-                  context, "Error", "Error occurred while creating a delivery");
-            });
-          }
-          if (state is DeliveryInfoLoaded) {
-            taskTripId = state.taskTrip.id;
-            selectedTrip = state.trip;
-            selectedClient = state.taskTrip.user;
-            pickUpPhoneController.text = state.taskTrip.pickUpPhoneNumber;
-            startLocationController.text =
-                state.taskTrip.startLocation.address ?? "";
-            startLocation = state.taskTrip.startLocation;
-            dropOffPhoneController.text = state.taskTrip.dropOffPhoneNumber;
-            endLocationController.text =
-                state.taskTrip.endLocation.address ?? "";
-            endLocation = state.taskTrip.endLocation;
-            descriptionController.text = state.taskTrip.description;
-          }
-          return Scaffold(
-            appBar: customAppBar(context: context, arrowBack: true),
-            body: SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildForm(),
-                    SizedBox(height: 40.0),
-                    Row(
-                      children: [
-                        Expanded(
-                            child: customArrowButton(
-                                text: "Save",
-                                fontSize: 16,
-                                iconSize: 16,
-                                verticalPadding: 10,
-                                onPressed: _saveDelivery)),
-                      ],
-                    )
-                  ],
+            } else if (state is DeliveryCreateError) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                showErrorDialog(context, "Error",
+                    "Error occurred while creating a delivery");
+              });
+            }
+            if (state is DeliveryInfoLoaded) {
+              taskTripId = state.taskTrip.id;
+              selectedTrip = state.trip;
+              selectedClient = state.taskTrip.user;
+              pickUpPhoneController.text = state.taskTrip.pickUpPhoneNumber;
+              startLocationController.text =
+                  state.taskTrip.startLocation.address ?? "";
+              startLocation = state.taskTrip.startLocation;
+              dropOffPhoneController.text = state.taskTrip.dropOffPhoneNumber;
+              endLocationController.text =
+                  state.taskTrip.endLocation.address ?? "";
+              endLocation = state.taskTrip.endLocation;
+              descriptionController.text = state.taskTrip.description;
+            }
+            return Scaffold(
+              appBar: customAppBar(context: context, arrowBack: true),
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildForm(),
+                      SizedBox(height: 40.0),
+                      Row(
+                        children: [
+                          Expanded(
+                              child: customArrowButton(
+                                  text: "Save",
+                                  fontSize: 16,
+                                  iconSize: 16,
+                                  verticalPadding: 10,
+                                  onPressed: _saveDelivery)),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        }));
+            );
+          })),
+    );
   }
 
   Widget _buildForm() {
@@ -366,7 +369,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
               suffixIcon: Icon(Icons.location_on_outlined)),
           _buildErrorText(_startLocationError),
           SizedBox(height: 8),
-          MapStatic(uniqueKey: START_LOCATION_ADD_DELIVERY_SCREEN),
+          MapStatic(uniqueKey: FROM),
 
           SizedBox(height: 16.0),
           _text("Drop off phone number"),
@@ -384,7 +387,7 @@ class _AddDeliveryScreenState extends State<AddDeliveryScreen> {
               suffixIcon: Icon(Icons.location_on_outlined)),
           _buildErrorText(_endLocationError),
           SizedBox(height: 8),
-          MapStatic(uniqueKey: END_LOCATION_ADD_DELIVERY_SCREEN),
+          MapStatic(uniqueKey: TO),
           SizedBox(height: 16.0),
           _text("Description"),
           inputTextFieldCustom(

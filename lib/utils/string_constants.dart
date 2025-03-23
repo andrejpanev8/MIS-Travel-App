@@ -111,3 +111,6 @@ class AppStrings {
 const String FromWhereString = "fromWhere";
 const String ToWhereString = "toWhere";
 const String DateTimeString = "dateTime";
+
+const FROM = "FROM";
+const TO = "TO";

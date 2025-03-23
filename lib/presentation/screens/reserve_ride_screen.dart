@@ -8,7 +8,6 @@ import 'package:travel_app/presentation/widgets/input_field.dart';
 import 'package:travel_app/presentation/widgets/map_static.dart';
 import 'package:travel_app/presentation/widgets/ride_general_info_widget.dart';
 import 'package:travel_app/utils/error_handler.dart';
-import 'package:travel_app/utils/map_unique_keys.dart';
 import 'package:travel_app/utils/success_handler.dart';
 import 'package:travel_app/utils/text_styles.dart';
 
@@ -47,8 +46,7 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
       if (fromAddressController.text.isNotEmpty) {
         Functions.emitMapEvent(
           context: context,
-          event: AddressEntryEvent(fromAddressController.text,
-              uniqueKey: START_LOCATION_RESERVE_RIDE_SCREEN),
+          event: AddressEntryEvent(fromAddressController.text, uniqueKey: FROM),
         );
       }
     }
@@ -57,8 +55,7 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
       if (toAddressController.text.isNotEmpty) {
         Functions.emitMapEvent(
           context: context,
-          event: AddressEntryEvent(toAddressController.text,
-              uniqueKey: END_LOCATION_RESERVE_RIDE_SCREEN),
+          event: AddressEntryEvent(toAddressController.text, uniqueKey: TO),
         );
       }
     }
@@ -72,7 +69,6 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
         event: AddressDoubleEntryEvent(
           fromAddressController.text,
           toAddressController.text,
-          uniqueKey: RESERVE_RIDE_SCREEN,
         ),
       );
     }
@@ -103,7 +99,7 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
               if (state is MapSingleSelectionLoaded)
                 {
                   setState(() {
-                    state.uniqueKey == START_LOCATION_RESERVE_RIDE_SCREEN
+                    state.uniqueKey == FROM
                         ? fromAddressController.text = state.address
                         : toAddressController.text = state.address;
                   })
@@ -145,9 +141,7 @@ class _ReserveRideScreenState extends State<ReserveRideScreen> {
                     SizedBox(height: 32.0),
                     Text(AppStrings.selectALocation,
                         style: StyledText().descriptionText()),
-                    MapStatic(
-                        multipleSelection: true,
-                        uniqueKey: START_LOCATION_RESERVE_DELIVERY_SCREEN),
+                    MapStatic(multipleSelection: true),
                     SizedBox(height: 32.0),
                     Row(
                       children: [

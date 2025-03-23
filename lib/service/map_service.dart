@@ -43,7 +43,7 @@ class MapService {
     return response;
   }
 
-  void openMap(BuildContext context, Route route, String uniqueKey) async {
+  void openMap(BuildContext context, Route route, String? uniqueKey) async {
     final result = await Navigator.push(
       context,
       route,
