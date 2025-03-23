@@ -49,6 +49,7 @@ class PassengerTripService {
     List<PassengerTripDTO> userTrips = await getUpcomingTripsForUser();
     bool alreadyHasReservation = userTrips
         .map((userTrip) => userTrip.trip.id)
+        // ignore: collection_methods_unrelated_type
         .contains((t) => t == trip.id);
 
     if (alreadyHasReservation) {

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:travel_app/data/models/passenger_trip.dart';
 
 import '../models/trip.dart';

@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 part of 'user_bloc.dart';
 
 sealed class UserState extends Equatable {

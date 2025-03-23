@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import '../models/location.dart';
 
 class ReserveAdhocDeliveryDTO {
@@ -27,7 +29,7 @@ class ReserveAdhocDeliveryDTO {
 
   Map<String, dynamic> toJson() {
     return {
-      "taskTripId": taskTripId ?? "",
+      "taskTripId": taskTripId,
       "pickUpPhoneNumber": pickUpPhoneNumber,
       "startLocation": startLocation.toJson(),
       "dropOffPhoneNumber": dropOffPhoneNumber,

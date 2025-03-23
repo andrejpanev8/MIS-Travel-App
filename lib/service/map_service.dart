@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -10,7 +12,7 @@ import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import '../utils/functions.dart';
 
 class MapService {
-  String _orsKey = dotenv.env['ORS_KEY'] ?? '';
+  final String _orsKey = dotenv.env['ORS_KEY'] ?? '';
 
   String generateMapUrl(double lat, double lng) {
     return 'https://static-maps.yandex.ru/1.x/?ll=$lng,$lat&size=600,400&z=14&l=map&pt=$lng,$lat,pm2rdm';

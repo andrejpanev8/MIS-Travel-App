@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 class AppStrings {
   static const String appName = 'QuickRide';
   static const String loginTitle = 'Sign in to your Account';
