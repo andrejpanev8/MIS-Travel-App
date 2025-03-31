@@ -109,153 +109,144 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
   }
 
   Widget _driverView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox(height: 30),
-        infoText(AppStrings.upcomingRides),
-        Padding(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          child: isLoading
-              ? Center(child: CircularProgressIndicator())
-              : Expanded(
-                  child: widgetBuilder(
-                      context: context,
-                      items: trips,
-                      itemBuilder: (context, ride) => RidesWidget(
-                          context: context,
-                          ride: ride,
-                          screenType: ScreenType.MY_RIDES_SCREEN),
-                      onRefresh: () => Functions.emitUserEvent(
-                            context: context,
-                            event: GetDriverUpcomingRides(forceRefresh: true),
-                          ),
-                      emptyWidget:
-                          emptyListIndicator(AppStrings.noUpcomingRides),
-                      scrollPhysics: AlwaysScrollableScrollPhysics()),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(height: 30),
+          infoText(AppStrings.upcomingRides),
+          Padding(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            child: isLoading
+                ? Center(child: CircularProgressIndicator())
+                : widgetBuilder(
+                context: context,
+                items: trips,
+                itemBuilder: (context, ride) => RidesWidget(
+                    context: context,
+                    ride: ride,
+                    screenType: ScreenType.MY_RIDES_SCREEN),
+                onRefresh: () => Functions.emitUserEvent(
+                  context: context,
+                  event: GetDriverUpcomingRides(forceRefresh: true),
                 ),
-        ),
-        SizedBox(height: 25),
-        infoText(AppStrings.upcomingDeliveries),
-        Padding(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          child: isLoading
-              ? Center(child: CircularProgressIndicator())
-              : Expanded(
-                  child: widgetBuilder(
-                      context: context,
-                      items: taskTrips,
-                      itemBuilder: (context, task) =>
-                          TaskTripWidget(context: context, taskTrip: task),
-                      onRefresh: () => Functions.emitUserEvent(
-                            context: context,
-                            event:
-                                GetDriverUpcomingDeliveries(forceRefresh: true),
-                          ),
-                      emptyWidget:
-                          emptyListIndicator(AppStrings.noUpcomingDeliveries),
-                      scrollPhysics: AlwaysScrollableScrollPhysics()),
+                emptyWidget: emptyListIndicator(AppStrings.noUpcomingRides),
+                scrollPhysics: NeverScrollableScrollPhysics()),
+          ),
+          SizedBox(height: 25),
+          infoText(AppStrings.upcomingDeliveries),
+          Padding(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            child: isLoading
+                ? Center(child: CircularProgressIndicator())
+                : widgetBuilder(
+                context: context,
+                items: taskTrips,
+                itemBuilder: (context, task) =>
+                    TaskTripWidget(context: context, taskTrip: task),
+                onRefresh: () => Functions.emitUserEvent(
+                  context: context,
+                  event:
+                  GetDriverUpcomingDeliveries(forceRefresh: true),
                 ),
-        )
-      ],
+                emptyWidget:
+                emptyListIndicator(AppStrings.noUpcomingDeliveries),
+                scrollPhysics: NeverScrollableScrollPhysics()),
+          )
+        ],
+      ),
     );
   }
 
   Widget _adminView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox(height: 30),
-        infoText(AppStrings.driversTitle),
-        isLoading
-            ? Center(child: CircularProgressIndicator())
-            : Expanded(
-                child: widgetBuilder(
-                    context: context,
-                    items: drivers,
-                    itemBuilder: (context, driver) =>
-                        DriversWidget(context: context, driver: driver),
-                    onRefresh: () => Functions.emitUserEvent(
-                          context: context,
-                          event: GetAllDrivers(forceRefresh: true),
-                        ),
-                    emptyWidget: emptyListIndicator(AppStrings.noDrivers),
-                    scrollPhysics: AlwaysScrollableScrollPhysics()),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(height: 30),
+          infoText(AppStrings.driversTitle),
+          isLoading
+              ? Center(child: CircularProgressIndicator())
+              : widgetBuilder(
+              context: context,
+              items: drivers,
+              itemBuilder: (context, driver) =>
+                  DriversWidget(context: context, driver: driver),
+              onRefresh: () => Functions.emitUserEvent(
+                context: context,
+                event: GetAllDrivers(forceRefresh: true),
               ),
-        const SizedBox(height: 30),
-        infoText(AppStrings.invitationsTitle),
-        isLoading
-            ? Center(child: CircularProgressIndicator())
-            : Expanded(
-                child: widgetBuilder(
-                    context: context,
-                    items: invitations,
-                    itemBuilder: (context, invitation) => InvitationWidget(
-                        context: context, invitation: invitation),
-                    onRefresh: () => Functions.emitUserEvent(
-                          context: context,
-                          event: GetAllInvitations(forceRefresh: true),
-                        ),
-                    emptyWidget: emptyListIndicator(AppStrings.noInvitations),
-                    scrollPhysics: AlwaysScrollableScrollPhysics()),
-              )
-      ],
+              emptyWidget: emptyListIndicator(AppStrings.noDrivers),
+              scrollPhysics: NeverScrollableScrollPhysics()),
+          const SizedBox(height: 30),
+          infoText(AppStrings.invitationsTitle),
+          isLoading
+              ? Center(child: CircularProgressIndicator())
+              : widgetBuilder(
+              context: context,
+              items: invitations,
+              itemBuilder: (context, invitation) => InvitationWidget(
+                  context: context, invitation: invitation),
+              onRefresh: () => Functions.emitUserEvent(
+                context: context,
+                event: GetAllInvitations(forceRefresh: true),
+              ),
+              emptyWidget: emptyListIndicator(AppStrings.noInvitations),
+              scrollPhysics: NeverScrollableScrollPhysics())
+        ],
+      ),
     );
   }
 
   Widget _clientView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox(height: 30),
-        infoText(AppStrings.upcomingRides),
-        Padding(
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(height: 30),
+          infoText(AppStrings.upcomingRides),
+          Padding(
+              padding: EdgeInsets.only(left: 10, right: 10),
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : widgetBuilder(
+                  context: context,
+                  items: clientTrips,
+                  itemBuilder: (context, ride) => RidesWidget(
+                      context: context,
+                      ride: ride.trip,
+                      screenType: ScreenType.MY_RIDES_SCREEN,passengerTrip: ride.passengerTrip),
+                  onRefresh: () => Functions.emitUserEvent(
+                    context: context,
+                    event: GetClientUpcomingRides(forceRefresh: true),
+                  ),
+                  emptyWidget: emptyListIndicator(AppStrings.noUpcomingRides),
+                  scrollPhysics: NeverScrollableScrollPhysics())),
+          SizedBox(height: 25),
+          infoText(AppStrings.upcomingDeliveries),
+          Padding(
             padding: EdgeInsets.only(left: 10, right: 10),
             child: isLoading
                 ? Center(child: CircularProgressIndicator())
-                : Expanded(
-                    child: widgetBuilder(
-                        context: context,
-                        items: clientTrips,
-                        itemBuilder: (context, ride) => RidesWidget(
-                            context: context,
-                            ride: ride.trip,
-                            screenType: ScreenType.MY_RIDES_SCREEN,
-                            passengerTrip: ride.passengerTrip),
-                        onRefresh: () => Functions.emitUserEvent(
-                              context: context,
-                              event: GetClientUpcomingRides(forceRefresh: true),
-                            ),
-                        emptyWidget:
-                            emptyListIndicator(AppStrings.noUpcomingRides),
-                        scrollPhysics: AlwaysScrollableScrollPhysics()),
-                  )),
-        SizedBox(height: 25),
-        infoText(AppStrings.upcomingDeliveries),
-        Padding(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          child: isLoading
-              ? Center(child: CircularProgressIndicator())
-              : Expanded(
-                  child: widgetBuilder(
-                      context: context,
-                      items: clientDeliveries,
-                      itemBuilder: (context, task) =>
-                          TaskTripWidget(context: context, taskTrip: task),
-                      onRefresh: () => Functions.emitUserEvent(
-                            context: context,
-                            event:
-                                GetClientUpcomingDeliveries(forceRefresh: true),
-                          ),
-                      emptyWidget:
-                          emptyListIndicator(AppStrings.noUpcomingDeliveries),
-                      scrollPhysics: AlwaysScrollableScrollPhysics()),
+                : widgetBuilder(
+                context: context,
+                items: clientDeliveries,
+                itemBuilder: (context, task) =>
+                    TaskTripWidget(context: context, taskTrip: task),
+                onRefresh: () => Functions.emitUserEvent(
+                  context: context,
+                  event:
+                  GetClientUpcomingDeliveries(forceRefresh: true),
                 ),
-        )
-      ],
+                emptyWidget:
+                emptyListIndicator(AppStrings.noUpcomingDeliveries),
+                scrollPhysics: NeverScrollableScrollPhysics()),
+          )
+        ],
+      ),
     );
   }
 }

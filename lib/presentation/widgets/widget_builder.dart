@@ -22,7 +22,7 @@ Widget widgetBuilder<T>({
                   itemBuilder(context, items[index]),
               separatorBuilder:
                   separatorBuilder ?? (context, index) => SizedBox(height: 10),
-              shrinkWrap: false,
+              shrinkWrap: true,
             )
           : SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
