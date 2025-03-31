@@ -106,14 +106,20 @@ class _MyHomePageState extends State<MyHomePage> {
     if (index == 1) {
       var state = context.read<AuthBloc>().state;
       if (state is UserIsLoggedIn) {
-        if (state.user.role == UserRole.DRIVER) {
-          context.read<UserBloc>().add(LoadDriverTripsDeliveries());
-        } else if (state.user.role == UserRole.ADMIN) {
-          context.read<UserBloc>().add(LoadDriversInvitations());
-        } else if (state.user.role == UserRole.CLIENT) {
-          context.read<UserBloc>().add(LoadClientTripsDeliveries());
+        switch (state.user.role) {
+          case UserRole.DRIVER:
+            context.read<UserBloc>().add(LoadDriverTripsDeliveries());
+            break;
+          case UserRole.ADMIN:
+            context.read<UserBloc>().add(LoadDriversInvitations());
+            break;
+          case UserRole.CLIENT:
+            context.read<UserBloc>().add(LoadClientTripsDeliveries());
+            break;
         }
       }
+    } else if (index == 0) {
+      context.read<MapBloc>().add(ClearMapEvent());
     }
   }
 }

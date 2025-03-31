@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:travel_app/bloc/user_bloc/user_bloc.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';

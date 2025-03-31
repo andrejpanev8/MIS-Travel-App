@@ -4,7 +4,6 @@ import 'package:travel_app/data/DTO/ReserveDeliveryDTO.dart';
 import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/presentation/widgets/ride_general_short_info_widget.dart';
 import 'package:travel_app/utils/error_handler.dart';
-import 'package:travel_app/utils/map_unique_keys.dart';
 
 import '../../bloc/map_bloc/map_bloc.dart' as map_bloc;
 import '../../bloc/user_bloc/user_bloc.dart';
@@ -57,7 +56,7 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
           Functions.emitMapEvent(
             context: context,
             event: map_bloc.AddressEntryEvent(startLocationController.text,
-                uniqueKey: START_LOCATION_RESERVE_DELIVERY_SCREEN),
+                uniqueKey: FROM),
           );
         }
       }
@@ -67,10 +66,11 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
       if (!endLocationFocusNode.hasFocus) {
         if (endLocationController.text.isNotEmpty) {
           Functions.emitMapEvent(
-            context: context,
-            event: map_bloc.AddressEntryEvent(endLocationController.text,
-                uniqueKey: END_LOCATION_RESERVE_DELIVERY_SCREEN),
-          );
+              context: context,
+              event: map_bloc.AddressEntryEvent(
+                endLocationController.text,
+                uniqueKey: TO,
+              ));
         }
       }
     });
@@ -127,7 +127,7 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
         listener: (context, state) => {
               if (state is map_bloc.MapSingleSelectionLoaded)
                 {
-                  if (state.uniqueKey == START_LOCATION_RESERVE_DELIVERY_SCREEN)
+                  if (state.uniqueKey == FROM)
                     {
                       setState(() {
                         startLocationController.text = state.address;
@@ -137,8 +137,7 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
                             address: state.address);
                       })
                     }
-                  else if (state.uniqueKey ==
-                      END_LOCATION_RESERVE_DELIVERY_SCREEN)
+                  else if (state.uniqueKey == TO)
                     {
                       setState(() {
                         endLocationController.text = state.address;
@@ -154,11 +153,12 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
           if (state is DeliveryCreateSuccess) {
             Functions.emitUserEvent(
                 context: context,
-                event: GetClientUpcomingDeliveries(forceRefresh: true)
-            );
+                event: GetClientUpcomingDeliveries(forceRefresh: true));
             WidgetsBinding.instance.addPostFrameCallback((_) {
               showSuccessDialog(
                   context, "Success", "Delivery successfully created!", () {
+                Functions.emitMapEvent(
+                    context: context, event: map_bloc.ClearMapEvent());
                 Navigator.pushNamedAndRemoveUntil(
                     context, "/home", (route) => false);
               });
@@ -223,7 +223,7 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
               suffixIcon: Icon(Icons.location_on_outlined)),
           _buildErrorText(_startLocationError),
           SizedBox(height: 8),
-          MapStatic(uniqueKey: START_LOCATION_RESERVE_DELIVERY_SCREEN),
+          MapStatic(uniqueKey: FROM),
           SizedBox(height: 16.0),
           _text("Drop off phone number"),
           inputTextFieldCustom(
@@ -240,7 +240,7 @@ class _ReserveDeliveryScreenState extends State<ReserveDeliveryScreen> {
               suffixIcon: Icon(Icons.location_on_outlined)),
           _buildErrorText(_endLocationError),
           SizedBox(height: 8),
-          MapStatic(uniqueKey: END_LOCATION_RESERVE_DELIVERY_SCREEN),
+          MapStatic(uniqueKey: TO),
           SizedBox(height: 16.0),
           _text("Description"),
           inputTextFieldCustom(

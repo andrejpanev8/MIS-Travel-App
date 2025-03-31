@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -83,15 +85,7 @@ class RideDetailsScreen extends StatelessWidget {
             children: [
               rideGeneralInfo(trip!, driver),
               user.role == UserRole.ADMIN
-                  ? IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        Functions.emitUserEvent(
-                            context: context,
-                            event: EditTripEvent(trip!, driver!));
-                        Navigator.of(context).pushNamed('/addRide');
-                      },
-                    )
+                  ? _getButtons(context)
                   : SizedBox.shrink(),
             ],
           ),
@@ -107,9 +101,35 @@ class RideDetailsScreen extends StatelessWidget {
           _buildTaskList(context),
           const SizedBox(height: 20),
           _sectionTitle(AppStrings.yourRoute),
-          const MapStatic(),
+          const MapStatic(
+            uniqueKey: "route",
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _getButtons(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          icon: const Icon(Icons.edit),
+          onPressed: () {
+            Functions.emitUserEvent(
+                context: context, event: EditTripEvent(trip!, driver!));
+            Navigator.of(context).pushNamed('/addRide');
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.delete, color: redColor),
+          onPressed: () {
+            Functions.emitUserEvent(
+                context: context, event: DeleteTripEvent(trip!));
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/home', (route) => false);
+          },
+        )
+      ],
     );
   }
 

@@ -11,14 +11,14 @@ class DropdownCustomButton<T> extends StatelessWidget {
   final Widget? suffixIcon;
 
   const DropdownCustomButton({
-    Key? key,
+    super.key,
     required this.items,
     required this.selectedValue,
     required this.onChanged,
     this.hintText = "Select an option",
     this.prefixIcon,
     this.suffixIcon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

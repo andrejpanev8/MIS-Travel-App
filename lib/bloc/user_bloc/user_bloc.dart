@@ -43,6 +43,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(UserInitial()) {
     on<UserEvent>((event, emit) async {
       if (event is GetUpcomingRides) {
+        debugPrint("GetUpcomingRides INVOKED");
         emit(ProcessStarted());
         if (!event.forceRefresh && _cachedTrips != null) {
           emit(UpcomingRidesLoaded(_cachedTrips!));
@@ -394,21 +395,17 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         try {
           Location startLocation = await MapService()
               .getCoordinatesFromAddress(event.startLocation)
-              .then((result) => result != null
-                  ? Location(
-                      latitude: result["latitude"],
-                      longitude: result["longitude"],
-                      address: event.startLocation)
-                  : Location(latitude: 0, longitude: 0, address: ""));
+              .then((result) => Location(
+                  latitude: result["latitude"],
+                  longitude: result["longitude"],
+                  address: event.startLocation));
 
           Location endLocation = await MapService()
               .getCoordinatesFromAddress(event.endLocation)
-              .then((result) => result != null
-                  ? Location(
-                      latitude: result["latitude"],
-                      longitude: result["longitude"],
-                      address: event.endLocation)
-                  : Location(latitude: 0, longitude: 0, address: ""));
+              .then((result) => Location(
+                  latitude: result["latitude"],
+                  longitude: result["longitude"],
+                  address: event.endLocation));
 
           await PassengerTripService().createPassengerTrip(
               startLocation: startLocation,
@@ -462,6 +459,36 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
           emit(DeliveryInfoLoaded(event.taskTrip, event.trip,
               event.taskTrip.user, startAddress, endAddress));
+        } catch (error) {
+          emit(ProcessFailed());
+        }
+      }
+
+      if (event is DeleteTripEvent) {
+        emit(ProcessStarted());
+        try {
+          await TripService().deleteTrip(event.trip.id);
+          emit(UserInitial());
+        } catch (error) {
+          emit(ProcessFailed());
+        }
+      }
+
+      if (event is DeletePassengerTripEvent) {
+        emit(ProcessStarted());
+        try {
+          await PassengerTripService()
+              .deletePassengerTrip(event.passengerTrip.id);
+          emit(UserInitial());
+        } catch (error) {
+          emit(ProcessFailed());
+        }
+      }
+      if (event is DeleteDeliveryEvent) {
+        emit(ProcessStarted());
+        try {
+          await TaskTripService().deleteTaskTripById(event.taskTrip.id);
+          emit(UserInitial());
         } catch (error) {
           emit(ProcessFailed());
         }

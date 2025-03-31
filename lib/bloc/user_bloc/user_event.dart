@@ -174,3 +174,21 @@ class GetClientRideDetails extends UserEvent {
 
   const GetClientRideDetails({required this.tripId});
 }
+
+class DeleteTripEvent extends UserEvent {
+  final Trip trip;
+
+  const DeleteTripEvent(this.trip);
+}
+
+class DeleteDeliveryEvent extends UserEvent {
+  final TaskTrip taskTrip;
+
+  const DeleteDeliveryEvent(this.taskTrip);
+}
+
+class DeletePassengerTripEvent extends UserEvent {
+  final PassengerTrip passengerTrip;
+
+  const DeletePassengerTripEvent(this.passengerTrip);
+}

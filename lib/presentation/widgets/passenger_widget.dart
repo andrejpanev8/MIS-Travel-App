@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/marquee_widget.dart';
 import 'package:travel_app/utils/functions.dart';
@@ -18,6 +19,12 @@ class PassengerWidget extends StatelessWidget {
         Functions.emitUserEvent(
             context: context,
             event: GetClientRideDetails(tripId: passengerTrip.tripId));
+        Functions.emitMapEvent(
+            context: context,
+            event: AddressDoubleEntryEvent(
+              passengerTrip.startLocation.address,
+              passengerTrip.endLocation.address,
+            ));
         Navigator.pushNamed(
           context,
           '/clientRideDetails',

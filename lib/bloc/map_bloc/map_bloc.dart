@@ -1,8 +1,15 @@
+import 'dart:collection';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:travel_app/data/models/passenger_trip.dart';
+import 'package:travel_app/service/passenger_trip_service.dart';
+import 'package:travel_app/service/task_trip_service.dart';
 
+import '../../data/models/task_trip.dart';
+import '../../data/models/trip.dart';
 import '../../service/map_service.dart';
 
 part 'map_event.dart';
@@ -10,7 +17,8 @@ part 'map_state.dart';
 
 class MapBloc extends Bloc<MapEvent, MapState> {
   LatLng currentUserLocation = LatLng(41.99812940, 21.42543550);
-  String? currentMapLink;
+  HashMap<String, String> mapLinks = HashMap<String, String>();
+
   MapBloc() : super(MapInitial()) {
     on<MapEvent>((event, emit) async {
       if (event is MapSelectionEvent) {
@@ -25,8 +33,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         staticLink = MapService().generateMapUrl(
             event.selectedLocation.latitude, event.selectedLocation.longitude);
 
-        currentMapLink = staticLink;
-
         emit(MapSingleSelectionLoaded(
             event.selectedLocation, address, staticLink,
             uniqueKey: event.uniqueKey));
@@ -38,15 +44,13 @@ class MapBloc extends Bloc<MapEvent, MapState> {
             .getCoordinatesFromAddress(event.address!)
             .then((result) => LatLng(result["latitude"], result["longitude"]));
 
-        String mapStaticLink = "";
+        String staticLink = "";
 
-        mapStaticLink =
+        staticLink =
             MapService().generateMapUrl(location.latitude, location.longitude);
 
-        currentMapLink = mapStaticLink;
-
-        emit(MapSingleSelectionLoaded(location, event.address!, mapStaticLink,
-            uniqueKey: event.uniqueKey ?? ""));
+        emit(MapSingleSelectionLoaded(location, event.address!, staticLink,
+            uniqueKey: event.uniqueKey));
       }
 
       if (event is MapDoubleSelectionEvent) {
@@ -70,8 +74,16 @@ class MapBloc extends Bloc<MapEvent, MapState> {
             .getRoute(event.fromSelectedLocation, event.toSelectedLocation);
 
         staticLink = MapService().generateMapUrlWithRoute(route);
+        String fromStaticLink = MapService().generateMapUrl(
+            event.fromSelectedLocation.latitude,
+            event.fromSelectedLocation.longitude);
+        String toStaticLink = MapService().generateMapUrl(
+            event.toSelectedLocation.latitude,
+            event.toSelectedLocation.longitude);
 
-        currentMapLink = staticLink;
+        mapLinks["from"] = fromStaticLink;
+        mapLinks["to"] = toStaticLink;
+
         emit(MapDoubleSelectionLoaded(event.fromSelectedLocation,
             event.toSelectedLocation, addressFrom, addressTo, staticLink));
       }
@@ -79,34 +91,76 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       if (event is AddressDoubleEntryEvent) {
         emit(ProcessStarted());
         try {
-          String mapStaticLink = "";
+          String staticLink = "";
           List<LatLng> route = [];
 
-          // Crashes in scenario where api can't find address coordinates
-          // check if address result is valid before trying to access it
           LatLng fromLocation = await MapService()
               .getCoordinatesFromAddress(event.fromAddress!)
-              .then((result) => result != null
-                  ? LatLng(result["latitude"], result["longitude"])
-                  : LatLng(41.99812940, 21.42543550));
+              .then(
+                  (result) => LatLng(result["latitude"], result["longitude"]));
 
           LatLng toLocation = await MapService()
               .getCoordinatesFromAddress(event.toAddress!)
-              .then((result) => result != null
-                  ? LatLng(result["latitude"], result["longitude"])
-                  : LatLng(41.99812940, 21.42543550));
+              .then(
+                  (result) => LatLng(result["latitude"], result["longitude"]));
 
           route = await MapService().getRoute(fromLocation, toLocation);
 
-          mapStaticLink = MapService().generateMapUrlWithRoute(route);
+          staticLink = MapService().generateMapUrlWithRoute(route);
 
-          currentMapLink = mapStaticLink;
+          String fromStaticLink = MapService()
+              .generateMapUrl(fromLocation.latitude, fromLocation.longitude);
+          String toStaticLink = MapService()
+              .generateMapUrl(toLocation.latitude, toLocation.longitude);
+
+          // event.uniqueKey != null
+          //     ? mapLinks[event.uniqueKey!] = staticLink
+          //     : null;
+          mapLinks["from"] = fromStaticLink;
+          mapLinks["to"] = toStaticLink;
 
           emit(MapDoubleSelectionLoaded(fromLocation, toLocation,
-              event.fromAddress!, event.toAddress!, mapStaticLink));
+              event.fromAddress!, event.toAddress!, staticLink,
+              mapLinks: mapLinks));
         } catch (e) {
           debugPrint(e.toString());
         }
+      }
+
+      if (event is LoadWaypointsEvent) {
+        List<LatLng> fromLocations = [];
+        List<LatLng> toLocations = [];
+
+        List<PassengerTrip> passengerTrips = await PassengerTripService()
+            .getAllPassengerTripsForTripId(event.trip.id);
+        List<TaskTrip> taskTrips =
+            await TaskTripService().getAllTaskTripsForTripId(event.trip.id);
+
+        for (var item in passengerTrips) {
+          fromLocations.add(LatLng(
+              item.startLocation.latitude, item.startLocation.longitude));
+          toLocations.add(
+              LatLng(item.endLocation.latitude, item.endLocation.longitude));
+        }
+        for (var item in taskTrips) {
+          fromLocations.add(LatLng(
+              item.startLocation.latitude, item.startLocation.longitude));
+          toLocations.add(
+              LatLng(item.endLocation.latitude, item.endLocation.longitude));
+        }
+
+        List<LatLng> route =
+            await MapService().getMultiStopRoute(fromLocations, toLocations);
+
+        String mapStaticLink = MapService().generateMapUrlWithRoute(route);
+
+        emit(MapMultiStopRouteLoaded(
+            route, mapStaticLink, fromLocations, toLocations));
+      }
+
+      if (event is ClearMapEvent) {
+        mapLinks.clear();
+        emit(MapInitial());
       }
     });
   }

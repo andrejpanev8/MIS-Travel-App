@@ -1,14 +1,19 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
+import 'package:polyline_codec/polyline_codec.dart';
 import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
-import 'package:travel_app/utils/keys.dart';
 
 import '../utils/functions.dart';
 
 class MapService {
+  final String _orsKey = dotenv.env['ORS_KEY'] ?? '';
+
   String generateMapUrl(double lat, double lng) {
     return 'https://static-maps.yandex.ru/1.x/?ll=$lng,$lat&size=600,400&z=14&l=map&pt=$lng,$lat,pm2rdm';
   }
@@ -40,8 +45,7 @@ class MapService {
     return response;
   }
 
-  Future<LatLng?> openMap(
-      BuildContext context, Route route, String uniqueKey) async {
+  void openMap(BuildContext context, Route route, String? uniqueKey) async {
     final result = await Navigator.push(
       context,
       route,
@@ -59,9 +63,12 @@ class MapService {
             context: context,
             event: MapDoubleSelectionEvent(
                 fromSelectedLocation: result["from"] as LatLng,
-                toSelectedLocation: result["to"] as LatLng));
+                toSelectedLocation: result["to"] as LatLng,
+                uniqueKey: uniqueKey));
       }
-      return null;
+      if (result == null) {
+        Functions.emitMapEvent(context: context, event: ClearMapEvent());
+      }
     }
   }
 
@@ -105,7 +112,7 @@ class MapService {
 
   Future<List<LatLng>> getRoute(LatLng from, LatLng to) async {
     final url = Uri.parse(
-        'https://api.openrouteservice.org/v2/directions/driving-car?api_key=$orsKey&start=${from.longitude},${from.latitude}&end=${to.longitude},${to.latitude}');
+        'https://api.openrouteservice.org/v2/directions/driving-car?api_key=$_orsKey&start=${from.longitude},${from.latitude}&end=${to.longitude},${to.latitude}');
 
     final response = await http.get(url);
 
@@ -117,5 +124,49 @@ class MapService {
       return coordinates.map((coord) => LatLng(coord[1], coord[0])).toList();
     }
     return [];
+  }
+
+  Future<List<LatLng>> getMultiStopRoute(
+      List<LatLng> fromList, List<LatLng> toList) async {
+    if (fromList.isEmpty ||
+        toList.isEmpty ||
+        fromList.length != toList.length) {
+      return [];
+    }
+
+    List<LatLng> allPoints = [...fromList, ...toList];
+
+    List<List<double>> coords =
+        allPoints.map((point) => [point.longitude, point.latitude]).toList();
+
+    final url =
+        Uri.parse("https://api.openrouteservice.org/v2/directions/driving-car");
+
+    final body = jsonEncode({
+      "coordinates": coords,
+      "instructions": false,
+    });
+
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": _orsKey,
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final encoded = data['routes'][0]['geometry'] as String;
+
+      final decoded = PolylineCodec.decode(encoded);
+
+      return decoded
+          .map((p) => LatLng(p[0].toDouble(), p[1].toDouble()))
+          .toList();
+    } else {
+      throw Exception('Failed to get route: ${response.body}');
+    }
   }
 }

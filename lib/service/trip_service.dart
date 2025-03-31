@@ -184,6 +184,24 @@ class TripService {
     throw Exception("You do not have permission to view task users by trip.");
   }
 
+  Future<void> deleteTrip(String tripId) async {
+    UserModel? currentUser = await authService.getCurrentUser();
+    if (currentUser == null) {
+      throw Exception("No user is logged in");
+    }
+    if (currentUser.role != UserRole.ADMIN) {
+      throw Exception("You do not have permission to delete a trip.");
+    }
+
+    DocumentReference tripRef = _firestore.collection('trips').doc(tripId);
+
+    try {
+      await tripRef.delete();
+    } catch (e) {
+      throw Exception("Failed to delete the trip: $e");
+    }
+  }
+
   Future<bool> setTripStatus(String tripId, TripStatus newStatus) async {
     UserModel? currentUser = await authService.getCurrentUser();
     if (currentUser == null) {

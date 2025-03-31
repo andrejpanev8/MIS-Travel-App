@@ -1,16 +1,14 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/presentation/widgets/client_ride_general_info_widget.dart';
-import 'package:travel_app/utils/map_unique_keys.dart';
 
 import '../../bloc/auth_bloc/auth_bloc.dart';
-import '../../bloc/map_bloc/map_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/models/trip.dart';
-import '../../utils/functions.dart';
 import '../../utils/string_constants.dart';
 import '../widgets/custom_app_bar.dart';
 import '../widgets/infoText_widget.dart';
@@ -20,6 +18,8 @@ class ClientRideDetailsScreen extends StatelessWidget {
   Trip? trip;
 
   dynamic userRole;
+
+  ClientRideDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,24 +58,11 @@ class ClientRideDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildClientRideDetails(BuildContext context) {
-    if (passengerTrip != null) {
-      Functions.emitMapEvent(
-          context: context,
-          event: MapSelectionEvent(
-              selectedLocation: passengerTrip!.startLocation.toLatLng,
-              uniqueKey: START_LOCATION_CLIENT_RIDE_DETAILS_SCREEN));
-      Functions.emitMapEvent(
-          context: context,
-          event: MapSelectionEvent(
-              selectedLocation: passengerTrip!.endLocation.toLatLng,
-              uniqueKey: END_LOCATION_CLIENT_RIDE_DETAILS_SCREEN));
-    }
-
     return Column(
       children: [
         Padding(
           padding: EdgeInsets.only(top: 20.0, right: 10, bottom: 16, left: 10),
-          child: clientRideGeneralInfo(context, trip, passengerTrip),
+          child: clientRideGeneralInfo(context, trip, passengerTrip, userRole),
         ),
         SizedBox(height: 20),
 

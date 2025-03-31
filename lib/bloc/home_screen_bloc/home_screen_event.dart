@@ -10,5 +10,5 @@ sealed class HomeScreenEvent extends Equatable {
 class ToggleActiveScreen extends HomeScreenEvent {
   final bool ridesActive;
 
-  ToggleActiveScreen({this.ridesActive = true});
+  const ToggleActiveScreen({this.ridesActive = true});
 }

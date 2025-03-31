@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 class AppStrings {
   static const String appName = 'QuickRide';
   static const String loginTitle = 'Sign in to your Account';
@@ -106,9 +108,11 @@ class AppStrings {
   static const String rideReservedFailedMessage = "Failed to reserve the ride";
   static const String startLocation = "Start location";
   static const String endLocation = "End location";
-
 }
 
 const String FromWhereString = "fromWhere";
 const String ToWhereString = "toWhere";
 const String DateTimeString = "dateTime";
+
+const FROM = "FROM";
+const TO = "TO";

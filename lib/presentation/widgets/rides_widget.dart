@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:travel_app/bloc/auth_bloc/auth_bloc.dart';
+import 'package:travel_app/bloc/map_bloc/map_bloc.dart';
 import 'package:travel_app/data/enums/user_role.dart';
 import 'package:travel_app/presentation/widgets/custom_arrow_button.dart';
 import 'package:travel_app/presentation/widgets/marquee_widget.dart';
@@ -119,55 +120,63 @@ class RidesWidget extends StatelessWidget {
                 ],
               ),
         const SizedBox(height: 8),
-        BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-          if (state is UserIsLoggedIn) {
-            userRole = state.user.role;
-          }
-          return customArrowButton(
-            text: _getButtonText(userRole),
-            fontSize: 12,
-            horizontalPadding: 20,
-            onPressed: () {
-
-              if(userRole == UserRole.CLIENT) {
-                if(screenType == ScreenType.MY_RIDES_SCREEN) {
+        BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is UserIsLoggedIn) {
+              userRole = state.user.role;
+            }
+            return customArrowButton(
+              text: _getButtonText(userRole),
+              fontSize: 12,
+              horizontalPadding: 20,
+              onPressed: () {
+                if (userRole == UserRole.CLIENT) {
+                  if (screenType == ScreenType.MY_RIDES_SCREEN) {
+                    Functions.emitUserEvent(
+                        context: context,
+                        event: GetClientRideDetails(tripId: trip.id));
+                    ////////////// emit map events here
+                    Navigator.pushNamed(context, '/clientRideDetails',
+                        arguments: passengerTrip);
+                    Functions.emitMapEvent(
+                        context: context,
+                        event: AddressDoubleEntryEvent(
+                            passengerTrip!.startLocation.address,
+                            passengerTrip!.endLocation.address));
+                  } else {
+                    Functions.emitUserEvent(
+                        context: context, event: GetTripInfo(trip.id));
+                    Navigator.pushNamed(
+                        context,
+                        screenType == ScreenType.HOME_RIDES_SCREEN
+                            ? '/reserveRide'
+                            : '/reserveDelivery',
+                        arguments: trip);
+                  }
+                } else if (userRole == UserRole.DRIVER ||
+                    userRole == UserRole.ADMIN) {
                   Functions.emitUserEvent(
                       context: context,
-                      event: GetClientRideDetails(tripId: trip.id)
-                  );
-                  Navigator.pushNamed(context, '/clientRideDetails', arguments: passengerTrip);
+                      event: GetTripDetails(
+                          driverId: trip.driverId, tripId: trip.id));
+                  Functions.emitMapEvent(
+                      context: context, event: LoadWaypointsEvent(trip));
+                  Navigator.pushNamed(context, '/rideDetails', arguments: trip);
                 }
-                else {
-                  Functions.emitUserEvent(
-                      context: context,
-                      event: GetTripInfo(trip.id)
-                  );
-                  Navigator.pushNamed(
-                      context,
-                      screenType == ScreenType.HOME_RIDES_SCREEN ? '/reserveRide' : '/reserveDelivery',
-                      arguments: trip
-                  );
-                }
-              }
-              else if (userRole == UserRole.DRIVER || userRole == UserRole.ADMIN) {
-                Functions.emitUserEvent(
-                    context: context,
-                    event: GetTripDetails(driverId: trip.driverId, tripId: trip.id)
-                );
-                Navigator.pushNamed(context, '/rideDetails', arguments: trip);
-              }
-            },
-          );
-        },
+              },
+            );
+          },
         ),
       ],
     );
   }
 
   String _getButtonText(UserRole? userRole) {
-    if (screenType == ScreenType.HOME_RIDES_SCREEN && userRole == UserRole.CLIENT) {
+    if (screenType == ScreenType.HOME_RIDES_SCREEN &&
+        userRole == UserRole.CLIENT) {
       return AppStrings.reserve;
-    } else if (screenType == ScreenType.HOME_DELIVERIES_SCREEN && userRole == UserRole.CLIENT) {
+    } else if (screenType == ScreenType.HOME_DELIVERIES_SCREEN &&
+        userRole == UserRole.CLIENT) {
       return AppStrings.sendPackage;
     }
     return AppStrings.viewDetails;
