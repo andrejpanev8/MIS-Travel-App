@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/presentation/widgets/client_ride_general_info_widget.dart';
 import 'package:travel_app/utils/map_unique_keys.dart';
@@ -70,8 +71,32 @@ class ClientRideDetailsScreen extends StatelessWidget {
               uniqueKey: END_LOCATION_CLIENT_RIDE_DETAILS_SCREEN));
     }
 
-    return Padding(
-        padding: EdgeInsets.only(top: 20.0, right: 10, bottom: 16, left: 10),
-        child: clientRideGeneralInfo(context, trip, passengerTrip));
-  }
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 20.0, right: 10, bottom: 16, left: 10),
+          child: clientRideGeneralInfo(context, trip, passengerTrip),
+        ),
+        SizedBox(height: 20),
+
+        QrImageView(
+          data: passengerTrip!.uniqueCode,
+          version: QrVersions.auto,
+          size: 200,
+          backgroundColor: Colors.white,
+        ),
+
+        SizedBox(height: 10),
+        Text(
+          "Your QR Code",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          passengerTrip!.uniqueCode,
+          style: TextStyle(fontSize: 14, color: Colors.grey),
+        ),
+
+        SizedBox(height: 300),
+      ],
+    );  }
 }

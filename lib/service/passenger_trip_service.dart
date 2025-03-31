@@ -3,6 +3,7 @@ import 'package:travel_app/data/models/passenger_trip.dart';
 import 'package:travel_app/data/models/user.dart';
 import 'package:travel_app/service/trip_service.dart';
 import 'package:travel_app/service/user_service.dart';
+import 'package:travel_app/utils/code_generator.dart';
 
 import '../data/DTO/PassengerTripDTO.dart';
 import '../data/models/location.dart';
@@ -61,7 +62,8 @@ class PassengerTripService {
         startLocation: startLocation,
         endLocation: endLocation,
         user: user,
-        tripId: tripId);
+        tripId: tripId,
+        uniqueCode: CodeGenerator.generateUniqueCode());
 
     await _firestore
         .collection('passenger_trips')
@@ -125,5 +127,21 @@ class PassengerTripService {
       return resolvedTrips.whereType<PassengerTrip>().toList();
     }
     return [];
+  }
+
+  Future<bool> validateTicket(String code, String tripId) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('passenger_trips')
+          .where('uniqueCode', isEqualTo: code)
+          .where('tripId', isEqualTo: tripId)
+          .limit(1)
+          .get();
+
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print("Error validating ticket: $e");
+      return false;
+    }
   }
 }
