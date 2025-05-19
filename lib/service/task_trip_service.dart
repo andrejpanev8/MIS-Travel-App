@@ -110,7 +110,7 @@ class TaskTripService {
 
     await taskTripRef.set(newTrip.toJson(), SetOptions(merge: true));
 
-    if (taskTripId == null) {
+    if (finalTaskTripId.isNotEmpty) {
       await _firestore.collection('trips').doc(tripId).update({
         "taskTrips": FieldValue.arrayUnion([finalTaskTripId])
       });
